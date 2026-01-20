@@ -1,31 +1,80 @@
 import { useCallback } from "react";
-import { useAtomValue } from "jotai";
-import { Box, CircularProgress, IconButton, Stack, Typography } from "@mui/material";
+import { useAtom, useAtomValue } from "jotai";
+import {
+    Box,
+    CircularProgress,
+    IconButton,
+    Stack,
+    styled,
+    Typography,
+    type StackProps,
+} from "@mui/material";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import { AutoSizer, List, type ListRowProps } from "react-virtualized";
 
 import type { CityType } from "../../types";
-import { citiesAtom } from "../../atoms";
+import { citiesAtom, favouriteCitiesAtom } from "../../atoms";
 import useCityListHeight from "./hooks/useCityListHeight";
 
 type CityListItemType = {
     cityInfo: CityType | null;
 };
 
+type CityListItemContainerType = StackProps & {
+    isFavourite: boolean;
+};
+
+const CityListItemContainer = styled(Stack, {
+    shouldForwardProp: (prop) => prop !== "isFavourite",
+})<CityListItemContainerType>(({ theme, isFavourite }) => ({
+    paddingInline: theme.spacing(2),
+    cursor: "pointer",
+    backgroundColor: isFavourite ? theme.palette.grey[100] : "transparent",
+    transition: theme.transitions.create(["background-color", "border-color"]),
+    border: `1px solid ${isFavourite ? theme.palette.primary.main : "transparent"}`,
+    borderRadius: theme.shape.borderRadius,
+
+    "&:hover": {
+        backgroundColor: theme.palette.grey[200],
+    },
+}));
+
 const CityListItem = ({ cityInfo }: CityListItemType) => {
+    const [favouriteCities, setFavouriteCities] = useAtom(favouriteCitiesAtom);
+
+    const isFavourite = favouriteCities.some(
+        (city) => city.id.toString() === cityInfo?.id.toString(),
+    );
+
+    const saveFavouriteCity = () => {
+        if (!cityInfo) {
+            console.warn("City info not found");
+            return;
+        }
+        setFavouriteCities((prevValue) => {
+            if (isFavourite) {
+                return prevValue.filter(
+                    (location) => location.id.toString() !== cityInfo.id.toString(),
+                );
+            }
+            return [...(prevValue || []), cityInfo];
+        });
+    };
+
     if (!cityInfo) return null;
 
     return (
-        <Stack
+        <CityListItemContainer
             direction="row"
             alignItems="center"
-            sx={{ width: "100%", pr: 2, height: "100%" }}
             justifyContent="space-between"
+            isFavourite={isFavourite}
+            onClick={saveFavouriteCity}
         >
             <Stack direction="row" alignItems="center" gap={2}>
                 <Box
                     component="img"
-                    width={28}
+                    width={32}
                     height={20}
                     src={`https://flagcdn.com/w40/${cityInfo.iso2.toLowerCase()}.png`}
                     alt={`${cityInfo.country} flag`}
@@ -37,10 +86,18 @@ const CityListItem = ({ cityInfo }: CityListItemType) => {
                     <Typography variant="caption">{cityInfo.country}</Typography>
                 </Stack>
             </Stack>
-            <IconButton size="small">
+            <IconButton
+                size="small"
+                sx={(theme) => ({
+                    "& svg": {
+                        fill: isFavourite ? theme.palette.primary.main : theme.palette.grey[800],
+                        transition: theme.transitions.create(["fill"]),
+                    },
+                })}
+            >
                 <FavoriteBorderIcon />
             </IconButton>
-        </Stack>
+        </CityListItemContainer>
     );
 };
 
@@ -52,7 +109,7 @@ const CityList = () => {
         ({ index, key, style }: ListRowProps) => {
             const cityInfo = cities?.[index] || null;
             return (
-                <Box key={key} sx={style}>
+                <Box key={key} style={style}>
                     <CityListItem cityInfo={cityInfo} />
                 </Box>
             );

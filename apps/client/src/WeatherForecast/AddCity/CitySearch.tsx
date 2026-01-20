@@ -1,20 +1,21 @@
-import { useEffect, useMemo, useRef, useState } from "react";
-import { TextField } from "@mui/material";
+import { useEffect, useMemo, useRef } from "react";
+import { IconButton, InputAdornment, TextField } from "@mui/material";
+import ClearIcon from "@mui/icons-material/Clear";
 import Fuse from "fuse.js";
 import { useAtom } from "jotai";
 
-import { citiesAtom } from "../../atoms";
+import { citiesAtom, searchValue } from "../../atoms";
 import type { CityType } from "../../types";
 
 const CitySearch = () => {
-    const [value, setValue] = useState("");
+    const [value, setValue] = useAtom(searchValue);
     const initialCities = useRef<CityType[] | null>(null);
 
     const fuse = useMemo(() => {
         return new Fuse<CityType>([], {
             includeScore: true,
             includeMatches: true,
-            threshold: 0.4,
+            threshold: 0.5,
             keys: [
                 { name: "city", weight: 1 },
                 { name: "country", weight: 0.8 },
@@ -32,9 +33,13 @@ const CitySearch = () => {
             setCities(initialCities.current);
         } else {
             const results = fuse.search(value);
-            console.log(results);
             setCities(results.map((el) => ({ ...el.item })));
         }
+    };
+
+    const handleClear = () => {
+        setValue("");
+        setCities(initialCities.current);
     };
 
     useEffect(() => {
@@ -48,10 +53,21 @@ const CitySearch = () => {
         <TextField
             size="small"
             variant="outlined"
-            placeholder="Search city..."
+            placeholder="Search city/location..."
             fullWidth
             value={value}
             onChange={handleOnChange}
+            slotProps={{
+                input: {
+                    endAdornment: (
+                        <InputAdornment position="start">
+                            <IconButton size="small" onClick={handleClear} disabled={value === ""}>
+                                <ClearIcon />
+                            </IconButton>
+                        </InputAdornment>
+                    ),
+                },
+            }}
         />
     );
 };
