@@ -1,12 +1,19 @@
-import { Box } from "@mui/material";
+import { Box, Divider, Stack } from "@mui/material";
 
 import CityList from "./CityList";
+import CitySearch from "./CitySearch";
 
 const AddCityMain = () => {
     return (
-        <Box sx={{ height: "80vh", overflowY: "scroll" }}>
-            <CityList />
-        </Box>
+        <Stack>
+            <Box id="city-search-container" sx={{ p: 2 }}>
+                <CitySearch />
+            </Box>
+            <Divider />
+            <Box sx={{ overflowY: "scroll", overflowX: "hidden" }}>
+                <CityList />
+            </Box>
+        </Stack>
     );
 };
 
