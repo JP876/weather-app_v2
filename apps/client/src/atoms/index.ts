@@ -16,4 +16,5 @@ export const errorWeatherData = atom(false);
 
 export const userSettingsAtom = atomWithStorage<UserSettingsType>("settings", {
     daily: { list: true, graph: true },
+    hourly: { cards: true, graph: true },
 });

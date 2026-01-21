@@ -15,10 +15,10 @@ import useCityInfo from "./hooks/useCityInfo";
 import CurrentMain from "./Current";
 import DailyMain from "./Daily";
 import type { WeatherDataType } from "../../types/weatherdata";
+import HourlyMain from "./Hourly";
 
 const CityForecastContainer = styled(Stack)<StackProps>(({ theme }) => ({
     gap: theme.spacing(2),
-    paddingInline: theme.spacing(2),
     position: "relative",
 }));
 
@@ -39,6 +39,11 @@ const LoadingContainer = styled(Box, {
     display: isLoading ? "flex" : "none",
     justifyContent: "center",
     alignItems: "center",
+
+    ...(isLoading && {
+        pointerEvents: "none",
+        cursor: "progress",
+    }),
 }));
 
 const LoadingWeatherData = () => {
@@ -92,6 +97,8 @@ const CityForecastMain = () => {
         <CityForecastContainer>
             <LoadingWeatherData />
             <CurrentMain />
+            <Divider />
+            <HourlyMain />
             <Divider />
             <DailyMain />
         </CityForecastContainer>

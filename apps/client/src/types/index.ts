@@ -17,4 +17,8 @@ export type UserSettingsType = {
         list: boolean;
         graph: boolean;
     };
+    hourly: {
+        cards: boolean;
+        graph: boolean;
+    };
 };

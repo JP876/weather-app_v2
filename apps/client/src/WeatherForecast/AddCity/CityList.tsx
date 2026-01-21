@@ -68,9 +68,7 @@ const CityListItem = ({ index }: CityListItemType) => {
         }
         setFavouriteCities((prevValue) => {
             if (isFavourite) {
-                return prevValue.filter(
-                    (location) => location.id.toString() !== cityInfo.id.toString(),
-                );
+                return prevValue.filter((city) => city.id.toString() !== cityInfo.id.toString());
             }
             return [...(prevValue || []), cityInfo];
         });
