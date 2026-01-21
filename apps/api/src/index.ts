@@ -18,10 +18,15 @@ app.use(express.static(join(__dirname, "../..", "client", "dist")));
 app.get("/api/v1/worldcities", (req, res) => {
     const results: CityType[] = [];
 
+    if (cacheInstance.has(`worldcities`)) {
+        return res.json({ results: cacheInstance.get("worldcities") });
+    }
+
     createReadStream(join(__dirname, "worldcities.csv"))
         .pipe(csvParser())
         .on("data", (data) => results.push(data))
         .on("end", () => {
+            cacheInstance.set(`worldcities`, results, 60 * 60 * 24);
             res.json({ results });
         })
         .on("error", () => {
@@ -53,7 +58,7 @@ app.get("/api/v1/weather-forecast", async (req, res) => {
         }
 
         const data = await response.json();
-        cacheInstance.set(`weather_data-${lat}/${lng}`, data, 60 * 20);
+        cacheInstance.set(`weather_data-${lat}/${lng}`, data, 60 * 10);
 
         res.json({ results: data });
     } catch (error) {

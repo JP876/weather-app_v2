@@ -1,11 +1,10 @@
-import { memo, useEffect } from "react";
+import { memo } from "react";
 import { Box, Stack, Tab, Tabs, Typography } from "@mui/material";
 import ClearIcon from "@mui/icons-material/Clear";
 import { useAtomValue, useSetAtom } from "jotai";
 import { useLocation } from "wouter";
 
 import { favouriteCitiesAtom } from "../../atoms";
-import RouterMain from "../Router";
 
 const a11yProps = (index: number) => {
     return {
@@ -66,33 +65,26 @@ const CitiesNavigation = () => {
     };
 
     return (
-        <Box sx={{ width: "100%" }}>
-            <Box
-                id="cities-navigation-tabs-container"
-                sx={{ borderBottom: 1, borderColor: "divider" }}
+        <Box id="cities-navigation-tabs-container" sx={{ borderBottom: 1, borderColor: "divider" }}>
+            <Tabs
+                value={favouriteCities.length === 0 ? "/" : path}
+                onChange={handleChange}
+                aria-label="cities tab navigation"
+                role="navigation"
+                scrollButtons="auto"
+                variant="scrollable"
             >
-                <Tabs
-                    value={favouriteCities.length === 0 ? "/" : path}
-                    onChange={handleChange}
-                    aria-label="cities tab navigation"
-                    role="navigation"
-                    scrollButtons="auto"
-                    variant="scrollable"
-                >
-                    <Tab label="Add city" value="/" {...a11yProps(0)} />
-                    {favouriteCities.map((el) => (
-                        <Tab
-                            key={el.id}
-                            value={`/${el.id}`}
-                            disableRipple
-                            sx={{ alignItems: "center", p: 1 }}
-                            label={<TabLabel id={el.id} city={el.city} />}
-                        />
-                    ))}
-                </Tabs>
-            </Box>
-
-            <RouterMain />
+                <Tab label="Add city" value="/" {...a11yProps(0)} />
+                {favouriteCities.map((el) => (
+                    <Tab
+                        key={el.id}
+                        value={`/${el.id}`}
+                        disableRipple
+                        sx={{ alignItems: "center", p: 1 }}
+                        label={<TabLabel id={el.id} city={el.city} />}
+                    />
+                ))}
+            </Tabs>
         </Box>
     );
 };

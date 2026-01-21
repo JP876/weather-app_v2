@@ -1,18 +1,20 @@
-import { useEffect, useMemo, useRef } from "react";
+import { useMemo } from "react";
 import { IconButton, InputAdornment, TextField } from "@mui/material";
 import ClearIcon from "@mui/icons-material/Clear";
 import Fuse from "fuse.js";
-import { useAtom } from "jotai";
+import { useAtom, useAtomValue, useSetAtom } from "jotai";
 
-import { citiesAtom, searchValue } from "../../atoms";
+import { citiesAtom, filteredCitiesAtom, searchValue } from "../../atoms";
 import type { CityType } from "../../types";
 
 const CitySearch = () => {
     const [value, setValue] = useAtom(searchValue);
-    const initialCities = useRef<CityType[] | null>(null);
+
+    const setFilteredCities = useSetAtom(filteredCitiesAtom);
+    const cities = useAtomValue(citiesAtom);
 
     const fuse = useMemo(() => {
-        return new Fuse<CityType>([], {
+        return new Fuse<CityType>(cities || [], {
             includeScore: true,
             includeMatches: true,
             threshold: 0.5,
@@ -21,33 +23,24 @@ const CitySearch = () => {
                 { name: "country", weight: 0.8 },
             ],
         });
-    }, []);
-
-    const [cities, setCities] = useAtom(citiesAtom);
+    }, [cities]);
 
     const handleOnChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const value = event.target.value;
         setValue(value);
 
         if (!value) {
-            setCities(initialCities.current);
+            setFilteredCities(cities);
         } else {
             const results = fuse.search(value);
-            setCities(results.map((el) => ({ ...el.item })));
+            setFilteredCities(results.map((el) => ({ ...el.item })));
         }
     };
 
     const handleClear = () => {
         setValue("");
-        setCities(initialCities.current);
+        setFilteredCities(cities);
     };
-
-    useEffect(() => {
-        if (initialCities.current === null && Array.isArray(cities)) {
-            initialCities.current = cities;
-            fuse.setCollection(cities);
-        }
-    }, [cities, fuse]);
 
     return (
         <TextField
@@ -60,7 +53,7 @@ const CitySearch = () => {
             slotProps={{
                 input: {
                     endAdornment: (
-                        <InputAdornment position="start">
+                        <InputAdornment position="end">
                             <IconButton size="small" onClick={handleClear} disabled={value === ""}>
                                 <ClearIcon />
                             </IconButton>

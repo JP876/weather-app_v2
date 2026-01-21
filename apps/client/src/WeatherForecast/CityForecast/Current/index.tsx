@@ -1,11 +1,17 @@
 import { useMemo } from "react";
-import { Box, Stack, Typography } from "@mui/material";
+import { Box, Skeleton, Stack, Typography } from "@mui/material";
 import LocationCityIcon from "@mui/icons-material/LocationCity";
 import { useAtomValue } from "jotai";
 
-import { weatherDataAtom } from "../../../atoms";
+import { isLoadingWeatherDataAtom, weatherDataAtom } from "../../../atoms";
 import useCityInfo from "../hooks/useCityInfo";
 import getWeatherIconSrc from "../../../utils/getWeatherIconSrc";
+
+type CurrentTemperatureProps = {
+    temp?: string;
+    iconSrc?: string;
+    iconAlt?: string;
+};
 
 const LocationInfo = () => {
     const cityInfo = useCityInfo();
@@ -21,11 +27,32 @@ const LocationInfo = () => {
     );
 };
 
-const CurrentWeatherDetailsContainer = ({ label, value }: { label: string; value: string }) => {
+const CurrentWeatherDetailsContainer = ({ label, value }: { label: string; value?: string }) => {
+    const isLoading = useAtomValue(isLoadingWeatherDataAtom);
+
     return (
         <Stack>
             <Typography variant="subtitle1">{label}</Typography>
-            <Typography variant="h6">{value}</Typography>
+            {isLoading ? (
+                <Skeleton height={32} width={100} />
+            ) : (
+                <Typography variant="h6">{value}</Typography>
+            )}
+        </Stack>
+    );
+};
+
+const CurrentTemperature = ({ temp, iconSrc, iconAlt }: CurrentTemperatureProps) => {
+    const isLoading = useAtomValue(isLoadingWeatherDataAtom);
+
+    if (isLoading) {
+        return <Skeleton height={100} width={170} />;
+    }
+
+    return (
+        <Stack direction="row" alignItems="center">
+            <Typography variant="h5">{`${temp} \u00B0C`}</Typography>
+            <Box component="img" src={iconSrc} alt={iconAlt} width={100} height={100} />
         </Stack>
     );
 };
@@ -42,10 +69,6 @@ const CurrentMain = () => {
             weather: w.weather.map((el) => ({ ...el, iconSrc: getWeatherIconSrc(el.icon) })),
         };
     }, [weatherData]);
-
-    if (currentWeather === null) {
-        return null;
-    }
 
     return (
         <>
@@ -65,34 +88,29 @@ const CurrentMain = () => {
                 ]}
             >
                 <LocationInfo />
-                <Stack direction="row" alignItems="center">
-                    <Typography variant="h5">{`${currentWeather.temp} \u00B0C`}</Typography>
-                    <Box
-                        component="img"
-                        src={currentWeather.weather[0].iconSrc}
-                        alt={currentWeather.weather[0].description}
-                        width={100}
-                        height={100}
-                    />
-                </Stack>
+                <CurrentTemperature
+                    temp={currentWeather?.temp}
+                    iconSrc={currentWeather?.weather[0].iconSrc}
+                    iconAlt={currentWeather?.weather[0].description}
+                />
             </Stack>
 
             <Box sx={{ display: "grid", gridTemplateColumns: "1fr 1fr", mx: 2, gap: 1 }}>
                 <CurrentWeatherDetailsContainer
                     label="Feels like"
-                    value={`${currentWeather.feels_like.toFixed(1)} \u00B0C`}
+                    value={`${currentWeather?.feels_like.toFixed(1)} \u00B0C`}
                 />
                 <CurrentWeatherDetailsContainer
                     label="Humidity"
-                    value={`${currentWeather.humidity} %`}
+                    value={`${currentWeather?.humidity} %`}
                 />
                 <CurrentWeatherDetailsContainer
                     label="Current UV index"
-                    value={`${currentWeather.uvi}`}
+                    value={`${currentWeather?.uvi}`}
                 />
                 <CurrentWeatherDetailsContainer
                     label="Cloudiness"
-                    value={`${currentWeather.clouds} %`}
+                    value={`${currentWeather?.clouds} %`}
                 />
             </Box>
         </>

@@ -3,21 +3,21 @@ import { useAtom, useAtomValue } from "jotai";
 import {
     Box,
     CircularProgress,
-    IconButton,
     Stack,
     styled,
     Typography,
+    type BoxProps,
     type StackProps,
 } from "@mui/material";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
+import ClearIcon from "@mui/icons-material/Clear";
 import { AutoSizer, List, type ListRowProps } from "react-virtualized";
 
-import type { CityType } from "../../types";
-import { citiesAtom, favouriteCitiesAtom } from "../../atoms";
+import { favouriteCitiesAtom, filteredCitiesAtom } from "../../atoms";
 import useCityListHeight from "./hooks/useCityListHeight";
 
 type CityListItemType = {
-    cityInfo: CityType | null;
+    index: number;
 };
 
 type CityListItemContainerType = StackProps & {
@@ -27,7 +27,8 @@ type CityListItemContainerType = StackProps & {
 const CityListItemContainer = styled(Stack, {
     shouldForwardProp: (prop) => prop !== "isFavourite",
 })<CityListItemContainerType>(({ theme, isFavourite }) => ({
-    paddingInline: theme.spacing(2),
+    paddingLeft: theme.spacing(2),
+    paddingRight: "14px",
     cursor: "pointer",
     backgroundColor: isFavourite ? theme.palette.grey[100] : "transparent",
     transition: theme.transitions.create(["background-color", "border-color"]),
@@ -39,8 +40,22 @@ const CityListItemContainer = styled(Stack, {
     },
 }));
 
-const CityListItem = ({ cityInfo }: CityListItemType) => {
+const CityListItemButton = styled(Box)<BoxProps>(({ theme }) => ({
+    width: "1.5rem",
+    height: "1.5rem",
+    position: "relative",
+
+    "& svg": {
+        position: "absolute",
+        transition: theme.transitions.create(["opacity"]),
+    },
+}));
+
+const CityListItem = ({ index }: CityListItemType) => {
     const [favouriteCities, setFavouriteCities] = useAtom(favouriteCitiesAtom);
+    const filteredCities = useAtomValue(filteredCitiesAtom);
+
+    const cityInfo = filteredCities?.[index] || null;
 
     const isFavourite = favouriteCities.some(
         (city) => city.id.toString() === cityInfo?.id.toString(),
@@ -86,38 +101,31 @@ const CityListItem = ({ cityInfo }: CityListItemType) => {
                     <Typography variant="caption">{cityInfo.country}</Typography>
                 </Stack>
             </Stack>
-            <IconButton
-                size="small"
-                sx={(theme) => ({
-                    "& svg": {
-                        fill: isFavourite ? theme.palette.primary.main : theme.palette.grey[800],
-                        transition: theme.transitions.create(["fill"]),
-                    },
-                })}
-            >
-                <FavoriteBorderIcon />
-            </IconButton>
+            <CityListItemButton>
+                <FavoriteBorderIcon sx={{ opacity: +!isFavourite }} />
+                <ClearIcon sx={{ opacity: +isFavourite }} />
+            </CityListItemButton>
         </CityListItemContainer>
     );
 };
 
+const listStyle = {
+    padding: "1rem",
+};
+
 const CityList = () => {
-    const cities = useAtomValue(citiesAtom);
+    const filteredCities = useAtomValue(filteredCitiesAtom);
     const { height } = useCityListHeight();
 
-    const rowRenderer = useCallback(
-        ({ index, key, style }: ListRowProps) => {
-            const cityInfo = cities?.[index] || null;
-            return (
-                <Box key={key} style={style}>
-                    <CityListItem cityInfo={cityInfo} />
-                </Box>
-            );
-        },
-        [cities],
-    );
+    const rowRenderer = useCallback(({ index, key, style }: ListRowProps) => {
+        return (
+            <Box key={key} style={style}>
+                <CityListItem index={index} />
+            </Box>
+        );
+    }, []);
 
-    if (!Array.isArray(cities)) {
+    if (!Array.isArray(filteredCities)) {
         return (
             <Stack direction="row" justifyContent="center" alignItems="center" sx={{ mt: 6 }}>
                 <CircularProgress size={60} thickness={3.2} />
@@ -131,10 +139,10 @@ const CityList = () => {
                 <List
                     width={width}
                     height={height || 960}
-                    rowCount={cities.length}
+                    rowCount={filteredCities.length}
                     rowHeight={54}
                     rowRenderer={rowRenderer}
-                    style={{ padding: "1rem" }}
+                    style={listStyle}
                 />
             )}
         </AutoSizer>
