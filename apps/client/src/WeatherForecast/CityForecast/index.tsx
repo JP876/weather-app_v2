@@ -20,7 +20,6 @@ const CityForecastContainer = styled(Stack)<StackProps>(({ theme }) => ({
     gap: theme.spacing(2),
     paddingInline: theme.spacing(2),
     position: "relative",
-    overflowY: "auto",
 }));
 
 type LoadingContainerProps = BoxProps & {

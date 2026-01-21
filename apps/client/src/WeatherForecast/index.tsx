@@ -1,37 +1,45 @@
-import { Box, Paper } from "@mui/material";
+import { memo } from "react";
+import { Box, Paper, styled, type BoxProps, type PaperProps } from "@mui/material";
 
 import CitiesNavigation from "./CitiesNavigation";
 import RouterMain from "./Router";
 
+const MAIN_MARGIN = 4;
+
+const WeatherForecastContainer = styled(Paper)<PaperProps>(({ theme }) => ({
+    position: "absolute",
+    top: theme.spacing(MAIN_MARGIN),
+    left: theme.spacing(MAIN_MARGIN),
+    zIndex: theme.zIndex.appBar,
+    width: "36vw",
+    "--weather-forecast-container-width": "36vw",
+}));
+
+const WeatherForecastRoutesContainer = styled(Box)<BoxProps>(({ theme }) => ({
+    // 100vh - 2 * top/bottom main "margin" - tabs height
+    maxHeight: `calc(100vh - 2 * ${theme.spacing(MAIN_MARGIN)} - 3rem)`,
+    overflow: "auto",
+    position: "relative",
+}));
+
+const WeatherForecastHeight = styled(Box)<BoxProps>(({ theme }) => ({
+    visibility: "hidden",
+    position: "absolute",
+    top: 0,
+    left: 0,
+    height: `calc(100vh - 2 * ${theme.spacing(MAIN_MARGIN)})`,
+}));
+
 const WeatherForecast = () => {
     return (
-        <Paper
-            sx={(theme) => ({
-                position: "absolute",
-                top: theme.spacing(4),
-                left: theme.spacing(4),
-                zIndex: theme.zIndex.appBar,
-                width: "36vw",
-                "--weather-forecast-container-width": "36vw",
-            })}
-        >
+        <WeatherForecastContainer>
+            <WeatherForecastHeight id="wether-forecast-container-height" />
             <CitiesNavigation />
-
-            <Box
-                id="forecast-container"
-                sx={[
-                    (theme) => ({
-                        // 100vh - 2 * top/bottom main "margin" - tabs height
-                        maxHeight: `calc(100vh - 2 * ${theme.spacing(4)} - 3rem)`,
-                        overflow: "hidden",
-                        position: "relative",
-                    }),
-                ]}
-            >
+            <WeatherForecastRoutesContainer id="forecast-routes-container">
                 <RouterMain />
-            </Box>
-        </Paper>
+            </WeatherForecastRoutesContainer>
+        </WeatherForecastContainer>
     );
 };
 
-export default WeatherForecast;
+export default memo(WeatherForecast);

@@ -4,7 +4,7 @@ const useCityListHeight = () => {
     const [height, setHeight] = useState<number | null>(null);
 
     useEffect(() => {
-        const container = document.getElementById("wether-forecast-container");
+        const container = document.getElementById("wether-forecast-container-height");
         const tabsContainer = document.getElementById("cities-navigation-tabs-container");
         const searchContainer = document.getElementById("city-search-container");
 
