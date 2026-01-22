@@ -1,10 +1,10 @@
 import { memo } from "react";
 import { Box, Paper, styled, type BoxProps, type PaperProps } from "@mui/material";
+import { useAtomValue } from "jotai";
 
 import CitiesNavigation from "./CitiesNavigation";
 import RouterMain from "./Router";
-import { useAtomValue } from "jotai";
-import { isLoadingWeatherDataAtom } from "../atoms";
+import { weatherFetchInfoAtom } from "../atoms";
 
 const MAIN_MARGIN = 4;
 
@@ -51,7 +51,7 @@ const WeatherForecastHeight = styled(Box)<BoxProps>(({ theme }) => ({
 }));
 
 const RoutesContainer = ({ children }: { children: React.ReactNode }) => {
-    const isLoading = useAtomValue(isLoadingWeatherDataAtom);
+    const { isLoading } = useAtomValue(weatherFetchInfoAtom);
     return (
         <WeatherForecastRoutesContainer id="forecast-routes-container" isLoading={isLoading}>
             {children}

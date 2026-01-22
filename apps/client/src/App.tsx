@@ -2,15 +2,17 @@ import { useEffect } from "react";
 import { Box } from "@mui/material";
 import { useSetAtom } from "jotai";
 
-import { citiesAtom, filteredCitiesAtom } from "./atoms";
+import { citiesFetchInfoAtom, filteredCitiesAtom } from "./atoms";
 import type { CityType } from "./types";
 import WeatherForecast from "./WeatherForecast";
 
 const App = () => {
-    const setCities = useSetAtom(citiesAtom);
+    const setCitiesFetchInfo = useSetAtom(citiesFetchInfoAtom);
     const setFilteredCities = useSetAtom(filteredCitiesAtom);
 
     useEffect(() => {
+        setCitiesFetchInfo((prevValue) => ({ ...prevValue, isLoading: true, error: false }));
+
         fetch("/api/v1/worldcities")
             .then(async (res) => {
                 if (!res.ok) {
@@ -19,16 +21,15 @@ const App = () => {
 
                 const data = (await res.json()) as { results: CityType[] };
 
-                setCities(data?.results);
+                setCitiesFetchInfo({ data: data.results, isLoading: false, error: false });
                 setFilteredCities(data?.results);
             })
             .catch((err) => {
                 console.error(err);
-
-                setCities([]);
+                setCitiesFetchInfo({ data: [], isLoading: false, error: false });
                 setFilteredCities([]);
             });
-    }, [setCities, setFilteredCities]);
+    }, [setCitiesFetchInfo, setFilteredCities]);
 
     return (
         <Box component="main">

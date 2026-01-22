@@ -6,7 +6,7 @@ import { useAtomValue } from "jotai";
 import { format } from "date-fns";
 
 import getWeatherIconSrc from "../../../utils/getWeatherIconSrc";
-import { isLoadingWeatherDataAtom, weatherDataAtom } from "../../../atoms";
+import { weatherFetchInfoAtom } from "../../../atoms";
 import getMinMax from "../../../utils/getMinMax";
 
 const DailyItemContainer = styled(Box)(({ theme }) => ({
@@ -65,8 +65,7 @@ const LoadingDailyList = () => {
 };
 
 const DailyList = () => {
-    const weatherData = useAtomValue(weatherDataAtom);
-    const isLoading = useAtomValue(isLoadingWeatherDataAtom);
+    const { isLoading, data: weatherData } = useAtomValue(weatherFetchInfoAtom);
 
     const dailyData = useMemo(() => {
         if (!Array.isArray(weatherData?.daily)) return [];

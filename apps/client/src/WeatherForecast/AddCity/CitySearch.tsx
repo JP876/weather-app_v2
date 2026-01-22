@@ -1,17 +1,35 @@
-import { useMemo } from "react";
+import { memo, useMemo } from "react";
 import { IconButton, InputAdornment, TextField } from "@mui/material";
 import ClearIcon from "@mui/icons-material/Clear";
 import Fuse from "fuse.js";
 import { useAtom, useAtomValue, useSetAtom } from "jotai";
 
-import { citiesAtom, filteredCitiesAtom, searchValue } from "../../atoms";
+import { citiesFetchInfoAtom, filteredCitiesAtom, searchValueAtom } from "../../atoms";
 import type { CityType } from "../../types";
 
+const ClearSearchValue = ({ value }: { value: string }) => {
+    const setValue = useSetAtom(searchValueAtom);
+    const setFilteredCities = useSetAtom(filteredCitiesAtom);
+
+    const { data: cities, isLoading } = useAtomValue(citiesFetchInfoAtom);
+
+    const handleClear = () => {
+        setValue("");
+        setFilteredCities(cities);
+    };
+
+    return (
+        <IconButton size="small" onClick={handleClear} disabled={isLoading || value === ""}>
+            <ClearIcon />
+        </IconButton>
+    );
+};
+
 const CitySearch = () => {
-    const [value, setValue] = useAtom(searchValue);
+    const [value, setValue] = useAtom(searchValueAtom);
 
     const setFilteredCities = useSetAtom(filteredCitiesAtom);
-    const cities = useAtomValue(citiesAtom);
+    const { data: cities, isLoading } = useAtomValue(citiesFetchInfoAtom);
 
     const fuse = useMemo(() => {
         return new Fuse<CityType>(cities || [], {
@@ -37,11 +55,6 @@ const CitySearch = () => {
         }
     };
 
-    const handleClear = () => {
-        setValue("");
-        setFilteredCities(cities);
-    };
-
     return (
         <TextField
             size="small"
@@ -50,13 +63,12 @@ const CitySearch = () => {
             fullWidth
             value={value}
             onChange={handleOnChange}
+            disabled={isLoading}
             slotProps={{
                 input: {
                     endAdornment: (
                         <InputAdornment position="end">
-                            <IconButton size="small" onClick={handleClear} disabled={value === ""}>
-                                <ClearIcon />
-                            </IconButton>
+                            <ClearSearchValue value={value} />
                         </InputAdornment>
                     ),
                 },
@@ -65,4 +77,4 @@ const CitySearch = () => {
     );
 };
 
-export default CitySearch;
+export default memo(CitySearch);

@@ -2,11 +2,11 @@ import { memo } from "react";
 import { FormControlLabel, Stack, Switch } from "@mui/material";
 import { useAtom, useAtomValue } from "jotai";
 
-import { isLoadingWeatherDataAtom, userSettingsAtom } from "../../../atoms";
+import { userSettingsAtom, weatherFetchInfoAtom } from "../../../atoms";
 
 const UserSettings = () => {
     const [settings, setSettings] = useAtom(userSettingsAtom);
-    const isLoading = useAtomValue(isLoadingWeatherDataAtom);
+    const { isLoading } = useAtomValue(weatherFetchInfoAtom);
 
     const handleOnChange = (event: React.ChangeEvent<HTMLInputElement>, checked: boolean) => {
         const type = event.target.title as "list" | "graph";

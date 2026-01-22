@@ -54,7 +54,7 @@ app.get("/api/v1/weather-forecast", async (req, res) => {
         const response = await fetch(`${URL}?lat=${lat}&lon=${lng}&appid=${API_KEY}&units=metric`);
 
         if (!response.ok) {
-            return res.send("Failed to fetch weather forecast").status(response.status);
+            return res.send("Failed to fetch weather forecast").status(404);
         }
 
         const data = await response.json();

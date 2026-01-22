@@ -10,12 +10,7 @@ import {
 } from "@mui/material";
 import { useAtomValue, useSetAtom } from "jotai";
 
-import {
-    errorWeatherData,
-    isLoadingWeatherDataAtom,
-    weatherDataAtom,
-    weatherFetchInfoAtom,
-} from "../../atoms";
+import { weatherFetchInfoAtom } from "../../atoms";
 import useCityInfo from "./hooks/useCityInfo";
 import CurrentMain from "./Current";
 import DailyMain from "./Daily";
@@ -43,7 +38,7 @@ const LoadingContainer = styled(Box, {
 }));
 
 const LoadingWeatherData = () => {
-    const isLoading = useAtomValue(isLoadingWeatherDataAtom);
+    const { isLoading } = useAtomValue(weatherFetchInfoAtom);
     const container = document.getElementById("forecast-routes-container");
 
     return (
@@ -54,17 +49,12 @@ const LoadingWeatherData = () => {
 };
 
 const CityForecastMain = () => {
-    const setWeatherData = useSetAtom(weatherDataAtom);
-    const setIsLoading = useSetAtom(isLoadingWeatherDataAtom);
-    const setError = useSetAtom(errorWeatherData);
-
     const setWeatherFetchInfo = useSetAtom(weatherFetchInfoAtom);
 
     const cityInfo = useCityInfo();
 
     useEffect(() => {
         if (cityInfo) {
-            setIsLoading(true);
             setWeatherFetchInfo((prevInfo) => ({ ...prevInfo, error: false, isLoading: true }));
 
             Promise.all([
@@ -75,25 +65,15 @@ const CityForecastMain = () => {
                     if (!res.ok) {
                         throw new Error("Failed to fetch weather data");
                     }
-
                     const data = (await res.json()) as { results: WeatherDataType };
                     setWeatherFetchInfo({ data: data.results, error: false, isLoading: false });
-
-                    setError(false);
-                    setWeatherData(data.results);
                 })
                 .catch((error) => {
                     console.error(error);
-
-                    setError(true);
-                    setWeatherData(null);
                     setWeatherFetchInfo({ data: null, error: true, isLoading: false });
-                })
-                .finally(() => {
-                    setIsLoading(false);
                 });
         }
-    }, [cityInfo, setError, setIsLoading, setWeatherData, setWeatherFetchInfo]);
+    }, [cityInfo, setWeatherFetchInfo]);
 
     return (
         <CityForecastContainer>

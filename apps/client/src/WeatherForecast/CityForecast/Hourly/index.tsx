@@ -4,7 +4,7 @@ import InfoOutlineIcon from "@mui/icons-material/InfoOutline";
 import { useAtomValue } from "jotai";
 import { format } from "date-fns";
 
-import { isLoadingWeatherDataAtom, userSettingsAtom, weatherDataAtom } from "../../../atoms";
+import { userSettingsAtom, weatherFetchInfoAtom } from "../../../atoms";
 import getWeatherIconSrc from "../../../utils/getWeatherIconSrc";
 import HourlyCard, { HourlyCardContainer } from "./HourlyCard";
 import HourlyChart from "./HourlyChart";
@@ -42,8 +42,7 @@ const HourlyCardsContainer = () => {
     const justMounted = useRef(true);
     const [cardsContainer, setCardsContainer] = useState<HTMLDivElement | null>(null);
 
-    const weatherData = useAtomValue(weatherDataAtom);
-    const isLoading = useAtomValue(isLoadingWeatherDataAtom);
+    const { isLoading, data: weatherData } = useAtomValue(weatherFetchInfoAtom);
 
     const hourlyData = useMemo(() => {
         if (!Array.isArray(weatherData?.hourly)) return [];

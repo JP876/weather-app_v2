@@ -3,12 +3,11 @@ import { useAtomValue } from "jotai";
 import { format } from "date-fns";
 import { BarChart } from "@mui/x-charts";
 
-import { isLoadingWeatherDataAtom, weatherDataAtom } from "../../../atoms";
+import { weatherFetchInfoAtom } from "../../../atoms";
 import { Box, Skeleton } from "@mui/material";
 
 const HourlyChart = () => {
-    const weatherData = useAtomValue(weatherDataAtom);
-    const isLoading = useAtomValue(isLoadingWeatherDataAtom);
+    const { isLoading, data: weatherData } = useAtomValue(weatherFetchInfoAtom);
 
     const dataset = useMemo(() => {
         if (!weatherData) return [];

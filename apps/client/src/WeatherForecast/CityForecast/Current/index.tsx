@@ -3,7 +3,7 @@ import { Box, Skeleton, Stack, Typography } from "@mui/material";
 import LocationCityIcon from "@mui/icons-material/LocationCity";
 import { useAtomValue } from "jotai";
 
-import { isLoadingWeatherDataAtom, weatherDataAtom } from "../../../atoms";
+import { weatherFetchInfoAtom } from "../../../atoms";
 import useCityInfo from "../hooks/useCityInfo";
 import getWeatherIconSrc from "../../../utils/getWeatherIconSrc";
 
@@ -28,7 +28,7 @@ const LocationInfo = () => {
 };
 
 const CurrentWeatherDetailsContainer = ({ label, value }: { label: string; value?: string }) => {
-    const isLoading = useAtomValue(isLoadingWeatherDataAtom);
+    const { isLoading } = useAtomValue(weatherFetchInfoAtom);
 
     return (
         <Stack>
@@ -43,7 +43,7 @@ const CurrentWeatherDetailsContainer = ({ label, value }: { label: string; value
 };
 
 const CurrentTemperature = ({ temp, iconSrc, iconAlt }: CurrentTemperatureProps) => {
-    const isLoading = useAtomValue(isLoadingWeatherDataAtom);
+    const { isLoading } = useAtomValue(weatherFetchInfoAtom);
 
     if (isLoading) {
         return <Skeleton height={100} width={170} />;
@@ -58,7 +58,7 @@ const CurrentTemperature = ({ temp, iconSrc, iconAlt }: CurrentTemperatureProps)
 };
 
 const CurrentMain = () => {
-    const weatherData = useAtomValue(weatherDataAtom);
+    const { data: weatherData } = useAtomValue(weatherFetchInfoAtom);
 
     const currentWeather = useMemo(() => {
         if (!weatherData?.current) return null;

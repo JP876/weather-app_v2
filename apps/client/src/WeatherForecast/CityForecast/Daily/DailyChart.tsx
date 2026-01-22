@@ -4,11 +4,10 @@ import { Box, Skeleton } from "@mui/material";
 import { BarChart } from "@mui/x-charts";
 import { format } from "date-fns";
 
-import { isLoadingWeatherDataAtom, weatherDataAtom } from "../../../atoms";
+import { weatherFetchInfoAtom } from "../../../atoms";
 
 const DailyChart = () => {
-    const weatherData = useAtomValue(weatherDataAtom);
-    const isLoading = useAtomValue(isLoadingWeatherDataAtom);
+    const { isLoading, data: weatherData } = useAtomValue(weatherFetchInfoAtom);
 
     const dataset = useMemo(() => {
         if (!weatherData) return [];
