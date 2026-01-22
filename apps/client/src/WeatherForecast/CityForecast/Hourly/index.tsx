@@ -1,34 +1,67 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Box, Stack, Typography } from "@mui/material";
+import { Box, Button, Collapse, Skeleton, Stack, Typography } from "@mui/material";
+import InfoOutlineIcon from "@mui/icons-material/InfoOutline";
 import { useAtomValue } from "jotai";
 import { format } from "date-fns";
 
-import { weatherDataAtom } from "../../../atoms";
+import { isLoadingWeatherDataAtom, userSettingsAtom, weatherDataAtom } from "../../../atoms";
 import getWeatherIconSrc from "../../../utils/getWeatherIconSrc";
-import HourlyCard from "./HourlyCard";
+import HourlyCard, { HourlyCardContainer } from "./HourlyCard";
 import HourlyChart from "./HourlyChart";
+import UserSettings from "./UserSettings";
 
-const HourlyMain = () => {
+const LoadingCard = () => {
+    return (
+        <HourlyCardContainer isLoading>
+            <Stack direction="row" alignItems="center" justifyContent="space-between">
+                <Skeleton width={42} height={24} />
+                <Skeleton width={42} height={24} />
+            </Stack>
+
+            <Stack direction="row" justifyContent="center" mb={2}>
+                <Stack alignItems="center">
+                    <Skeleton variant="circular" width={64} height={64} sx={{ my: 2 }} />
+                </Stack>
+            </Stack>
+
+            <Stack direction="row" justifyContent="center" alignItems="center">
+                <Button
+                    size="small"
+                    variant="outlined"
+                    startIcon={<InfoOutlineIcon fontSize="small" />}
+                    disabled
+                >
+                    Details
+                </Button>
+            </Stack>
+        </HourlyCardContainer>
+    );
+};
+
+const HourlyCardsContainer = () => {
     const justMounted = useRef(true);
     const [cardsContainer, setCardsContainer] = useState<HTMLDivElement | null>(null);
 
     const weatherData = useAtomValue(weatherDataAtom);
+    const isLoading = useAtomValue(isLoadingWeatherDataAtom);
 
     const hourlyData = useMemo(() => {
         if (!Array.isArray(weatherData?.hourly)) return [];
 
-        return weatherData.hourly.map((d) => ({
-            ...d,
-            date: format(new Date(d.dt * 1_000), "HH:mm"),
-            temp: d.temp.toFixed(1),
-            feels_like: d.feels_like.toFixed(1),
-            rain: d?.rain ? `${(d.rain["1h"] * 100).toFixed(0)}mm/h` : null,
-            pop: `${(d.pop * 100).toFixed(0)}%`,
-            weather: d.weather.map((el) => ({
-                ...el,
-                iconSrc: getWeatherIconSrc(el.icon),
-            })),
-        }));
+        return weatherData.hourly
+            .filter((_, i) => i % 2 === 0)
+            .map((d) => ({
+                ...d,
+                date: format(new Date(d.dt * 1_000), "HH:mm"),
+                temp: d.temp.toFixed(1),
+                feels_like: d.feels_like.toFixed(1),
+                rain: d?.rain ? `${(d.rain["1h"] * 100).toFixed(0)}mm/h` : null,
+                pop: `${(d.pop * 100).toFixed(0)}%`,
+                weather: d.weather.map((el) => ({
+                    ...el,
+                    iconSrc: getWeatherIconSrc(el.icon),
+                })),
+            }));
     }, [weatherData]);
 
     useEffect(() => {
@@ -44,30 +77,44 @@ const HourlyMain = () => {
     }, [weatherData, cardsContainer]);
 
     return (
+        <Stack
+            ref={setCardsContainer}
+            id="hourly-cards-container"
+            gap={2}
+            direction="row"
+            alignItems="center"
+            sx={{ overflowX: "scroll", pb: 2.5, px: 2, width: "calc(100% - 1rem)" }}
+        >
+            {isLoading
+                ? Array.from({ length: 24 }).map((_, index) => <LoadingCard key={index} />)
+                : hourlyData.map((data) => <HourlyCard key={data.dt} data={data} />)}
+        </Stack>
+    );
+};
+
+const CardsContainer = ({ children }: { children: React.ReactNode }) => {
+    const settings = useAtomValue(userSettingsAtom);
+    return <Collapse in={settings.hourly.cards}>{children}</Collapse>;
+};
+
+const GraphContainer = ({ children }: { children: React.ReactNode }) => {
+    const settings = useAtomValue(userSettingsAtom);
+    return <Collapse in={settings.hourly.graph}>{children}</Collapse>;
+};
+
+const HourlyMain = () => {
+    return (
         <Box>
-            <Stack direction="row" mb={2} ml={2} gap={2}>
+            <Stack direction="row" mb={4} ml={2} justifyContent="space-between" alignItems="center">
                 <Typography variant="h5">Hourly Forecast</Typography>
+                <UserSettings />
             </Stack>
-
-            <Stack
-                ref={setCardsContainer}
-                id="hourly-cards-container"
-                gap={2}
-                direction="row"
-                alignItems="center"
-                sx={{
-                    overflowX: "scroll",
-                    pb: 2.5,
-                    px: 2,
-                    width: "calc(var(--weather-forecast-container-width) - 1rem)",
-                }}
-            >
-                {hourlyData.map((data) => (
-                    <HourlyCard key={data.dt} data={data} />
-                ))}
-            </Stack>
-
-            <HourlyChart />
+            <CardsContainer>
+                <HourlyCardsContainer />
+            </CardsContainer>
+            <GraphContainer>
+                <HourlyChart />
+            </GraphContainer>
         </Box>
     );
 };

@@ -10,7 +10,12 @@ import {
 } from "@mui/material";
 import { useAtomValue, useSetAtom } from "jotai";
 
-import { errorWeatherData, isLoadingWeatherDataAtom, weatherDataAtom } from "../../atoms";
+import {
+    errorWeatherData,
+    isLoadingWeatherDataAtom,
+    weatherDataAtom,
+    weatherFetchInfoAtom,
+} from "../../atoms";
 import useCityInfo from "./hooks/useCityInfo";
 import CurrentMain from "./Current";
 import DailyMain from "./Daily";
@@ -22,36 +27,28 @@ const CityForecastContainer = styled(Stack)<StackProps>(({ theme }) => ({
     position: "relative",
 }));
 
-type LoadingContainerProps = BoxProps & {
-    isLoading: boolean;
-};
-
 const LoadingContainer = styled(Box, {
-    shouldForwardProp: (prop) => prop !== "isLoading",
-})<LoadingContainerProps>(({ theme, isLoading }) => ({
+    shouldForwardProp: (prop) => prop !== "isLoading" && prop !== "top",
+})<BoxProps & { isLoading: boolean; top?: number }>(({ theme, isLoading, top }) => ({
     position: "absolute",
-    top: 0,
+    top: top,
     left: 0,
     width: "100%",
-    height: "100%",
+    height: "var(--weather-forecast-routes-container-height)",
     backgroundColor: theme.alpha(theme.palette.grey[200], 0.4),
     zIndex: theme.zIndex.drawer + 1,
     display: isLoading ? "flex" : "none",
     justifyContent: "center",
     alignItems: "center",
-
-    ...(isLoading && {
-        pointerEvents: "none",
-        cursor: "progress",
-    }),
 }));
 
 const LoadingWeatherData = () => {
     const isLoading = useAtomValue(isLoadingWeatherDataAtom);
+    const container = document.getElementById("forecast-routes-container");
 
     return (
-        <LoadingContainer isLoading={isLoading}>
-            <CircularProgress color="inherit" size={60} thickness={3} />
+        <LoadingContainer isLoading={isLoading} top={container?.scrollTop}>
+            <CircularProgress size={64} thickness={3} />
         </LoadingContainer>
     );
 };
@@ -61,11 +58,14 @@ const CityForecastMain = () => {
     const setIsLoading = useSetAtom(isLoadingWeatherDataAtom);
     const setError = useSetAtom(errorWeatherData);
 
+    const setWeatherFetchInfo = useSetAtom(weatherFetchInfoAtom);
+
     const cityInfo = useCityInfo();
 
     useEffect(() => {
         if (cityInfo) {
             setIsLoading(true);
+            setWeatherFetchInfo((prevInfo) => ({ ...prevInfo, error: false, isLoading: true }));
 
             Promise.all([
                 fetch(`/api/v1/weather-forecast?lat=${cityInfo.lat}&lng=${cityInfo.lng}`),
@@ -77,6 +77,7 @@ const CityForecastMain = () => {
                     }
 
                     const data = (await res.json()) as { results: WeatherDataType };
+                    setWeatherFetchInfo({ data: data.results, error: false, isLoading: false });
 
                     setError(false);
                     setWeatherData(data.results);
@@ -86,12 +87,13 @@ const CityForecastMain = () => {
 
                     setError(true);
                     setWeatherData(null);
+                    setWeatherFetchInfo({ data: null, error: true, isLoading: false });
                 })
                 .finally(() => {
                     setIsLoading(false);
                 });
         }
-    }, [cityInfo, setError, setIsLoading, setWeatherData]);
+    }, [cityInfo, setError, setIsLoading, setWeatherData, setWeatherFetchInfo]);
 
     return (
         <CityForecastContainer>

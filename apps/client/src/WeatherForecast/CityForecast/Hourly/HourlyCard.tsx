@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { Box, Button, Stack, styled, Tooltip, Typography } from "@mui/material";
+import { Box, Button, Stack, styled, Tooltip, Typography, type StackProps } from "@mui/material";
 import InfoOutlineIcon from "@mui/icons-material/InfoOutline";
 
 import type { HourlyWeatherType, WeatherType } from "../../../types/weatherdata";
@@ -17,17 +17,23 @@ const DetailsContainer = styled(Box)(({ theme }) => ({
     },
 }));
 
-const HourlyCardContainer = styled(Stack)(({ theme }) => ({
+type HourlyCardContainerType = StackProps & {
+    isLoading?: boolean;
+};
+
+export const HourlyCardContainer = styled(Stack, {
+    shouldForwardProp: (prop) => prop !== "isLoading",
+})<HourlyCardContainerType>(({ theme, isLoading }) => ({
     paddingInline: theme.spacing(2),
     paddingBlock: theme.spacing(1),
     borderRadius: theme.spacing(2),
-    minWidth: "10.2rem",
-    border: `1px solid ${theme.palette.primary.light}`,
+    minWidth: "9.2rem",
+    border: `1px solid ${isLoading ? theme.palette.action.disabled : theme.palette.primary.light}`,
     boxShadow: theme.shadows[1],
     transition: theme.transitions.create(["border-color"]),
 
     "&:hover": {
-        borderColor: theme.palette.primary.dark,
+        borderColor: isLoading ? theme.palette.action.disabled : theme.palette.primary.dark,
     },
 }));
 
@@ -92,6 +98,7 @@ const HourlyCard = ({ data }: HourlyCardType) => {
                 <Typography variant="body1" fontWeight="bold" textAlign="center">
                     {data.date}
                 </Typography>
+
                 <Stack direction="row" alignItems="center" gap={1}>
                     <Typography>{`${data.temp} \u00B0C`}</Typography>
                 </Stack>
@@ -106,12 +113,6 @@ const HourlyCard = ({ data }: HourlyCardType) => {
                         src={data.weather[0].iconSrc}
                         alt={data.weather[0].description}
                     />
-                    <Typography sx={{ textTransform: "capitalize" }}>
-                        {data.weather[0].description}
-                        <Typography component="span" variant="body2" ml={0.4}>
-                            {data?.rain ? `(${data.pop})` : null}
-                        </Typography>
-                    </Typography>
                 </Stack>
             </Stack>
 
@@ -130,15 +131,17 @@ const HourlyCard = ({ data }: HourlyCardType) => {
                     </Stack>
                 }
             >
-                <Button
-                    id={`details-button-${data.dt}`}
-                    size="small"
-                    variant="outlined"
-                    startIcon={<InfoOutlineIcon fontSize="small" />}
-                    onClick={handleClick}
-                >
-                    Details
-                </Button>
+                <Stack direction="row" justifyContent="center" alignItems="center">
+                    <Button
+                        id={`details-button-${data.dt}`}
+                        size="small"
+                        variant="outlined"
+                        startIcon={<InfoOutlineIcon fontSize="small" />}
+                        onClick={handleClick}
+                    >
+                        Details
+                    </Button>
+                </Stack>
             </Tooltip>
         </HourlyCardContainer>
     );

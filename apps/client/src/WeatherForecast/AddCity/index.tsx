@@ -5,7 +5,7 @@ import CitySearch from "./CitySearch";
 
 const AddCityMain = () => {
     return (
-        <Stack>
+        <Stack sx={{ height: "var(--weather-forecast-routes-container-height)" }}>
             <Box id="city-search-container" sx={{ p: 2 }}>
                 <CitySearch />
             </Box>

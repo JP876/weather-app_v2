@@ -94,7 +94,7 @@ const DailyList = () => {
     }
 
     return (
-        <Stack>
+        <Stack px={2}>
             {dailyData.map((d) => (
                 <DailyItemContainer key={d.dt}>
                     <Typography>{d.day}</Typography>

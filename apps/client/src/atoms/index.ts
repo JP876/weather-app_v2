@@ -9,6 +9,11 @@ export const filteredCitiesAtom = atom<CityType[] | null>(null);
 export const searchValue = atom("");
 
 export const favouriteCitiesAtom = atomWithStorage<CityType[]>("favouriteCities", []);
+export const weatherFetchInfoAtom = atom<{
+    data: WeatherDataType | null;
+    isLoading: boolean;
+    error: boolean;
+}>({ data: null, isLoading: false, error: false });
 
 export const weatherDataAtom = atom<WeatherDataType | null>(null);
 export const isLoadingWeatherDataAtom = atom(false);

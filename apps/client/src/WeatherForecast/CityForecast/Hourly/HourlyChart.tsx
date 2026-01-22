@@ -1,12 +1,14 @@
 import { useMemo } from "react";
 import { useAtomValue } from "jotai";
 import { format } from "date-fns";
-import { LineChart } from "@mui/x-charts";
+import { BarChart } from "@mui/x-charts";
 
-import { weatherDataAtom } from "../../../atoms";
+import { isLoadingWeatherDataAtom, weatherDataAtom } from "../../../atoms";
+import { Box, Skeleton } from "@mui/material";
 
 const HourlyChart = () => {
     const weatherData = useAtomValue(weatherDataAtom);
+    const isLoading = useAtomValue(isLoadingWeatherDataAtom);
 
     const dataset = useMemo(() => {
         if (!weatherData) return [];
@@ -17,10 +19,18 @@ const HourlyChart = () => {
             });
     }, [weatherData]);
 
+    if (isLoading) {
+        return (
+            <Box px={2}>
+                <Skeleton height={280} />
+            </Box>
+        );
+    }
+
     if (!weatherData) return null;
 
     return (
-        <LineChart
+        <BarChart
             height={280}
             dataset={dataset}
             xAxis={[

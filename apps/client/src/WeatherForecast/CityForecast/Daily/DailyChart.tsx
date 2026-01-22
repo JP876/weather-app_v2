@@ -1,10 +1,10 @@
 import { memo, useMemo } from "react";
 import { useAtomValue } from "jotai";
+import { Box, Skeleton } from "@mui/material";
 import { BarChart } from "@mui/x-charts";
 import { format } from "date-fns";
 
 import { isLoadingWeatherDataAtom, weatherDataAtom } from "../../../atoms";
-import { Skeleton } from "@mui/material";
 
 const DailyChart = () => {
     const weatherData = useAtomValue(weatherDataAtom);
@@ -19,7 +19,11 @@ const DailyChart = () => {
     }, [weatherData]);
 
     if (isLoading) {
-        return <Skeleton height={310} />;
+        return (
+            <Box px={2}>
+                <Skeleton height={280} />
+            </Box>
+        );
     }
 
     if (!weatherData) return null;
