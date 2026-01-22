@@ -1,46 +1,29 @@
 import { memo } from "react";
-import { FormControlLabel, Stack, Switch } from "@mui/material";
-import { useAtom, useAtomValue } from "jotai";
+import { Stack } from "@mui/material";
+import { useAtomValue } from "jotai";
 
 import { userSettingsAtom, weatherFetchInfoAtom } from "../../../atoms";
+import UserSettingSwitch from "../../../components/UserSettingSwitch";
 
 const UserSettings = () => {
-    const [settings, setSettings] = useAtom(userSettingsAtom);
+    const settings = useAtomValue(userSettingsAtom);
     const { isLoading, error } = useAtomValue(weatherFetchInfoAtom);
-
-    const handleOnChange = (event: React.ChangeEvent<HTMLInputElement>, checked: boolean) => {
-        const type = event.target.title as "cards" | "graph";
-        setSettings((prevValue) => ({
-            ...(prevValue || {}),
-            hourly: { ...(prevValue?.hourly || {}), [type]: checked },
-        }));
-    };
 
     return (
         <Stack direction="row" alignItems="center" gap={1}>
-            <FormControlLabel
-                control={
-                    <Switch
-                        size="small"
-                        checked={!!settings?.hourly?.cards}
-                        onChange={handleOnChange}
-                        slotProps={{ input: { title: "cards" } }}
-                        disabled={isLoading || !!error}
-                    />
-                }
+            <UserSettingSwitch
+                checked={!!settings?.hourly?.cards}
                 label={settings?.hourly?.cards ? "Hide cards" : "Show cards"}
+                title="cards"
+                settingKey="hourly"
+                disabled={isLoading || !!error}
             />
-            <FormControlLabel
-                control={
-                    <Switch
-                        size="small"
-                        checked={!!settings?.hourly?.graph}
-                        onChange={handleOnChange}
-                        slotProps={{ input: { title: "graph" } }}
-                        disabled={isLoading || !!error}
-                    />
-                }
+            <UserSettingSwitch
+                checked={!!settings?.hourly?.graph}
                 label={settings?.hourly?.graph ? "Hide graph" : "Show graph"}
+                title="graph"
+                settingKey="hourly"
+                disabled={isLoading || !!error}
             />
         </Stack>
     );

@@ -1,46 +1,29 @@
 import { memo } from "react";
-import { FormControlLabel, Stack, Switch } from "@mui/material";
-import { useAtom, useAtomValue } from "jotai";
+import { Stack } from "@mui/material";
+import { useAtomValue } from "jotai";
 
 import { userSettingsAtom, weatherFetchInfoAtom } from "../../../atoms";
+import UserSettingSwitch from "../../../components/UserSettingSwitch";
 
 const UserSettings = () => {
-    const [settings, setSettings] = useAtom(userSettingsAtom);
+    const settings = useAtomValue(userSettingsAtom);
     const { isLoading, error } = useAtomValue(weatherFetchInfoAtom);
-
-    const handleOnChange = (event: React.ChangeEvent<HTMLInputElement>, checked: boolean) => {
-        const type = event.target.title as "list" | "graph";
-        setSettings((prevValue) => ({
-            ...(prevValue || {}),
-            daily: { ...(prevValue?.daily || {}), [type]: checked },
-        }));
-    };
 
     return (
         <Stack direction="row" alignItems="center" gap={1}>
-            <FormControlLabel
-                control={
-                    <Switch
-                        size="small"
-                        checked={settings.daily.list}
-                        onChange={handleOnChange}
-                        slotProps={{ input: { title: "list" } }}
-                        disabled={isLoading || !!error}
-                    />
-                }
-                label={settings.daily.list ? "Hide list" : "Show list"}
+            <UserSettingSwitch
+                checked={!!settings?.daily?.list}
+                label={settings?.daily?.list ? "Hide list" : "Show list"}
+                title="list"
+                settingKey="daily"
+                disabled={isLoading || !!error}
             />
-            <FormControlLabel
-                control={
-                    <Switch
-                        size="small"
-                        checked={settings.daily.graph}
-                        onChange={handleOnChange}
-                        slotProps={{ input: { title: "graph" } }}
-                        disabled={isLoading || !!error}
-                    />
-                }
-                label={settings.daily.graph ? "Hide graph" : "Show graph"}
+            <UserSettingSwitch
+                checked={!!settings?.daily?.graph}
+                label={settings?.daily?.graph ? "Hide graph" : "Show graph"}
+                title="graph"
+                settingKey="daily"
+                disabled={isLoading || !!error}
             />
         </Stack>
     );
