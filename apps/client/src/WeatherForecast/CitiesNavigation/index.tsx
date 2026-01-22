@@ -61,7 +61,7 @@ const CitiesNavigation = () => {
     const [path, navigate] = useLocation();
 
     const handleChange = (_: React.SyntheticEvent, newValue: string) => {
-        navigate(newValue);
+        navigate(newValue, { transition: true });
     };
 
     return (

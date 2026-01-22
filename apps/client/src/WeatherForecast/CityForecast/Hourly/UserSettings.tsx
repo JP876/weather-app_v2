@@ -6,7 +6,7 @@ import { userSettingsAtom, weatherFetchInfoAtom } from "../../../atoms";
 
 const UserSettings = () => {
     const [settings, setSettings] = useAtom(userSettingsAtom);
-    const { isLoading } = useAtomValue(weatherFetchInfoAtom);
+    const { isLoading, error } = useAtomValue(weatherFetchInfoAtom);
 
     const handleOnChange = (event: React.ChangeEvent<HTMLInputElement>, checked: boolean) => {
         const type = event.target.title as "cards" | "graph";
@@ -25,7 +25,7 @@ const UserSettings = () => {
                         checked={!!settings?.hourly?.cards}
                         onChange={handleOnChange}
                         slotProps={{ input: { title: "cards" } }}
-                        disabled={isLoading}
+                        disabled={isLoading || !!error}
                     />
                 }
                 label={settings?.hourly?.cards ? "Hide cards" : "Show cards"}
@@ -37,7 +37,7 @@ const UserSettings = () => {
                         checked={!!settings?.hourly?.graph}
                         onChange={handleOnChange}
                         slotProps={{ input: { title: "graph" } }}
-                        disabled={isLoading}
+                        disabled={isLoading || !!error}
                     />
                 }
                 label={settings?.hourly?.graph ? "Hide graph" : "Show graph"}

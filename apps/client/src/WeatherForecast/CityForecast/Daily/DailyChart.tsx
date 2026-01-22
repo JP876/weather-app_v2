@@ -7,7 +7,7 @@ import { format } from "date-fns";
 import { weatherFetchInfoAtom } from "../../../atoms";
 
 const DailyChart = () => {
-    const { isLoading, data: weatherData } = useAtomValue(weatherFetchInfoAtom);
+    const { isLoading, data: weatherData, error } = useAtomValue(weatherFetchInfoAtom);
 
     const dataset = useMemo(() => {
         if (!weatherData) return [];
@@ -17,7 +17,7 @@ const DailyChart = () => {
         });
     }, [weatherData]);
 
-    if (isLoading) {
+    if (isLoading || !!error) {
         return (
             <Box px={2}>
                 <Skeleton height={280} />

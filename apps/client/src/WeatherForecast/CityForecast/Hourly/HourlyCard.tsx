@@ -19,23 +19,31 @@ const DetailsContainer = styled(Box)(({ theme }) => ({
 
 type HourlyCardContainerType = StackProps & {
     isLoading?: boolean;
+    error?: boolean;
 };
 
 export const HourlyCardContainer = styled(Stack, {
-    shouldForwardProp: (prop) => prop !== "isLoading",
-})<HourlyCardContainerType>(({ theme, isLoading }) => ({
-    paddingInline: theme.spacing(2),
-    paddingBlock: theme.spacing(1),
-    borderRadius: theme.spacing(2),
-    minWidth: "9.2rem",
-    border: `1px solid ${isLoading ? theme.palette.action.disabled : theme.palette.primary.light}`,
-    boxShadow: theme.shadows[1],
-    transition: theme.transitions.create(["border-color"]),
+    shouldForwardProp: (prop) => prop !== "isLoading" && prop !== "error",
+})<HourlyCardContainerType>(({ theme, isLoading, error }) => {
+    const borderColor = (() => {
+        if (isLoading || error) return theme.palette.action.disabled;
+        return theme.palette.primary.light;
+    })();
 
-    "&:hover": {
-        borderColor: isLoading ? theme.palette.action.disabled : theme.palette.primary.dark,
-    },
-}));
+    return {
+        paddingInline: theme.spacing(2),
+        paddingBlock: theme.spacing(1),
+        borderRadius: theme.spacing(2),
+        minWidth: "9.2rem",
+        border: `1px solid ${borderColor}`,
+        boxShadow: theme.shadows[1],
+        transition: theme.transitions.create(["border-color"]),
+
+        "&:hover": {
+            borderColor: isLoading ? theme.palette.action.disabled : theme.palette.primary.dark,
+        },
+    };
+});
 
 type HourlyCardType = {
     data: Omit<HourlyWeatherType, "feels_like" | "temp" | "weather" | "rain" | "pop"> & {

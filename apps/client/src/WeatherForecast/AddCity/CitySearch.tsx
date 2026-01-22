@@ -11,7 +11,7 @@ const ClearSearchValue = ({ value }: { value: string }) => {
     const setValue = useSetAtom(searchValueAtom);
     const setFilteredCities = useSetAtom(filteredCitiesAtom);
 
-    const { data: cities, isLoading } = useAtomValue(citiesFetchInfoAtom);
+    const { data: cities, isLoading, error } = useAtomValue(citiesFetchInfoAtom);
 
     const handleClear = () => {
         setValue("");
@@ -19,7 +19,11 @@ const ClearSearchValue = ({ value }: { value: string }) => {
     };
 
     return (
-        <IconButton size="small" onClick={handleClear} disabled={isLoading || value === ""}>
+        <IconButton
+            size="small"
+            onClick={handleClear}
+            disabled={isLoading || !!error || value === ""}
+        >
             <ClearIcon />
         </IconButton>
     );
@@ -29,7 +33,7 @@ const CitySearch = () => {
     const [value, setValue] = useAtom(searchValueAtom);
 
     const setFilteredCities = useSetAtom(filteredCitiesAtom);
-    const { data: cities, isLoading } = useAtomValue(citiesFetchInfoAtom);
+    const { data: cities, isLoading, error } = useAtomValue(citiesFetchInfoAtom);
 
     const fuse = useMemo(() => {
         return new Fuse<CityType>(cities || [], {
@@ -63,7 +67,7 @@ const CitySearch = () => {
             fullWidth
             value={value}
             onChange={handleOnChange}
-            disabled={isLoading}
+            disabled={isLoading || !!error}
             slotProps={{
                 input: {
                     endAdornment: (

@@ -1,13 +1,5 @@
 import { useEffect } from "react";
-import {
-    Box,
-    CircularProgress,
-    Divider,
-    Stack,
-    styled,
-    type BoxProps,
-    type StackProps,
-} from "@mui/material";
+import { Divider, Stack, styled, type StackProps } from "@mui/material";
 import { useAtomValue, useSetAtom } from "jotai";
 
 import { weatherFetchInfoAtom } from "../../atoms";
@@ -16,36 +8,16 @@ import CurrentMain from "./Current";
 import DailyMain from "./Daily";
 import type { WeatherDataType } from "../../types/weatherdata";
 import HourlyMain from "./Hourly";
+import FeadbackMain from "../../components/Feedback";
 
 const CityForecastContainer = styled(Stack)<StackProps>(({ theme }) => ({
     gap: theme.spacing(2),
     position: "relative",
 }));
 
-const LoadingContainer = styled(Box, {
-    shouldForwardProp: (prop) => prop !== "isLoading" && prop !== "top",
-})<BoxProps & { isLoading: boolean; top?: number }>(({ theme, isLoading, top }) => ({
-    position: "absolute",
-    top: top,
-    left: 0,
-    width: "100%",
-    height: "var(--weather-forecast-routes-container-height)",
-    backgroundColor: theme.alpha(theme.palette.grey[200], 0.4),
-    zIndex: theme.zIndex.drawer + 1,
-    display: isLoading ? "flex" : "none",
-    justifyContent: "center",
-    alignItems: "center",
-}));
-
-const LoadingWeatherData = () => {
-    const { isLoading } = useAtomValue(weatherFetchInfoAtom);
-    const container = document.getElementById("forecast-routes-container");
-
-    return (
-        <LoadingContainer isLoading={isLoading} top={container?.scrollTop}>
-            <CircularProgress size={64} thickness={3} />
-        </LoadingContainer>
-    );
+const FetchFeadbackMain = () => {
+    const { isLoading, error } = useAtomValue(weatherFetchInfoAtom);
+    return <FeadbackMain isLoading={isLoading} error={!!error} />;
 };
 
 const CityForecastMain = () => {
@@ -68,16 +40,20 @@ const CityForecastMain = () => {
                     const data = (await res.json()) as { results: WeatherDataType };
                     setWeatherFetchInfo({ data: data.results, error: false, isLoading: false });
                 })
-                .catch((error) => {
-                    console.error(error);
-                    setWeatherFetchInfo({ data: null, error: true, isLoading: false });
+                .catch((err: unknown) => {
+                    const error = err as Error;
+                    setWeatherFetchInfo({
+                        data: null,
+                        error: { msg: error.message },
+                        isLoading: false,
+                    });
                 });
         }
     }, [cityInfo, setWeatherFetchInfo]);
 
     return (
         <CityForecastContainer>
-            <LoadingWeatherData />
+            <FetchFeadbackMain />
             <CurrentMain />
             <Divider />
             <HourlyMain />

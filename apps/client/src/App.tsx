@@ -3,8 +3,8 @@ import { Box } from "@mui/material";
 import { useSetAtom } from "jotai";
 
 import { citiesFetchInfoAtom, filteredCitiesAtom } from "./atoms";
-import type { CityType } from "./types";
 import WeatherForecast from "./WeatherForecast";
+import type { CityType } from "./types";
 
 const App = () => {
     const setCitiesFetchInfo = useSetAtom(citiesFetchInfoAtom);
@@ -13,8 +13,8 @@ const App = () => {
     useEffect(() => {
         setCitiesFetchInfo((prevValue) => ({ ...prevValue, isLoading: true, error: false }));
 
-        fetch("/api/v1/worldcities")
-            .then(async (res) => {
+        Promise.all([fetch("/api/v1/worldcities"), new Promise((res) => setTimeout(res, 1_000))])
+            .then(async ([res]) => {
                 if (!res.ok) {
                     throw new Error("Failed to fetch cities data");
                 }
@@ -25,8 +25,8 @@ const App = () => {
                 setFilteredCities(data?.results);
             })
             .catch((err) => {
-                console.error(err);
-                setCitiesFetchInfo({ data: [], isLoading: false, error: false });
+                const error = err as Error;
+                setCitiesFetchInfo({ data: [], isLoading: false, error: { msg: error.message } });
                 setFilteredCities([]);
             });
     }, [setCitiesFetchInfo, setFilteredCities]);

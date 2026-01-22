@@ -10,9 +10,9 @@ import HourlyCard, { HourlyCardContainer } from "./HourlyCard";
 import HourlyChart from "./HourlyChart";
 import UserSettings from "./UserSettings";
 
-const LoadingCard = () => {
+const SkeletonCard = ({ isLoading, error }: { isLoading: boolean; error: boolean }) => {
     return (
-        <HourlyCardContainer isLoading>
+        <HourlyCardContainer isLoading={isLoading} error={error}>
             <Stack direction="row" alignItems="center" justifyContent="space-between">
                 <Skeleton width={42} height={24} />
                 <Skeleton width={42} height={24} />
@@ -42,7 +42,7 @@ const HourlyCardsContainer = () => {
     const justMounted = useRef(true);
     const [cardsContainer, setCardsContainer] = useState<HTMLDivElement | null>(null);
 
-    const { isLoading, data: weatherData } = useAtomValue(weatherFetchInfoAtom);
+    const { isLoading, data: weatherData, error } = useAtomValue(weatherFetchInfoAtom);
 
     const hourlyData = useMemo(() => {
         if (!Array.isArray(weatherData?.hourly)) return [];
@@ -84,8 +84,10 @@ const HourlyCardsContainer = () => {
             alignItems="center"
             sx={{ overflowX: "scroll", pb: 2.5, px: 2, width: "calc(100% - 1rem)" }}
         >
-            {isLoading
-                ? Array.from({ length: 24 }).map((_, index) => <LoadingCard key={index} />)
+            {isLoading || !!error
+                ? Array.from({ length: 24 }).map((_, index) => (
+                      <SkeletonCard key={index} isLoading={isLoading} error={!!error} />
+                  ))
                 : hourlyData.map((data) => <HourlyCard key={data.dt} data={data} />)}
         </Stack>
     );

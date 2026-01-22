@@ -4,7 +4,7 @@ import { useAtomValue } from "jotai";
 
 import CitiesNavigation from "./CitiesNavigation";
 import RouterMain from "./Router";
-import { weatherFetchInfoAtom } from "../atoms";
+import { citiesFetchInfoAtom, weatherFetchInfoAtom } from "../atoms";
 
 const MAIN_MARGIN = 4;
 
@@ -51,9 +51,19 @@ const WeatherForecastHeight = styled(Box)<BoxProps>(({ theme }) => ({
 }));
 
 const RoutesContainer = ({ children }: { children: React.ReactNode }) => {
-    const { isLoading } = useAtomValue(weatherFetchInfoAtom);
+    const weatherFetchInfo = useAtomValue(weatherFetchInfoAtom);
+    const citiesFetchInfo = useAtomValue(citiesFetchInfoAtom);
+
     return (
-        <WeatherForecastRoutesContainer id="forecast-routes-container" isLoading={isLoading}>
+        <WeatherForecastRoutesContainer
+            id="forecast-routes-container"
+            isLoading={
+                weatherFetchInfo.isLoading ||
+                !!weatherFetchInfo.error ||
+                citiesFetchInfo.isLoading ||
+                !!citiesFetchInfo.error
+            }
+        >
             {children}
         </WeatherForecastRoutesContainer>
     );

@@ -28,12 +28,12 @@ const LocationInfo = () => {
 };
 
 const CurrentWeatherDetailsContainer = ({ label, value }: { label: string; value?: string }) => {
-    const { isLoading } = useAtomValue(weatherFetchInfoAtom);
+    const { isLoading, error } = useAtomValue(weatherFetchInfoAtom);
 
     return (
         <Stack>
             <Typography variant="subtitle1">{label}</Typography>
-            {isLoading ? (
+            {isLoading || !!error ? (
                 <Skeleton height={32} width={100} />
             ) : (
                 <Typography variant="h6">{value}</Typography>
@@ -43,9 +43,9 @@ const CurrentWeatherDetailsContainer = ({ label, value }: { label: string; value
 };
 
 const CurrentTemperature = ({ temp, iconSrc, iconAlt }: CurrentTemperatureProps) => {
-    const { isLoading } = useAtomValue(weatherFetchInfoAtom);
+    const { isLoading, error } = useAtomValue(weatherFetchInfoAtom);
 
-    if (isLoading) {
+    if (isLoading || !!error) {
         return <Skeleton height={100} width={170} />;
     }
 

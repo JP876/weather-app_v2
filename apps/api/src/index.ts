@@ -30,7 +30,7 @@ app.get("/api/v1/worldcities", (req, res) => {
             res.json({ results });
         })
         .on("error", () => {
-            res.send("Failed to parse world cities data").status(500);
+            res.status(500).send("Failed to parse world cities data");
         });
 });
 
@@ -41,8 +41,10 @@ app.get("/api/v1/weather-forecast", async (req, res) => {
     try {
         if (!req.query?.lat || !req.query?.lng) {
             return res
-                .send("You must include city coordinates in the request, formatted as lat and lng.")
-                .status(404);
+                .status(404)
+                .send(
+                    "You must include city coordinates in the request, formatted as lat and lng.",
+                );
         }
 
         const { lat, lng } = req.query;
@@ -54,7 +56,7 @@ app.get("/api/v1/weather-forecast", async (req, res) => {
         const response = await fetch(`${URL}?lat=${lat}&lon=${lng}&appid=${API_KEY}&units=metric`);
 
         if (!response.ok) {
-            return res.send("Failed to fetch weather forecast").status(404);
+            return res.status(404).send("Failed to fetch weather forecast");
         }
 
         const data = await response.json();
@@ -62,7 +64,7 @@ app.get("/api/v1/weather-forecast", async (req, res) => {
 
         res.json({ results: data });
     } catch (error) {
-        res.send("Failed to fetch weather forecast data").status(500);
+        res.status(500).send("Failed to fetch weather forecast data");
     }
 });
 

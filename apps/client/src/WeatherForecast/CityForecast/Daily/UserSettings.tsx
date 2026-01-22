@@ -6,7 +6,7 @@ import { userSettingsAtom, weatherFetchInfoAtom } from "../../../atoms";
 
 const UserSettings = () => {
     const [settings, setSettings] = useAtom(userSettingsAtom);
-    const { isLoading } = useAtomValue(weatherFetchInfoAtom);
+    const { isLoading, error } = useAtomValue(weatherFetchInfoAtom);
 
     const handleOnChange = (event: React.ChangeEvent<HTMLInputElement>, checked: boolean) => {
         const type = event.target.title as "list" | "graph";
@@ -25,7 +25,7 @@ const UserSettings = () => {
                         checked={settings.daily.list}
                         onChange={handleOnChange}
                         slotProps={{ input: { title: "list" } }}
-                        disabled={isLoading}
+                        disabled={isLoading || !!error}
                     />
                 }
                 label={settings.daily.list ? "Hide list" : "Show list"}
@@ -37,7 +37,7 @@ const UserSettings = () => {
                         checked={settings.daily.graph}
                         onChange={handleOnChange}
                         slotProps={{ input: { title: "graph" } }}
-                        disabled={isLoading}
+                        disabled={isLoading || !!error}
                     />
                 }
                 label={settings.daily.graph ? "Hide graph" : "Show graph"}

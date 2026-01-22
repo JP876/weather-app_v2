@@ -1,20 +1,13 @@
 import { useCallback } from "react";
 import { useAtom, useAtomValue } from "jotai";
-import {
-    Box,
-    CircularProgress,
-    Stack,
-    styled,
-    Typography,
-    type BoxProps,
-    type StackProps,
-} from "@mui/material";
+import { Box, Stack, styled, Typography, type BoxProps, type StackProps } from "@mui/material";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import ClearIcon from "@mui/icons-material/Clear";
 import { AutoSizer, List, type ListRowProps } from "react-virtualized";
 
-import { favouriteCitiesAtom, filteredCitiesAtom } from "../../atoms";
+import { citiesFetchInfoAtom, favouriteCitiesAtom, filteredCitiesAtom } from "../../atoms";
 import useCityListHeight from "./hooks/useCityListHeight";
+import CityListSkeleton from "./CityListSkeleton";
 
 type CityListItemType = {
     index: number;
@@ -24,7 +17,7 @@ type CityListItemContainerType = StackProps & {
     isFavourite: boolean;
 };
 
-const CityListItemContainer = styled(Stack, {
+export const CityListItemContainer = styled(Stack, {
     shouldForwardProp: (prop) => prop !== "isFavourite",
 })<CityListItemContainerType>(({ theme, isFavourite }) => ({
     paddingLeft: theme.spacing(2),
@@ -112,7 +105,9 @@ const listStyle = {
 };
 
 const CityList = () => {
+    const { isLoading, error } = useAtomValue(citiesFetchInfoAtom);
     const filteredCities = useAtomValue(filteredCitiesAtom);
+
     const { height } = useCityListHeight();
 
     const rowRenderer = useCallback(({ index, key, style }: ListRowProps) => {
@@ -123,12 +118,8 @@ const CityList = () => {
         );
     }, []);
 
-    if (!Array.isArray(filteredCities)) {
-        return (
-            <Stack direction="row" justifyContent="center" alignItems="center" sx={{ mt: 6 }}>
-                <CircularProgress size={60} thickness={3.2} />
-            </Stack>
-        );
+    if (isLoading || !!error || filteredCities === null) {
+        return <CityListSkeleton />;
     }
 
     return (
