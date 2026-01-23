@@ -13,6 +13,7 @@ import FeadbackMain from "../../components/Feedback";
 const CityForecastContainer = styled(Stack)<StackProps>(({ theme }) => ({
     gap: theme.spacing(2),
     position: "relative",
+    paddingInline: theme.spacing(2),
 }));
 
 const FetchFeadbackMain = () => {

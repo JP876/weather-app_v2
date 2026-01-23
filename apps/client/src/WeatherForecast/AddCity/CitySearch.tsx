@@ -14,6 +14,11 @@ const ClearSearchValue = ({ value }: { value: string }) => {
     const { data: cities, isLoading, error } = useAtomValue(citiesFetchInfoAtom);
 
     const handleClear = () => {
+        const listContainer = [...document.getElementsByClassName("ReactVirtualized__Grid")]?.[0];
+        if (listContainer) {
+            listContainer.scrollTo({ top: 0, left: 0, behavior: "smooth" });
+        }
+
         setValue("");
         setFilteredCities(cities);
     };

@@ -82,7 +82,7 @@ const HourlyCardsContainer = () => {
             gap={2}
             direction="row"
             alignItems="center"
-            sx={{ overflowX: "scroll", pb: 2.5, px: 2, width: "calc(100% - 1rem)" }}
+            sx={{ overflowX: "scroll", pb: 2.5 }}
         >
             {isLoading || !!error
                 ? Array.from({ length: 24 }).map((_, index) => (
@@ -95,18 +95,18 @@ const HourlyCardsContainer = () => {
 
 const CardsContainer = ({ children }: { children: React.ReactNode }) => {
     const settings = useAtomValue(userSettingsAtom);
-    return <Collapse in={settings.hourly.cards}>{children}</Collapse>;
+    return <Collapse in={settings?.hourly?.cards}>{children}</Collapse>;
 };
 
 const GraphContainer = ({ children }: { children: React.ReactNode }) => {
     const settings = useAtomValue(userSettingsAtom);
-    return <Collapse in={settings.hourly.graph}>{children}</Collapse>;
+    return <Collapse in={settings?.hourly?.graph}>{children}</Collapse>;
 };
 
 const HourlyMain = () => {
     return (
         <Box>
-            <Stack direction="row" mb={4} ml={2} justifyContent="space-between" alignItems="center">
+            <Stack direction="row" mb={4} justifyContent="space-between" alignItems="center">
                 <Typography variant="h5">Hourly Forecast</Typography>
                 <UserSettings />
             </Stack>

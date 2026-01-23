@@ -18,7 +18,7 @@ const AddCityMain = () => {
             <Box id="city-search-container" sx={{ p: 2 }}>
                 <CitySearch />
             </Box>
-            <Divider />
+            <Divider sx={{ mx: 2 }} />
             <Box sx={{ overflow: "hidden" }}>
                 <CityList />
             </Box>

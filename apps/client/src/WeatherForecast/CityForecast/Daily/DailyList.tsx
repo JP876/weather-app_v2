@@ -2,6 +2,7 @@ import { memo, useMemo } from "react";
 import { Box, Skeleton, Stack, styled, Tooltip, Typography } from "@mui/material";
 import InfoOutlineIcon from "@mui/icons-material/InfoOutline";
 import WaterDropIcon from "@mui/icons-material/WaterDrop";
+import { blue } from "@mui/material/colors";
 import { useAtomValue } from "jotai";
 import { format } from "date-fns";
 
@@ -93,13 +94,13 @@ const DailyList = () => {
     }
 
     return (
-        <Stack px={2}>
+        <Stack>
             {dailyData.map((d) => (
                 <DailyItemContainer key={d.dt}>
                     <Typography>{d.day}</Typography>
                     <Box sx={{ justifySelf: "center" }}>
                         <Stack direction="row" alignItems="center" sx={{ width: "3.2rem" }}>
-                            <WaterDropIcon fontSize="small" />
+                            <WaterDropIcon sx={() => ({ color: blue[400] })} fontSize="small" />
                             <Typography ml={0.5}>{`${d.pop}%`}</Typography>
                         </Stack>
                     </Box>

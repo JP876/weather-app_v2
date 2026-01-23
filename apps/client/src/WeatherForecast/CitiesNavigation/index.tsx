@@ -5,6 +5,7 @@ import { useAtomValue, useSetAtom } from "jotai";
 import { useLocation } from "wouter";
 
 import { favouriteCitiesAtom } from "../../atoms";
+import type { CityType } from "../../types";
 
 const a11yProps = (index: number) => {
     return {
@@ -20,14 +21,25 @@ type TabLabelProps = {
 
 const TabLabel = memo(({ id, city }: TabLabelProps) => {
     const setFavouriteCities = useSetAtom(favouriteCitiesAtom);
-    const [, navigate] = useLocation();
+    const [path, navigate] = useLocation();
 
     const handleDeleteLocation = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
         event.stopPropagation();
+        let nextValue: CityType[] = [];
+
         setFavouriteCities((prevState) => {
-            return prevState.filter((location) => location.id.toString() !== id.toString());
+            nextValue = prevState.filter((location) => location.id.toString() !== id.toString());
+            return nextValue;
         });
-        navigate("/", { replace: true });
+
+        const p = path.split("/");
+        const cId = p.length === 2 ? p[1] : null;
+
+        if (id !== cId) return;
+
+        const nextPath = nextValue.length > 0 ? nextValue[nextValue.length - 1].id : "";
+
+        navigate(`/${nextPath}`, { replace: true });
     };
 
     return (

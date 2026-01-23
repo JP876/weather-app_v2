@@ -1,6 +1,5 @@
 import { useMemo } from "react";
 import { Box, Skeleton, Stack, Typography } from "@mui/material";
-import LocationCityIcon from "@mui/icons-material/LocationCity";
 import { useAtomValue } from "jotai";
 
 import { weatherFetchInfoAtom } from "../../../atoms";
@@ -19,7 +18,6 @@ const LocationInfo = () => {
     return (
         <Stack>
             <Stack direction="row" alignItems="center" gap={1}>
-                <LocationCityIcon color="primary" />
                 <Typography variant="h4">{cityInfo?.city}</Typography>
             </Stack>
             <Typography variant="body2">{`${cityInfo?.country}, ${cityInfo?.iso2}`}</Typography>
@@ -78,7 +76,6 @@ const CurrentMain = () => {
                 alignItems="center"
                 sx={[
                     (theme) => ({
-                        px: 2,
                         top: 0,
                         position: "sticky",
                         backgroundColor: theme.palette.background.default,
@@ -95,7 +92,7 @@ const CurrentMain = () => {
                 />
             </Stack>
 
-            <Box sx={{ display: "grid", gridTemplateColumns: "1fr 1fr", mx: 2, gap: 1 }}>
+            <Box sx={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 1 }}>
                 <CurrentWeatherDetailsContainer
                     label="Feels like"
                     value={`${currentWeather?.feels_like.toFixed(1)} \u00B0C`}
