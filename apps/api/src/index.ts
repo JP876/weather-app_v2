@@ -10,7 +10,7 @@ import dotenv from "dotenv";
 
 import type { CityType } from "./types";
 
-dotenv.config({ path: join(__dirname, "../", ".env") });
+dotenv.config({ path: join(__dirname, "../../..", ".env") });
 
 const app = express();
 const cacheInstance = new NodeCache();
@@ -41,7 +41,7 @@ app.get("/api/v1/worldcities", rateLimiter, slowDownLimiter, (req, res) => {
         return res.json({ results: cacheInstance.get("worldcities") });
     }
 
-    createReadStream(join(__dirname, "worldcities.csv"))
+    createReadStream(join(__dirname, "../", "worldcities.csv"))
         .pipe(csvParser())
         .on("data", (data) => results.push(data))
         .on("end", () => {
