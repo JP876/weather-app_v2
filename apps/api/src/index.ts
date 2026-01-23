@@ -4,18 +4,37 @@ import { join } from "path";
 import { createReadStream } from "fs";
 import csvParser from "csv-parser";
 import NodeCache from "node-cache";
+import { rateLimit } from "express-rate-limit";
+import { slowDown } from "express-slow-down";
+import dotenv from "dotenv";
 
 import type { CityType } from "./types";
 
+dotenv.config({ path: join(__dirname, "../", ".env") });
+
 const app = express();
 const cacheInstance = new NodeCache();
+
+const rateLimiter = rateLimit({
+    windowMs: 10 * 60 * 1000,
+    limit: 50,
+    standardHeaders: "draft-8",
+    legacyHeaders: false,
+    ipv6Subnet: 56,
+});
+
+const slowDownLimiter = slowDown({
+    windowMs: 30 * 60 * 1000,
+    delayAfter: 5,
+    delayMs: (hits) => hits * 500,
+});
 
 const port = process.env.PORT || 5000;
 
 app.use(morgan("dev"));
 app.use(express.static(join(__dirname, "../..", "client", "dist")));
 
-app.get("/api/v1/worldcities", (req, res) => {
+app.get("/api/v1/worldcities", rateLimiter, slowDownLimiter, (req, res) => {
     const results: CityType[] = [];
 
     if (cacheInstance.has(`worldcities`)) {
@@ -34,7 +53,7 @@ app.get("/api/v1/worldcities", (req, res) => {
         });
 });
 
-app.get("/api/v1/weather-forecast", async (req, res) => {
+app.get("/api/v1/weather-forecast", rateLimiter, slowDownLimiter, async (req, res) => {
     const URL = process.env.OPEN_WEATHER_30_API_BASE_URL;
     const API_KEY = process.env.OPEN_WEATHER_API_KEY;
 
