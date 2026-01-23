@@ -4,7 +4,7 @@ import ClearIcon from "@mui/icons-material/Clear";
 import { useAtomValue, useSetAtom } from "jotai";
 import { useLocation } from "wouter";
 
-import { favouriteCitiesAtom } from "../../atoms";
+import { favouriteCitiesAtom, weatherFetchInfoAtom } from "../../atoms";
 import type { CityType } from "../../types";
 
 const a11yProps = (index: number) => {
@@ -72,6 +72,8 @@ const CitiesNavigation = () => {
     const favouriteCities = useAtomValue(favouriteCitiesAtom);
     const [path, navigate] = useLocation();
 
+    const { isLoading } = useAtomValue(weatherFetchInfoAtom);
+
     const handleChange = (_: React.SyntheticEvent, newValue: string) => {
         navigate(newValue, { transition: true });
     };
@@ -92,6 +94,7 @@ const CitiesNavigation = () => {
                         key={el.id}
                         value={`/${el.id}`}
                         disableRipple
+                        disabled={isLoading}
                         sx={{ alignItems: "center", p: 1 }}
                         label={<TabLabel id={el.id} city={el.city} />}
                     />

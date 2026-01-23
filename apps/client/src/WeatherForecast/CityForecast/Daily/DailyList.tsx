@@ -13,7 +13,7 @@ import getMinMax from "../../../utils/getMinMax";
 const DailyItemContainer = styled(Box)(({ theme }) => ({
     width: "100%",
     display: "grid",
-    gridTemplateColumns: "5.8rem .5fr .5fr .5fr .5fr 2rem",
+    gridTemplateColumns: "6.4rem .5fr .5fr .5fr .5fr 2rem",
     alignItems: "center",
     gap: theme.spacing(1),
     paddingInline: theme.spacing(2),
@@ -41,7 +41,7 @@ const LoadingDailyList = () => {
                         <Stack
                             justifyContent="center"
                             alignItems="center"
-                            sx={{ width: 44, height: 44 }}
+                            sx={{ width: 48, height: 48 }}
                         >
                             <Skeleton width={30} height={30} variant="circular" />
                         </Stack>
@@ -73,7 +73,7 @@ const DailyList = () => {
 
         return weatherData.daily.map((d) => ({
             ...d,
-            day: format(new Date(d.dt * 1_000), "eee, dd/MM"),
+            day: format(new Date(d.dt * 1_000), "eee,dd/MM"),
             temp: {
                 ...d.temp,
                 max: d.temp.max.toFixed(1),
@@ -109,15 +109,15 @@ const DailyList = () => {
                             component="img"
                             src={d.weather[0].iconSrc}
                             alt={d.weather[0].description}
-                            width={44}
-                            height={44}
+                            width={48}
+                            height={48}
                         />
                     </Box>
                     <Box sx={{ justifySelf: "center" }}>
-                        <Typography>{`${d.temp.max} \u00B0C`}</Typography>
+                        <Typography>{`${d.temp.max}\u00B0C`}</Typography>
                     </Box>
                     <Box sx={{ justifySelf: "center" }}>
-                        <Typography>{`${d.temp.min} \u00B0C`}</Typography>
+                        <Typography>{`${d.temp.min}\u00B0C`}</Typography>
                     </Box>
                     <Tooltip
                         arrow

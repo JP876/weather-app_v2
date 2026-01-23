@@ -1,19 +1,26 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
+import { ThemeProvider } from "@mui/material";
 import { Provider } from "jotai";
+import { Router } from "wouter";
 
 import App from "./App.tsx";
+import { theme } from "./theme/index.ts";
 
 import "./index.css";
-import "@fontsource/roboto/300.css";
-import "@fontsource/roboto/400.css";
-import "@fontsource/roboto/500.css";
-import "@fontsource/roboto/700.css";
+import "@fontsource/roboto-mono/300.css";
+import "@fontsource/roboto-mono/400.css";
+import "@fontsource/roboto-mono/500.css";
+import "@fontsource/roboto-mono/700.css";
 
 createRoot(document.getElementById("root")!).render(
     <StrictMode>
         <Provider>
-            <App />
+            <Router>
+                <ThemeProvider theme={theme}>
+                    <App />
+                </ThemeProvider>
+            </Router>
         </Provider>
     </StrictMode>,
 );

@@ -1,29 +1,19 @@
-import { flushSync } from "react-dom";
-import { Route, Router, type AroundNavHandler } from "wouter";
+import { lazy, Suspense } from "react";
+import { Route, Switch } from "wouter";
 
-import AddCityMain from "./AddCity";
-import CityForecastMain from "./CityForecast";
+import LoadingRoute from "../components/Feedback/LoadingRoute";
 
-const aroundNav: AroundNavHandler = (navigate, to, options) => {
-    // Check if View Transitions API is supported
-    if (!document.startViewTransition) {
-        navigate(to, options);
-        return;
-    }
-
-    document.startViewTransition(() => {
-        flushSync(() => {
-            navigate(to, options);
-        });
-    });
-};
+const AddCityRoute = lazy(() => import("./AddCity"));
+const CityForecastRoute = lazy(() => import("./CityForecast"));
 
 const RouterMain = () => {
     return (
-        <Router aroundNav={aroundNav}>
-            <Route path="/" component={AddCityMain} />
-            <Route path="/:id" component={CityForecastMain} />
-        </Router>
+        <Suspense fallback={<LoadingRoute />}>
+            <Switch>
+                <Route path="/" component={AddCityRoute} />
+                <Route path="/:id" component={CityForecastRoute} />
+            </Switch>
+        </Suspense>
     );
 };
 

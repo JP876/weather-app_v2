@@ -49,7 +49,7 @@ const CurrentTemperature = ({ temp, iconSrc, iconAlt }: CurrentTemperatureProps)
 
     return (
         <Stack direction="row" alignItems="center">
-            <Typography variant="h5">{`${temp} \u00B0C`}</Typography>
+            <Typography variant="h5">{`${temp}\u00B0C`}</Typography>
             <Box component="img" src={iconSrc} alt={iconAlt} width={100} height={100} />
         </Stack>
     );
@@ -95,7 +95,7 @@ const CurrentMain = () => {
             <Box sx={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 1 }}>
                 <CurrentWeatherDetailsContainer
                     label="Feels like"
-                    value={`${currentWeather?.feels_like.toFixed(1)} \u00B0C`}
+                    value={`${currentWeather?.feels_like.toFixed(1)}\u00B0C`}
                 />
                 <CurrentWeatherDetailsContainer
                     label="Humidity"

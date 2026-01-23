@@ -39,7 +39,7 @@ const HourlyChart = () => {
                     valueFormatter: (value: number) => format(new Date(value), "HH:mm"),
                 },
             ]}
-            yAxis={[{ label: `Temperature \u00B0C`, width: 42 }]}
+            yAxis={[{ label: `Temperature\u00B0C`, width: 42 }]}
             grid={{ horizontal: true }}
             series={[{ dataKey: "temp" }]}
         />

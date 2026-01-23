@@ -20,7 +20,7 @@ export const HourlyCardContainer = styled(Stack, {
         paddingInline: theme.spacing(2),
         paddingBlock: theme.spacing(1),
         borderRadius: theme.spacing(2),
-        minWidth: "8.8rem",
+        minWidth: "9.2rem",
         border: `1px solid ${borderColor}`,
         boxShadow: theme.shadows[1],
         transition: theme.transitions.create(["border-color"]),
@@ -45,7 +45,7 @@ type HourlyCardType = {
 const HourlyCard = ({ data }: HourlyCardType) => {
     const tooltipTitleInfo = useMemo(() => {
         return [
-            { label: "Feels Like", value: `${data.feels_like} \u00B0C` },
+            { label: "Feels Like", value: `${data.feels_like}\u00B0C` },
             { label: "Humidity", value: `${data.humidity} %` },
         ];
     }, [data.feels_like, data.humidity]);
@@ -57,8 +57,8 @@ const HourlyCard = ({ data }: HourlyCardType) => {
                     {data.date}
                 </Typography>
 
-                <Stack direction="row" alignItems="center" gap={1}>
-                    <Typography>{`${data.temp} \u00B0C`}</Typography>
+                <Stack direction="row" alignItems="center">
+                    <Typography>{`${data.temp}\u00B0C`}</Typography>
                 </Stack>
             </Stack>
 
@@ -74,9 +74,9 @@ const HourlyCard = ({ data }: HourlyCardType) => {
                 </Stack>
             </Stack>
 
-            <Stack gap={0.5}>
+            <Stack gap={1}>
                 {tooltipTitleInfo.map((el) => (
-                    <Stack key={el.label}>
+                    <Stack key={el.label} sx={{ textAlign: "center" }}>
                         <Typography
                             sx={(theme) => ({
                                 fontWeight: theme.typography.fontWeightLight,
@@ -86,7 +86,6 @@ const HourlyCard = ({ data }: HourlyCardType) => {
                         <Typography
                             sx={(theme) => ({
                                 fontWeight: theme.typography.fontWeightMedium,
-                                mt: theme.spacing(-0.5),
                             })}
                         >
                             {el.value}

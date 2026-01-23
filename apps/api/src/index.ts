@@ -18,14 +18,14 @@ const cacheInstance = new NodeCache();
 const rateLimiter = rateLimit({
     windowMs: 10 * 60 * 1000,
     limit: 50,
-    standardHeaders: "draft-8",
+    standardHeaders: "draft-6",
     legacyHeaders: false,
-    ipv6Subnet: 56,
+    ipv6Subnet: 64,
 });
 
 const slowDownLimiter = slowDown({
     windowMs: 30 * 60 * 1000,
-    delayAfter: 5,
+    delayAfter: 20,
     delayMs: (hits) => hits * 500,
 });
 
@@ -85,6 +85,10 @@ app.get("/api/v1/weather-forecast", rateLimiter, slowDownLimiter, async (req, re
     } catch (error) {
         res.status(500).send("Failed to fetch weather forecast data");
     }
+});
+
+app.get("/:id", (req, res) => {
+    res.sendFile(join(__dirname, "../..", "client", "dist"));
 });
 
 app.listen(port, () => {

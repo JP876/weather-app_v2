@@ -32,7 +32,7 @@ const DailyChart = () => {
             height={280}
             dataset={dataset}
             xAxis={[{ dataKey: "date", scaleType: "band" }]}
-            yAxis={[{ label: `Temperature \u00B0C`, width: 42 }]}
+            yAxis={[{ label: `Temperature\u00B0C`, width: 42 }]}
             grid={{ horizontal: true }}
             series={[
                 { dataKey: "tempMin", label: `Min` },
