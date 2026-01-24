@@ -18,11 +18,19 @@ const CityListSkeleton = () => {
                     <Stack direction="row" alignItems="center" gap={2}>
                         <Skeleton width={36} height={32} sx={{ mb: -0.5 }} />
                         <Stack>
-                            <Skeleton width={getMinMax(48, 72)} height={28} />
+                            <Skeleton width={getMinMax(48, 72)} height={32} />
                             <Skeleton width={getMinMax(48, 72)} height={20} />
                         </Stack>
                     </Stack>
-                    <Skeleton variant="circular" width={20} height={20} />
+                    <Stack
+                        direction="row"
+                        alignItems="center"
+                        justifyContent="space-between"
+                        sx={{ flex: "0 0 40%" }}
+                    >
+                        <Skeleton width={146} height={20} />
+                        <Skeleton variant="circular" width={20} height={20} />
+                    </Stack>
                 </CityListItemContainer>
             ))}
         </Stack>

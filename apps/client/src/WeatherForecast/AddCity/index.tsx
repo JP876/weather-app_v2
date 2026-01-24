@@ -3,18 +3,18 @@ import { useAtomValue } from "jotai";
 
 import CityList from "./CityList";
 import CitySearch from "./CitySearch";
-import FeedbackMain from "../../components/Feedback";
+import LoadingData from "../../components/Feedback/LoadingData";
 import { citiesFetchInfoAtom } from "../../atoms";
 
-const FetchFeadbackMain = () => {
+const FetchLoadingData = () => {
     const { isLoading, error } = useAtomValue(citiesFetchInfoAtom);
-    return <FeedbackMain isLoading={isLoading} error={!!error} />;
+    return <LoadingData isLoading={isLoading} error={!!error} />;
 };
 
 const AddCityMain = () => {
     return (
         <Stack sx={{ height: "var(--weather-forecast-routes-container-height)" }}>
-            <FetchFeadbackMain />
+            <FetchLoadingData />
             <Box id="city-search-container" sx={{ p: 2 }}>
                 <CitySearch />
             </Box>

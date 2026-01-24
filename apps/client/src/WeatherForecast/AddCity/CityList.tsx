@@ -3,6 +3,7 @@ import { useAtom, useAtomValue } from "jotai";
 import { Box, Stack, styled, Typography, type BoxProps, type StackProps } from "@mui/material";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import ClearIcon from "@mui/icons-material/Clear";
+import LocationOnIcon from "@mui/icons-material/LocationOn";
 import { AutoSizer, List, type ListRowProps } from "react-virtualized";
 
 import { citiesFetchInfoAtom, favouriteCitiesAtom, filteredCitiesAtom } from "../../atoms";
@@ -86,16 +87,37 @@ const CityListItem = ({ index }: CityListItemType) => {
                     alt={`${cityInfo.country} flag`}
                 />
                 <Stack>
-                    <Typography mb={-0.5} variant="subtitle1">
+                    <Typography
+                        mb={-0.5}
+                        sx={(theme) => ({
+                            fontWeight: theme.typography.fontWeightBold,
+                            fontSize: theme.typography.h6.fontSize,
+                        })}
+                        variant="subtitle1"
+                    >
                         {cityInfo.city}
                     </Typography>
                     <Typography variant="caption">{cityInfo.country}</Typography>
                 </Stack>
             </Stack>
-            <CityListItemButton>
-                <FavoriteBorderIcon sx={{ opacity: +!isFavourite }} />
-                <ClearIcon sx={{ opacity: +isFavourite }} />
-            </CityListItemButton>
+            <Stack
+                direction="row"
+                alignItems="center"
+                justifyContent="space-between"
+                sx={{ flex: "0 0 40%" }}
+            >
+                <Stack direction="row" alignItems="center" gap={1}>
+                    <LocationOnIcon fontSize="small" />
+                    <Typography variant="body2">
+                        {`${parseFloat(cityInfo.lat.toString()).toFixed(2)} - 
+                        ${parseFloat(cityInfo.lng.toString()).toFixed(2)}`}
+                    </Typography>
+                </Stack>
+                <CityListItemButton>
+                    <FavoriteBorderIcon sx={{ opacity: +!isFavourite }} />
+                    <ClearIcon sx={{ opacity: +isFavourite }} />
+                </CityListItemButton>
+            </Stack>
         </CityListItemContainer>
     );
 };
@@ -129,7 +151,7 @@ const CityList = () => {
                     width={width}
                     height={height || 960}
                     rowCount={filteredCities.length}
-                    rowHeight={54}
+                    rowHeight={58}
                     rowRenderer={rowRenderer}
                     style={listStyle}
                 />

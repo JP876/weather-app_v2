@@ -5,6 +5,7 @@ import { useSetAtom } from "jotai";
 import { citiesFetchInfoAtom, filteredCitiesAtom } from "./atoms";
 import WeatherForecast from "./WeatherForecast";
 import type { CityType } from "./types";
+import SnackbarContainer from "./components/Feedback/SnackbarContainer";
 
 const App = () => {
     const setCitiesFetchInfo = useSetAtom(citiesFetchInfoAtom);
@@ -33,6 +34,7 @@ const App = () => {
 
     return (
         <Box component="main">
+            <SnackbarContainer />
             <Box sx={{ position: "relative" }}>
                 <WeatherForecast />
             </Box>

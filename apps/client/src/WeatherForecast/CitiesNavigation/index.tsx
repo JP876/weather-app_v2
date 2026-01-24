@@ -74,6 +74,14 @@ const CitiesNavigation = () => {
 
     const { isLoading } = useAtomValue(weatherFetchInfoAtom);
 
+    const value = (() => {
+        if (favouriteCities.length === 0) return "/";
+        const cId = path.split("/")?.[1];
+        if (!cId) return "/";
+        const isFavourite = favouriteCities.some((city) => city.id.toString() === cId);
+        return isFavourite ? path : "/";
+    })();
+
     const handleChange = (_: React.SyntheticEvent, newValue: string) => {
         navigate(newValue, { transition: true });
     };
@@ -81,7 +89,7 @@ const CitiesNavigation = () => {
     return (
         <Box id="cities-navigation-tabs-container" sx={{ borderBottom: 1, borderColor: "divider" }}>
             <Tabs
-                value={favouriteCities.length === 0 ? "/" : path}
+                value={value}
                 onChange={handleChange}
                 aria-label="cities tab navigation"
                 role="navigation"

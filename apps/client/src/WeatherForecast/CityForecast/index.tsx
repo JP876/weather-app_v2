@@ -8,7 +8,9 @@ import CurrentMain from "./Current";
 import DailyMain from "./Daily";
 import type { WeatherDataType } from "../../types/weatherdata";
 import HourlyMain from "./Hourly";
-import FeadbackMain from "../../components/Feedback";
+import LoadingData from "../../components/Feedback/LoadingData";
+import { useLocation } from "wouter";
+import useSnackbar from "../../hooks/useSnackbar";
 
 const CityForecastContainer = styled(Stack)<StackProps>(({ theme }) => ({
     gap: theme.spacing(2),
@@ -16,15 +18,17 @@ const CityForecastContainer = styled(Stack)<StackProps>(({ theme }) => ({
     paddingInline: theme.spacing(2),
 }));
 
-const FetchFeadbackMain = () => {
+const FetchLoadingData = () => {
     const { isLoading, error } = useAtomValue(weatherFetchInfoAtom);
-    return <FeadbackMain isLoading={isLoading} error={!!error} />;
+    return <LoadingData isLoading={isLoading} error={!!error} />;
 };
 
 const CityForecastMain = () => {
     const setWeatherFetchInfo = useSetAtom(weatherFetchInfoAtom);
+    const [, navigate] = useLocation();
 
     const cityInfo = useCityInfo();
+    const { openSnackbar } = useSnackbar();
 
     useEffect(() => {
         if (cityInfo) {
@@ -49,12 +53,17 @@ const CityForecastMain = () => {
                         isLoading: false,
                     });
                 });
+        } else {
+            navigate("/", { replace: true });
+
+            const message = `Hmm… we couldn't load the city details this time.`;
+            openSnackbar({ message, severity: "error" });
         }
-    }, [cityInfo, setWeatherFetchInfo]);
+    }, [cityInfo, navigate, openSnackbar, setWeatherFetchInfo]);
 
     return (
         <CityForecastContainer>
-            <FetchFeadbackMain />
+            <FetchLoadingData />
             <CurrentMain />
             <Divider />
             <HourlyMain />

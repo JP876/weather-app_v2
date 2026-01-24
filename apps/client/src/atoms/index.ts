@@ -3,12 +3,21 @@ import { atomWithStorage } from "jotai/utils";
 
 import type { CityType, UserSettingsType } from "../types";
 import type { WeatherDataType } from "../types/weatherdata";
+import type { AlertProps, SnackbarProps } from "@mui/material";
 
 type FetchInfoType<T> = {
     data: T | null;
     isLoading: boolean;
     error: boolean | { msg: string };
 };
+
+type AlertPropsType = Pick<AlertProps, "severity" | "variant">;
+type SnackbarPropsType = Pick<SnackbarProps, "autoHideDuration" | "open">;
+
+export type SnackbarAtomType = {
+    message: string;
+} & AlertPropsType &
+    SnackbarPropsType;
 
 const initialFetchInfo = { data: null, isLoading: false, error: false };
 
@@ -18,6 +27,8 @@ export const weatherFetchInfoAtom = atom<FetchInfoType<WeatherDataType>>(initial
 export const searchValueAtom = atom("");
 export const filteredCitiesAtom = atom<CityType[] | null>(null);
 export const favouriteCitiesAtom = atomWithStorage<CityType[]>("favouriteCities", []);
+
+export const snackbarAtom = atom<SnackbarAtomType>({ open: false, message: "" });
 
 export const userSettingsAtom = atomWithStorage<UserSettingsType>("settings", {
     daily: { list: true, graph: true },

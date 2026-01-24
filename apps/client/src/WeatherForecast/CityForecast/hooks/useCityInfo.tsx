@@ -10,7 +10,9 @@ const useCityInfo = () => {
 
     return useMemo(() => {
         if (!params?.id || favouriteCities.length === 0) return null;
-        return favouriteCities.find((city) => city.id.toString() === params.id) || null;
+
+        const city = favouriteCities.find((city) => city.id.toString() === params.id);
+        return city || null;
     }, [favouriteCities, params.id]);
 };
 
