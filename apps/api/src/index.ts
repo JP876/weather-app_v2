@@ -7,6 +7,7 @@ import NodeCache from "node-cache";
 import { rateLimit } from "express-rate-limit";
 import { slowDown } from "express-slow-down";
 import dotenv from "dotenv";
+import helmet from "helmet";
 
 import type { CityType } from "./types";
 
@@ -32,7 +33,14 @@ const slowDownLimiter = slowDown({
 const port = process.env.PORT || 5000;
 
 app.use(morgan("dev"));
-app.use(express.static(join(__dirname, "../..", "client", "dist")));
+app.use(helmet());
+
+app.use(express.static(join(__dirname, "../..", "client", "dist/")));
+
+app.get("/:id", (req, res) => {
+    const path = join(__dirname, "../..", "client", "dist/");
+    res.sendFile(path);
+});
 
 app.get("/api/v1/worldcities", rateLimiter, slowDownLimiter, (req, res) => {
     const results: CityType[] = [];
@@ -85,10 +93,6 @@ app.get("/api/v1/weather-forecast", rateLimiter, slowDownLimiter, async (req, re
     } catch (error) {
         res.status(500).send("Failed to fetch weather forecast data");
     }
-});
-
-app.get("/:id", (req, res) => {
-    res.sendFile(join(__dirname, "../..", "client", "dist"));
 });
 
 app.listen(port, () => {

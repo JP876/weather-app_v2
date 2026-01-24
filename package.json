@@ -1,5 +1,5 @@
 {
-    "name": "weather-app",
+    "name": "weather-sphere",
     "private": true,
     "scripts": {
         "start": "node apps/api/dist/index",

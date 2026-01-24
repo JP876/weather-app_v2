@@ -20,7 +20,7 @@ export const HourlyCardContainer = styled(Stack, {
         paddingInline: theme.spacing(2),
         paddingBlock: theme.spacing(1),
         borderRadius: theme.spacing(2),
-        minWidth: "9.2rem",
+        minWidth: "9.4rem",
         border: `1px solid ${borderColor}`,
         boxShadow: theme.shadows[1],
         transition: theme.transitions.create(["border-color"]),
