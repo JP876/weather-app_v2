@@ -37,9 +37,10 @@ const HourlyChart = () => {
                     dataKey: "date",
                     scaleType: "band",
                     valueFormatter: (value: number) => format(new Date(value), "HH:mm"),
+                    height: 28,
                 },
             ]}
-            yAxis={[{ label: `Temperature\u00B0C`, width: 42 }]}
+            yAxis={[{ label: `Temperature\u00B0C`, width: 48 }]}
             grid={{ horizontal: true }}
             series={[{ dataKey: "temp" }]}
         />

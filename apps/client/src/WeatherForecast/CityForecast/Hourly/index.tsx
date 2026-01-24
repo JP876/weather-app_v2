@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Box, Button, Collapse, Skeleton, Stack, Typography } from "@mui/material";
-import InfoOutlineIcon from "@mui/icons-material/InfoOutline";
+import { Box, Collapse, Skeleton, Stack, Typography } from "@mui/material";
 import { useAtomValue } from "jotai";
 import { format } from "date-fns";
 
@@ -20,19 +19,17 @@ const SkeletonCard = ({ isLoading, error }: { isLoading: boolean; error: boolean
 
             <Stack direction="row" justifyContent="center" mb={2}>
                 <Stack alignItems="center">
-                    <Skeleton variant="circular" width={64} height={64} sx={{ my: 2 }} />
+                    <Skeleton variant="circular" width={58} height={58} sx={{ mt: 2, mb: 1 }} />
                 </Stack>
             </Stack>
 
-            <Stack direction="row" justifyContent="center" alignItems="center">
-                <Button
-                    size="small"
-                    variant="outlined"
-                    startIcon={<InfoOutlineIcon fontSize="small" />}
-                    disabled
-                >
-                    Details
-                </Button>
+            <Stack gap={1}>
+                {Array.from({ length: 2 }).map((_, index) => (
+                    <Stack key={index} sx={{ alignItems: "center" }}>
+                        <Skeleton height={20} width={96} />
+                        <Skeleton height={24} width={64} />
+                    </Stack>
+                ))}
             </Stack>
         </HourlyCardContainer>
     );

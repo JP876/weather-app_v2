@@ -25,7 +25,7 @@ const rateLimiter = rateLimit({
 
 const slowDownLimiter = slowDown({
     windowMs: 30 * 60 * 1000,
-    delayAfter: 20,
+    delayAfter: 50,
     delayMs: (hits) => hits * 500,
 });
 

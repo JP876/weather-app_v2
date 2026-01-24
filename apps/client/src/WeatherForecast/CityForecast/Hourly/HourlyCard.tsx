@@ -46,7 +46,7 @@ const HourlyCard = ({ data }: HourlyCardType) => {
     const tooltipTitleInfo = useMemo(() => {
         return [
             { label: "Feels Like", value: `${data.feels_like}\u00B0C` },
-            { label: "Humidity", value: `${data.humidity} %` },
+            { label: "Humidity", value: `${data.humidity}%` },
         ];
     }, [data.feels_like, data.humidity]);
 

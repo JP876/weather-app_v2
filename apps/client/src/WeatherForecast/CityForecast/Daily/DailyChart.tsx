@@ -31,8 +31,8 @@ const DailyChart = () => {
         <BarChart
             height={280}
             dataset={dataset}
-            xAxis={[{ dataKey: "date", scaleType: "band" }]}
-            yAxis={[{ label: `Temperature\u00B0C`, width: 42 }]}
+            xAxis={[{ dataKey: "date", scaleType: "band", height: 28 }]}
+            yAxis={[{ label: `Temperature\u00B0C`, width: 48 }]}
             grid={{ horizontal: true }}
             series={[
                 { dataKey: "tempMin", label: `Min` },

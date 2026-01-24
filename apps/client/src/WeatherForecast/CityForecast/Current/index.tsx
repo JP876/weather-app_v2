@@ -99,7 +99,7 @@ const CurrentMain = () => {
                 />
                 <CurrentWeatherDetailsContainer
                     label="Humidity"
-                    value={`${currentWeather?.humidity} %`}
+                    value={`${currentWeather?.humidity}%`}
                 />
                 <CurrentWeatherDetailsContainer
                     label="Current UV index"
@@ -107,7 +107,7 @@ const CurrentMain = () => {
                 />
                 <CurrentWeatherDetailsContainer
                     label="Cloudiness"
-                    value={`${currentWeather?.clouds} %`}
+                    value={`${currentWeather?.clouds}%`}
                 />
             </Box>
         </>
