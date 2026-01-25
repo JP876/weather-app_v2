@@ -4,7 +4,6 @@ import { useAtomValue } from "jotai";
 import { format } from "date-fns";
 
 import { userSettingsAtom, weatherFetchInfoAtom } from "../../../atoms";
-import getWeatherIconSrc from "../../../utils/getWeatherIconSrc";
 import HourlyCard, { HourlyCardContainer } from "./HourlyCard";
 import HourlyChart from "./HourlyChart";
 import UserSettings from "./UserSettings";
@@ -53,10 +52,6 @@ const HourlyCardsContainer = () => {
                 feels_like: d.feels_like.toFixed(1),
                 rain: d?.rain ? `${(d.rain["1h"] * 100).toFixed(0)}mm/h` : null,
                 pop: `${(d.pop * 100).toFixed(0)}%`,
-                weather: d.weather.map((el) => ({
-                    ...el,
-                    iconSrc: getWeatherIconSrc(el.icon),
-                })),
             }));
     }, [weatherData]);
 

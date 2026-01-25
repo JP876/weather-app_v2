@@ -6,9 +6,9 @@ import { blue } from "@mui/material/colors";
 import { useAtomValue } from "jotai";
 import { format } from "date-fns";
 
-import getWeatherIconSrc from "../../../utils/getWeatherIconSrc";
 import { weatherFetchInfoAtom } from "../../../atoms";
 import getMinMax from "../../../utils/getMinMax";
+import WeatherIcon from "../../../components/WeatherIcon";
 
 const DailyItemContainer = styled(Box)(({ theme }) => ({
     width: "100%",
@@ -82,10 +82,6 @@ const DailyList = () => {
                 morn: d.temp.morn.toFixed(1),
             },
             pop: `${(d.pop * 100).toFixed(0)}`,
-            weather: d.weather.map((el) => ({
-                ...el,
-                iconSrc: getWeatherIconSrc(el.icon),
-            })),
         }));
     }, [weatherData]);
 
@@ -105,13 +101,11 @@ const DailyList = () => {
                         </Stack>
                     </Box>
                     <Box sx={{ justifySelf: "center", alignSelf: "center" }}>
-                        <Box
-                            component="img"
-                            src={d.weather[0].iconSrc}
-                            alt={d.weather[0].description}
-                            width={48}
-                            height={48}
-                        />
+                        {d.weather[0]?.icon ? (
+                            <Box my={1}>
+                                <WeatherIcon code={d.weather[0].icon} size={32} />
+                            </Box>
+                        ) : null}
                     </Box>
                     <Box sx={{ justifySelf: "center" }}>
                         <Typography>{`${d.temp.max}\u00B0C`}</Typography>

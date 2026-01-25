@@ -1,7 +1,8 @@
 import { useMemo } from "react";
-import { Box, Stack, styled, Typography, type StackProps } from "@mui/material";
+import { Stack, styled, Typography, type StackProps } from "@mui/material";
 
 import type { HourlyWeatherType, WeatherType } from "../../../types/weatherdata";
+import WeatherIcon from "../../../components/WeatherIcon";
 
 type HourlyCardContainerType = StackProps & {
     isLoading?: boolean;
@@ -13,7 +14,7 @@ export const HourlyCardContainer = styled(Stack, {
 })<HourlyCardContainerType>(({ theme, isLoading, error }) => {
     const borderColor = (() => {
         if (isLoading || error) return theme.palette.action.disabled;
-        return theme.palette.primary.light;
+        return theme.palette.primary.main;
     })();
 
     return {
@@ -23,11 +24,6 @@ export const HourlyCardContainer = styled(Stack, {
         minWidth: "9.4rem",
         border: `1px solid ${borderColor}`,
         boxShadow: theme.shadows[1],
-        transition: theme.transitions.create(["border-color"]),
-
-        "&:hover": {
-            borderColor: isLoading ? theme.palette.action.disabled : theme.palette.primary.dark,
-        },
     };
 });
 
@@ -38,7 +34,7 @@ type HourlyCardType = {
         date: string;
         rain: string | null;
         pop: string;
-        weather: (WeatherType & { iconSrc: string })[];
+        weather: WeatherType[];
     };
 };
 
@@ -63,14 +59,8 @@ const HourlyCard = ({ data }: HourlyCardType) => {
             </Stack>
 
             <Stack direction="row" justifyContent="center">
-                <Stack alignItems="center">
-                    <Box
-                        component="img"
-                        width={96}
-                        height={96}
-                        src={data.weather[0].iconSrc}
-                        alt={data.weather[0].description}
-                    />
+                <Stack alignItems="center" my={2.5}>
+                    {data.weather[0]?.icon ? <WeatherIcon code={data.weather[0].icon} /> : null}
                 </Stack>
             </Stack>
 

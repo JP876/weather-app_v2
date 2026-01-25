@@ -5,11 +5,11 @@ import { useAtomValue } from "jotai";
 import { weatherFetchInfoAtom } from "../../../atoms";
 import useCityInfo from "../hooks/useCityInfo";
 import getWeatherIconSrc from "../../../utils/getWeatherIconSrc";
+import WeatherIcon from "../../../components/WeatherIcon";
 
 type CurrentTemperatureProps = {
     temp?: string;
-    iconSrc?: string;
-    iconAlt?: string;
+    icon?: string;
 };
 
 const LocationInfo = () => {
@@ -40,7 +40,7 @@ const CurrentWeatherDetailsContainer = ({ label, value }: { label: string; value
     );
 };
 
-const CurrentTemperature = ({ temp, iconSrc, iconAlt }: CurrentTemperatureProps) => {
+const CurrentTemperature = ({ temp, icon }: CurrentTemperatureProps) => {
     const { isLoading, error } = useAtomValue(weatherFetchInfoAtom);
 
     if (isLoading || !!error) {
@@ -48,9 +48,13 @@ const CurrentTemperature = ({ temp, iconSrc, iconAlt }: CurrentTemperatureProps)
     }
 
     return (
-        <Stack direction="row" alignItems="center">
+        <Stack direction="row" alignItems="center" gap={3.2}>
             <Typography variant="h5">{`${temp}\u00B0C`}</Typography>
-            <Box component="img" src={iconSrc} alt={iconAlt} width={100} height={100} />
+            {icon ? (
+                <Box my={2.5}>
+                    <WeatherIcon code={icon} size={60} />
+                </Box>
+            ) : null}
         </Stack>
     );
 };
@@ -87,8 +91,7 @@ const CurrentMain = () => {
                 <LocationInfo />
                 <CurrentTemperature
                     temp={currentWeather?.temp}
-                    iconSrc={currentWeather?.weather[0].iconSrc}
-                    iconAlt={currentWeather?.weather[0].description}
+                    icon={currentWeather?.weather[0].icon}
                 />
             </Stack>
 
