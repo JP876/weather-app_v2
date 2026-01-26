@@ -104,6 +104,7 @@ app.get("/api/v1/weather-forecast", rateLimiter, slowDownLimiter, async (req, re
     }
 });
 
+app.set("trust proxy", 1);
 app.listen(port, () => {
     console.log(`Server running on port: ${port}`);
 });
