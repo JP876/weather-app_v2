@@ -33,7 +33,16 @@ const slowDownLimiter = slowDown({
 const port = process.env.PORT || 5000;
 
 app.use(morgan("dev"));
-app.use(helmet());
+
+app.use(
+    helmet({
+        contentSecurityPolicy: {
+            directives: {
+                "img-src": ["'self'", "data:", "https://flagcdn.com"],
+            },
+        },
+    }),
+);
 
 app.use(express.static(join(__dirname, "../..", "client", "dist/")));
 
