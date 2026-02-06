@@ -3,8 +3,8 @@ import { useAtomValue } from "jotai";
 
 import CityList from "./CityList";
 import CitySearch from "./CitySearch";
-import LoadingData from "../../components/Feedback/LoadingData";
-import { citiesFetchInfoAtom } from "../../atoms";
+import { citiesFetchInfoAtom } from "../../../atoms";
+import LoadingData from "../../Feedback/LoadingData";
 
 const FetchLoadingData = () => {
     const { isLoading, error } = useAtomValue(citiesFetchInfoAtom);

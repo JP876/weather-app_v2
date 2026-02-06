@@ -6,9 +6,9 @@ import ClearIcon from "@mui/icons-material/Clear";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import { AutoSizer, List, type ListRowProps } from "react-virtualized";
 
-import { citiesFetchInfoAtom, favouriteCitiesAtom, filteredCitiesAtom } from "../../atoms";
 import useCityListHeight from "./hooks/useCityListHeight";
 import CityListSkeleton from "./CityListSkeleton";
+import { citiesFetchInfoAtom, favouriteCitiesAtom, filteredCitiesAtom } from "../../../atoms";
 
 type CityListItemType = {
     index: number;

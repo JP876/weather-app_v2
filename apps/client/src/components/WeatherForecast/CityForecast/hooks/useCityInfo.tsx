@@ -2,7 +2,7 @@ import { useMemo } from "react";
 import { useAtomValue } from "jotai";
 import { useParams } from "wouter";
 
-import { favouriteCitiesAtom } from "../../../atoms";
+import { favouriteCitiesAtom } from "../../../../atoms";
 
 const useCityInfo = () => {
     const params = useParams<{ id: string }>();

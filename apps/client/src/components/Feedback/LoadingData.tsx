@@ -3,12 +3,12 @@ import { CircularProgress } from "@mui/material";
 import { FeedbackContainer } from "../styledComps";
 import ErrorMessage from "../ErrorMessage";
 
-type FeedbackPropsType = {
+type LoadingDataPropsType = {
     isLoading?: boolean;
     error?: boolean;
 };
 
-const FeedbackMain = ({ isLoading, error }: FeedbackPropsType) => {
+const LoadingData = ({ isLoading, error }: LoadingDataPropsType) => {
     const container = document.getElementById("forecast-routes-container");
 
     return (
@@ -18,4 +18,4 @@ const FeedbackMain = ({ isLoading, error }: FeedbackPropsType) => {
     );
 };
 
-export default FeedbackMain;
+export default LoadingData;

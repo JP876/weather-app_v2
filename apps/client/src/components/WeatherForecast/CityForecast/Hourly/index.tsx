@@ -3,10 +3,10 @@ import { Box, Collapse, Skeleton, Stack, Typography } from "@mui/material";
 import { useAtomValue } from "jotai";
 import { format } from "date-fns";
 
-import { userSettingsAtom, weatherFetchInfoAtom } from "../../../atoms";
 import HourlyCard, { HourlyCardContainer } from "./HourlyCard";
 import HourlyChart from "./HourlyChart";
 import UserSettings from "./UserSettings";
+import { userSettingsAtom, weatherFetchInfoAtom } from "../../../../atoms";
 
 const SkeletonCard = ({ isLoading, error }: { isLoading: boolean; error: boolean }) => {
     return (

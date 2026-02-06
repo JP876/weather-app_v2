@@ -1,16 +1,16 @@
 import { useEffect } from "react";
 import { Divider, Stack, styled, type StackProps } from "@mui/material";
 import { useAtomValue, useSetAtom } from "jotai";
+import { useLocation } from "wouter";
 
-import { weatherFetchInfoAtom } from "../../atoms";
 import useCityInfo from "./hooks/useCityInfo";
 import CurrentMain from "./Current";
 import DailyMain from "./Daily";
-import type { WeatherDataType } from "../../types/weatherdata";
 import HourlyMain from "./Hourly";
-import LoadingData from "../../components/Feedback/LoadingData";
-import { useLocation } from "wouter";
-import useSnackbar from "../../hooks/useSnackbar";
+import LoadingData from "../../Feedback/LoadingData";
+import { weatherFetchInfoAtom } from "../../../atoms";
+import useSnackbar from "../../../hooks/useSnackbar";
+import type { WeatherDataType } from "../../../types/weatherdata";
 
 const CityForecastContainer = styled(Stack)<StackProps>(({ theme }) => ({
     gap: theme.spacing(2),

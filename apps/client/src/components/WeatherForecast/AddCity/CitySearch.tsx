@@ -4,8 +4,8 @@ import ClearIcon from "@mui/icons-material/Clear";
 import Fuse from "fuse.js";
 import { useAtom, useAtomValue, useSetAtom } from "jotai";
 
-import { citiesFetchInfoAtom, filteredCitiesAtom, searchValueAtom } from "../../atoms";
-import type { CityType } from "../../types";
+import { citiesFetchInfoAtom, filteredCitiesAtom, searchValueAtom } from "../../../atoms";
+import type { CityType } from "../../../types";
 
 const ClearSearchValue = ({ value }: { value: string }) => {
     const setValue = useSetAtom(searchValueAtom);

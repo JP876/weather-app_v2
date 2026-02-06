@@ -1,8 +1,7 @@
 import { useMemo } from "react";
 import { Stack, styled, Typography, type StackProps } from "@mui/material";
-
-import type { HourlyWeatherType, WeatherType } from "../../../types/weatherdata";
-import WeatherIcon from "../../../components/WeatherIcon";
+import type { HourlyWeatherType, WeatherType } from "../../../../types/weatherdata";
+import WeatherIcon from "../../../WeatherIcon";
 
 type HourlyCardContainerType = StackProps & {
     isLoading?: boolean;

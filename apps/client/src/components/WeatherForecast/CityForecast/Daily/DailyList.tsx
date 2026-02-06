@@ -5,10 +5,9 @@ import WaterDropIcon from "@mui/icons-material/WaterDrop";
 import { blue } from "@mui/material/colors";
 import { useAtomValue } from "jotai";
 import { format } from "date-fns";
-
-import { weatherFetchInfoAtom } from "../../../atoms";
-import getMinMax from "../../../utils/getMinMax";
-import WeatherIcon from "../../../components/WeatherIcon";
+import getMinMax from "../../../../utils/getMinMax";
+import { weatherFetchInfoAtom } from "../../../../atoms";
+import WeatherIcon from "../../../WeatherIcon";
 
 const DailyItemContainer = styled(Box)(({ theme }) => ({
     width: "100%",

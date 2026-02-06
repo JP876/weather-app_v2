@@ -3,9 +3,8 @@ import { Box, Stack, Tab, Tabs, Typography } from "@mui/material";
 import ClearIcon from "@mui/icons-material/Clear";
 import { useAtomValue, useSetAtom } from "jotai";
 import { useLocation } from "wouter";
-
-import { favouriteCitiesAtom, weatherFetchInfoAtom } from "../../atoms";
-import type { CityType } from "../../types";
+import { favouriteCitiesAtom, weatherFetchInfoAtom } from "../../../atoms";
+import type { CityType } from "../../../types";
 
 const a11yProps = (index: number) => {
     return {

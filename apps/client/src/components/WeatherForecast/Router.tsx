@@ -1,7 +1,7 @@
 import { lazy, Suspense } from "react";
 import { Route, Switch } from "wouter";
 
-import LoadingRoute from "../components/Feedback/LoadingRoute";
+import LoadingRoute from "../Feedback/LoadingRoute";
 
 const AddCityRoute = lazy(() => import("./AddCity"));
 const CityForecastRoute = lazy(() => import("./CityForecast"));

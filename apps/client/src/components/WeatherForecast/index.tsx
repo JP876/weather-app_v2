@@ -4,7 +4,7 @@ import { useAtomValue } from "jotai";
 
 import CitiesNavigation from "./CitiesNavigation";
 import RouterMain from "./Router";
-import { citiesFetchInfoAtom, weatherFetchInfoAtom } from "../atoms";
+import { citiesFetchInfoAtom, weatherFetchInfoAtom } from "../../atoms";
 
 const MARGIN_BLOCK = 4;
 const MARGIN_INLINE = 4;

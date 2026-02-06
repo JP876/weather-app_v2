@@ -2,8 +2,8 @@ import { memo } from "react";
 import { Stack } from "@mui/material";
 import { useAtomValue } from "jotai";
 
-import { userSettingsAtom, weatherFetchInfoAtom } from "../../../atoms";
-import UserSettingSwitch from "../../../components/UserSettingSwitch";
+import { userSettingsAtom, weatherFetchInfoAtom } from "../../../../atoms";
+import UserSettingSwitch from "../../../UserSettingSwitch";
 
 const UserSettings = () => {
     const settings = useAtomValue(userSettingsAtom);

@@ -2,10 +2,10 @@ import { useMemo } from "react";
 import { Box, Skeleton, Stack, Typography } from "@mui/material";
 import { useAtomValue } from "jotai";
 
-import { weatherFetchInfoAtom } from "../../../atoms";
 import useCityInfo from "../hooks/useCityInfo";
-import getWeatherIconSrc from "../../../utils/getWeatherIconSrc";
-import WeatherIcon from "../../../components/WeatherIcon";
+import { weatherFetchInfoAtom } from "../../../../atoms";
+import WeatherIcon from "../../../WeatherIcon";
+import getWeatherIconSrc from "../../../../utils/getWeatherIconSrc";
 
 type CurrentTemperatureProps = {
     temp?: string;

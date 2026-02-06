@@ -3,8 +3,8 @@ import { useAtomValue } from "jotai";
 import { format } from "date-fns";
 import { BarChart } from "@mui/x-charts";
 
-import { weatherFetchInfoAtom } from "../../../atoms";
 import { Box, Skeleton } from "@mui/material";
+import { weatherFetchInfoAtom } from "../../../../atoms";
 
 const HourlyChart = () => {
     const { isLoading, data: weatherData, error } = useAtomValue(weatherFetchInfoAtom);

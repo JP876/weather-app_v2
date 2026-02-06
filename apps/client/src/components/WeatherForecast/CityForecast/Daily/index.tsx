@@ -5,7 +5,7 @@ import { useAtomValue } from "jotai";
 import DailyChart from "./DailyChart";
 import DailyList from "./DailyList";
 import UserSettings from "./UserSettings";
-import { userSettingsAtom } from "../../../atoms";
+import { userSettingsAtom } from "../../../../atoms";
 
 const ListContainer = ({ children }: { children: React.ReactNode }) => {
     const settings = useAtomValue(userSettingsAtom);

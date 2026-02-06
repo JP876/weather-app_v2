@@ -1,11 +1,11 @@
 import { useEffect } from "react";
 import { Box, CssBaseline } from "@mui/material";
 
-import WeatherForecast from "./WeatherForecast";
 import SnackbarContainer from "./components/Feedback/SnackbarContainer";
 import useFetchCities from "./hooks/useFetchCities";
 import HeaderMain from "./components/Header";
 import FooterMain from "./components/Footer";
+import WeatherForecast from "./components/WeatherForecast";
 
 const App = () => {
     const { fetchCities } = useFetchCities();
