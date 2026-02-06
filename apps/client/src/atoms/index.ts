@@ -5,7 +5,7 @@ import type { CityType, UserSettingsType } from "../types";
 import type { WeatherDataType } from "../types/weatherdata";
 import type { AlertProps, SnackbarProps } from "@mui/material";
 
-type FetchInfoType<T> = {
+export type FetchInfoType<T> = {
     data: T | null;
     isLoading: boolean;
     error: boolean | { msg: string };

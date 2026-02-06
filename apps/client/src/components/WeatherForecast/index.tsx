@@ -3,7 +3,7 @@ import { Box, styled, type BoxProps } from "@mui/material";
 import { useAtomValue } from "jotai";
 
 import CitiesNavigation from "./CitiesNavigation";
-import RouterMain from "./Router";
+import RouterMain from "../Router";
 import { citiesFetchInfoAtom, weatherFetchInfoAtom } from "../../atoms";
 
 const MARGIN_BLOCK = 4;

@@ -1,10 +1,12 @@
 import { memo } from "react";
-import { Box, Stack, Tab, Tabs, Typography } from "@mui/material";
+import { Box, Stack, Tab, Tabs } from "@mui/material";
 import ClearIcon from "@mui/icons-material/Clear";
 import { useAtomValue, useSetAtom } from "jotai";
 import { useLocation } from "wouter";
+
 import { favouriteCitiesAtom, weatherFetchInfoAtom } from "../../../atoms";
 import type { CityType } from "../../../types";
+import { ClampedText } from "../../styledComps";
 
 const a11yProps = (index: number) => {
     return {
@@ -43,12 +45,17 @@ const TabLabel = memo(({ id, city }: TabLabelProps) => {
 
     return (
         <Stack direction="row" alignItems="center" gap={1}>
-            <Typography
+            <ClampedText
                 variant="body1"
-                sx={[(theme) => ({ fontSize: theme.typography.body2.fontSize })]}
+                sx={[
+                    (theme) => ({
+                        fontSize: theme.typography.body2.fontSize,
+                        maxWidth: "5.4rem",
+                    }),
+                ]}
             >
                 {city}
-            </Typography>
+            </ClampedText>
             <Box
                 onClick={handleDeleteLocation}
                 sx={[

@@ -9,6 +9,7 @@ import { AutoSizer, List, type ListRowProps } from "react-virtualized";
 import useCityListHeight from "./hooks/useCityListHeight";
 import CityListSkeleton from "./CityListSkeleton";
 import { citiesFetchInfoAtom, favouriteCitiesAtom, filteredCitiesAtom } from "../../../atoms";
+import { ClampedText } from "../../styledComps";
 
 type CityListItemType = {
     index: number;
@@ -23,6 +24,7 @@ export const CityListItemContainer = styled(Stack, {
     transition: theme.transitions.create(["background-color", "border-color"]),
     border: `1px solid ${isFavourite ? theme.palette.primary.dark : "transparent"}`,
     borderRadius: theme.shape.borderRadius,
+    gap: theme.spacing(4),
 
     "&:hover": {
         backgroundColor: theme.palette.grey[200],
@@ -88,16 +90,16 @@ const CityListItem = ({ index }: CityListItemType) => {
                     alt={`${cityInfo.country} flag`}
                 />
                 <Stack>
-                    <Typography
-                        mb={-0.5}
+                    <ClampedText
+                        variant="subtitle1"
                         sx={(theme) => ({
+                            marginBottom: theme.spacing(-0.5),
                             fontWeight: theme.typography.fontWeightBold,
                             fontSize: theme.typography.h6.fontSize,
                         })}
-                        variant="subtitle1"
                     >
                         {cityInfo.city}
-                    </Typography>
+                    </ClampedText>
                     <Typography variant="caption">{cityInfo.country}</Typography>
                 </Stack>
             </Stack>
@@ -105,9 +107,22 @@ const CityListItem = ({ index }: CityListItemType) => {
                 direction="row"
                 alignItems="center"
                 justifyContent="space-between"
-                sx={{ flex: "0 0 40%" }}
+                sx={(theme) => ({
+                    flex: "0 0 42%",
+                    [theme.breakpoints.down("lg")]: {
+                        justifyContent: "flex-end",
+                        flex: "0 0 max-content",
+                    },
+                })}
             >
-                <Stack direction="row" alignItems="center" gap={1}>
+                <Stack
+                    direction="row"
+                    alignItems="center"
+                    gap={1}
+                    sx={(theme) => ({
+                        [theme.breakpoints.down("lg")]: { display: "none" },
+                    })}
+                >
                     <LocationOnIcon fontSize="small" />
                     <Typography variant="body2">
                         {`${parseFloat(cityInfo.lat.toString()).toFixed(2)} - 
@@ -123,8 +138,9 @@ const CityListItem = ({ index }: CityListItemType) => {
     );
 };
 
-const listStyle = {
+const listStyle: React.CSSProperties = {
     paddingLeft: "1rem",
+    paddingBlock: "1rem",
 };
 
 const CityList = () => {

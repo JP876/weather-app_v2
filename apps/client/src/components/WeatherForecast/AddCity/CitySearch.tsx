@@ -6,6 +6,7 @@ import { useAtom, useAtomValue, useSetAtom } from "jotai";
 
 import { citiesFetchInfoAtom, filteredCitiesAtom, searchValueAtom } from "../../../atoms";
 import type { CityType } from "../../../types";
+import scrollCitiesList from "../../../utils/scrollCitiesList";
 
 const ClearSearchValue = ({ value }: { value: string }) => {
     const setValue = useSetAtom(searchValueAtom);
@@ -14,11 +15,7 @@ const ClearSearchValue = ({ value }: { value: string }) => {
     const { data: cities, isLoading, error } = useAtomValue(citiesFetchInfoAtom);
 
     const handleClear = () => {
-        const listContainer = [...document.getElementsByClassName("ReactVirtualized__Grid")]?.[0];
-        if (listContainer) {
-            listContainer.scrollTo({ top: 0, left: 0, behavior: "smooth" });
-        }
-
+        scrollCitiesList();
         setValue("");
         setFilteredCities(cities);
     };
@@ -54,6 +51,8 @@ const CitySearch = () => {
 
     const handleOnChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const value = event.target.value;
+
+        scrollCitiesList();
         setValue(value);
 
         if (!value) {
@@ -61,6 +60,13 @@ const CitySearch = () => {
         } else {
             const results = fuse.search(value);
             setFilteredCities(results.map((el) => ({ ...el.item })));
+            // (async () => {
+            //     const results = await db.cities
+            //         .where("city")
+            //         .startsWithAnyOfIgnoreCase(value)
+            //         .toArray();
+            //     setFilteredCities(results);
+            // })();
         }
     };
 

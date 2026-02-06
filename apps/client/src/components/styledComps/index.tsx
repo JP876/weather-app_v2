@@ -1,4 +1,4 @@
-import { Box, styled, type BoxProps } from "@mui/material";
+import { Box, styled, Typography, type BoxProps, type TypographyProps } from "@mui/material";
 
 export const FeedbackContainer = styled(Box, {
     shouldForwardProp: (prop) => prop !== "isLoading" && prop !== "top" && prop !== "error",
@@ -16,3 +16,15 @@ export const FeedbackContainer = styled(Box, {
         alignItems: "center",
     }),
 );
+
+export const ClampedText = styled(Typography, { shouldForwardProp: (prop) => prop !== "maxRows" })<
+    TypographyProps<"span", { maxRows?: number }>
+>(({ maxRows = 1 }) => ({
+    whiteSpace: "wrap",
+    wordBreak: "break-all",
+    display: "-webkit-box",
+    WebkitBoxOrient: "vertical",
+    WebkitLineClamp: maxRows,
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+}));

@@ -60,7 +60,7 @@ app.get("/api/v1/worldcities", rateLimiter, slowDownLimiter, (req, res) => {
 
     createReadStream(join(__dirname, "../", "worldcities.csv"))
         .pipe(csvParser())
-        .on("data", (data) => results.push(data))
+        .on("data", (data) => results.push({ ...data, population: +data.population, id: +data.id }))
         .on("end", () => {
             cacheInstance.set(`worldcities`, results, 60 * 60 * 24);
             res.json({ results });

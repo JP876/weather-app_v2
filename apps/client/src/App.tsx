@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { Box, CssBaseline } from "@mui/material";
 
 import SnackbarContainer from "./components/Feedback/SnackbarContainer";
@@ -8,10 +8,15 @@ import FooterMain from "./components/Footer";
 import WeatherForecast from "./components/WeatherForecast";
 
 const App = () => {
+    const justMounted = useRef(true);
+
     const { fetchCities } = useFetchCities();
 
     useEffect(() => {
-        fetchCities();
+        if (justMounted.current) {
+            fetchCities();
+        }
+        justMounted.current = false;
     }, [fetchCities]);
 
     return (
