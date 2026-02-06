@@ -6,48 +6,101 @@ import { weatherFetchInfoAtom, type FetchInfoType } from "../../../../atoms";
 import type { WeatherDataType } from "../../../../types/weatherdata";
 import { db } from "../../../../utils/db";
 
+type GetWeatherDataFromDBOptions = {
+    cityId: number;
+};
+
+type FetchWeatherDataOptions = {
+    lat: string;
+    lng: string;
+};
+
+type UpdateWeatherDataDBOptions = {
+    hasData: boolean;
+    cityId: number;
+    weatherData: WeatherDataType;
+};
+
 const useFetchWeatherData = () => {
     const setWeatherFetchInfo = useSetAtom(weatherFetchInfoAtom);
 
-    const handleFetch = useCallback(
-        async (cityInfo: CityType) => {
-            let weatherData: WeatherDataType | null = null;
+    const getWeatherDataFromDB = useCallback(
+        async ({ cityId }: GetWeatherDataFromDBOptions) => {
             let hasData = false;
 
             try {
-                const results = await db.weatherData.where("id").equals(+cityInfo.id).toArray();
+                const [results] = await Promise.all([
+                    db.weatherData.where("id").equals(cityId).toArray(),
+                    new Promise((resolve) => setTimeout(resolve, 400)),
+                ]);
                 hasData = Array.isArray(results) && results.length === 1;
 
                 if (hasData) {
                     setWeatherFetchInfo({ data: results[0], isLoading: false, error: false });
-                } else {
-                    setWeatherFetchInfo((prevInfo) => ({
-                        ...prevInfo,
-                        error: false,
-                        isLoading: true,
-                    }));
                 }
+                return Promise.resolve({ hasData });
             } catch (err: unknown) {
                 console.error(err);
+                return Promise.resolve({ hasData });
             }
+        },
+        [setWeatherFetchInfo],
+    );
 
+    const fetchWeatherData = useCallback(
+        async ({ lat, lng }: FetchWeatherDataOptions) => {
             try {
-                const res = await fetch(
-                    `/api/v1/weather-forecast?lat=${cityInfo.lat}&lng=${cityInfo.lng}`,
-                );
+                const res = await fetch(`/api/v1/weather-forecast?lat=${lat}&lng=${lng}`);
 
                 if (!res.ok) {
                     throw new Error("Failed to fetch weather data");
                 }
 
                 const data = (await res.json()) as { results: WeatherDataType };
-                weatherData = data.results;
-
                 setWeatherFetchInfo((prevInfo) => ({
                     ...prevInfo,
-                    data: weatherData,
+                    data: data.results,
                     isLoading: false,
                 }));
+
+                return Promise.resolve({ weatherData: data.results });
+            } catch (err: unknown) {
+                return Promise.reject(err);
+            }
+        },
+        [setWeatherFetchInfo],
+    );
+
+    const updateWeatherDataDB = useCallback(
+        async ({ hasData, cityId, weatherData }: UpdateWeatherDataDBOptions) => {
+            try {
+                if (hasData) {
+                    await db.weatherData.update(cityId, weatherData);
+                } else {
+                    await db.weatherData.add({ ...weatherData, id: cityId });
+                }
+            } catch (err: unknown) {
+                console.error(err);
+            }
+        },
+        [],
+    );
+
+    const handleFetch = useCallback(
+        async (cityInfo: CityType) => {
+            try {
+                const cityId = +cityInfo.id;
+                setWeatherFetchInfo((prevInfo) => ({ ...prevInfo, error: false, isLoading: true }));
+
+                const { hasData } = await getWeatherDataFromDB({ cityId });
+                const { weatherData } = await fetchWeatherData({
+                    lat: cityInfo.lat.toString(),
+                    lng: cityInfo.lng.toString(),
+                });
+
+                if (weatherData) {
+                    await updateWeatherDataDB({ hasData, cityId, weatherData });
+                }
             } catch (err: unknown) {
                 const error = err as Error;
                 const fetchInfo: FetchInfoType<WeatherDataType> = {
@@ -62,20 +115,8 @@ const useFetchWeatherData = () => {
 
                 setWeatherFetchInfo(fetchInfo);
             }
-
-            if (weatherData) {
-                try {
-                    if (hasData) {
-                        await db.weatherData.update(+cityInfo.id, weatherData);
-                    } else {
-                        await db.weatherData.add({ ...weatherData, id: +cityInfo.id });
-                    }
-                } catch (err: unknown) {
-                    console.error(err);
-                }
-            }
         },
-        [setWeatherFetchInfo],
+        [fetchWeatherData, getWeatherDataFromDB, setWeatherFetchInfo, updateWeatherDataDB],
     );
 
     return useMemo(() => ({ handleFetch }), [handleFetch]);
