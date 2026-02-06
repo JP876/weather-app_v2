@@ -14,23 +14,22 @@ type CityListItemType = {
     index: number;
 };
 
-type CityListItemContainerType = StackProps & {
-    isFavourite: boolean;
-};
-
 export const CityListItemContainer = styled(Stack, {
     shouldForwardProp: (prop) => prop !== "isFavourite",
-})<CityListItemContainerType>(({ theme, isFavourite }) => ({
-    paddingLeft: theme.spacing(2),
-    paddingRight: "14px",
+})<StackProps<"div", { isFavourite: boolean }>>(({ theme, isFavourite }) => ({
+    paddingInline: theme.spacing(2),
     cursor: "pointer",
     backgroundColor: isFavourite ? theme.palette.grey[100] : "transparent",
     transition: theme.transitions.create(["background-color", "border-color"]),
-    border: `1px solid ${isFavourite ? theme.palette.primary.main : "transparent"}`,
+    border: `1px solid ${isFavourite ? theme.palette.primary.dark : "transparent"}`,
     borderRadius: theme.shape.borderRadius,
 
     "&:hover": {
         backgroundColor: theme.palette.grey[200],
+    },
+
+    "&:focus, &:focus-visible": {
+        border: `1px solid ${theme.palette.primary.main}`,
     },
 }));
 
@@ -72,11 +71,13 @@ const CityListItem = ({ index }: CityListItemType) => {
 
     return (
         <CityListItemContainer
+            id={`city_container-${index}`}
             direction="row"
             alignItems="center"
             justifyContent="space-between"
             isFavourite={isFavourite}
             onClick={saveFavouriteCity}
+            tabIndex={-1}
         >
             <Stack direction="row" alignItems="center" gap={2}>
                 <Box
@@ -123,7 +124,7 @@ const CityListItem = ({ index }: CityListItemType) => {
 };
 
 const listStyle = {
-    padding: "1rem",
+    paddingLeft: "1rem",
 };
 
 const CityList = () => {

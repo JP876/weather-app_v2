@@ -36,7 +36,7 @@ const CityForecastMain = () => {
 
             Promise.all([
                 fetch(`/api/v1/weather-forecast?lat=${cityInfo.lat}&lng=${cityInfo.lng}`),
-                new Promise((res) => setTimeout(res, 1_000)), // min loading time
+                new Promise((res) => setTimeout(res, 500)), // min loading time
             ])
                 .then(async ([res]) => {
                     if (!res.ok) {

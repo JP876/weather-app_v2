@@ -1,43 +1,28 @@
 import { useEffect } from "react";
-import { Box } from "@mui/material";
-import { useSetAtom } from "jotai";
+import { Box, CssBaseline } from "@mui/material";
 
-import { citiesFetchInfoAtom, filteredCitiesAtom } from "./atoms";
 import WeatherForecast from "./WeatherForecast";
-import type { CityType } from "./types";
 import SnackbarContainer from "./components/Feedback/SnackbarContainer";
+import useFetchCities from "./hooks/useFetchCities";
+import HeaderMain from "./components/Header";
+import FooterMain from "./components/Footer";
 
 const App = () => {
-    const setCitiesFetchInfo = useSetAtom(citiesFetchInfoAtom);
-    const setFilteredCities = useSetAtom(filteredCitiesAtom);
+    const { fetchCities } = useFetchCities();
 
     useEffect(() => {
-        setCitiesFetchInfo((prevValue) => ({ ...prevValue, isLoading: true, error: false }));
-
-        Promise.all([fetch("/api/v1/worldcities"), new Promise((res) => setTimeout(res, 1_000))])
-            .then(async ([res]) => {
-                if (!res.ok) {
-                    throw new Error("Failed to fetch cities data");
-                }
-
-                const data = (await res.json()) as { results: CityType[] };
-
-                setCitiesFetchInfo({ data: data.results, isLoading: false, error: false });
-                setFilteredCities(data?.results);
-            })
-            .catch((err) => {
-                const error = err as Error;
-                setCitiesFetchInfo({ data: [], isLoading: false, error: { msg: error.message } });
-                setFilteredCities([]);
-            });
-    }, [setCitiesFetchInfo, setFilteredCities]);
+        fetchCities();
+    }, [fetchCities]);
 
     return (
-        <Box component="main">
+        <Box component="main" sx={{ "--header_height": "3.6rem", "--footer_height": "3.6rem" }}>
+            <CssBaseline />
+            <HeaderMain />
             <SnackbarContainer />
             <Box sx={{ position: "relative" }}>
                 <WeatherForecast />
             </Box>
+            <FooterMain />
         </Box>
     );
 };
