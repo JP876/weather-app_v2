@@ -52,7 +52,7 @@ const CitySearch = () => {
     const handleOnChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const value = event.target.value;
 
-        scrollCitiesList();
+        scrollCitiesList({ behavior: "auto" });
         setValue(value);
 
         if (!value) {

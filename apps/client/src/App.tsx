@@ -10,17 +10,17 @@ import WeatherForecast from "./components/WeatherForecast";
 const App = () => {
     const justMounted = useRef(true);
 
-    const { fetchCities } = useFetchCities();
+    const { handleFetch } = useFetchCities();
 
     useEffect(() => {
         if (justMounted.current) {
-            fetchCities();
+            handleFetch();
         }
         justMounted.current = false;
-    }, [fetchCities]);
+    }, [handleFetch]);
 
     return (
-        <Box component="main" sx={{ "--header_height": "3.6rem", "--footer_height": "3.6rem" }}>
+        <Box component="main" sx={{ "--header_height": "4rem", "--footer_height": "4rem" }}>
             <CssBaseline />
             <HeaderMain />
             <SnackbarContainer />

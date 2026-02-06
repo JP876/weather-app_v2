@@ -98,7 +98,13 @@ const GraphContainer = ({ children }: { children: React.ReactNode }) => {
 const HourlyMain = () => {
     return (
         <Box>
-            <Stack direction="row" mb={4} justifyContent="space-between" alignItems="center">
+            <Stack
+                direction="row"
+                mb={4}
+                justifyContent="space-between"
+                alignItems="center"
+                gap={2}
+            >
                 <Typography variant="h5">Hourly Forecast</Typography>
                 <UserSettings />
             </Stack>

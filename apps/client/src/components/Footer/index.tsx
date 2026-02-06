@@ -1,4 +1,4 @@
-import { Stack, Typography } from "@mui/material";
+import { Link, Stack, Typography } from "@mui/material";
 
 const FooterMain = () => {
     return (
@@ -17,8 +17,21 @@ const FooterMain = () => {
                 paddingInline: theme.spacing(4),
             })}
         >
-            <Stack />
-            <Typography>Made with ❤️ by: Josip Popović</Typography>
+            <Stack gap={0.2}>
+                <Typography variant="body2">
+                    Weather data provided by:{" "}
+                    <Link target="_blank" rel="noreferrer" href="https://openweathermap.org/">
+                        OpenWeather
+                    </Link>
+                </Typography>
+                <Typography variant="body2">
+                    World Cities data provided by:{" "}
+                    <Link target="_blank" rel="noreferrer" href="https://simplemaps.com/">
+                        Simplemaps.com
+                    </Link>
+                </Typography>
+            </Stack>
+            <Typography variant="body1">Made with ❤️ by: Josip Popović</Typography>
         </Stack>
     );
 };

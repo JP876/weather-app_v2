@@ -12,7 +12,7 @@ const useFetchCities = () => {
     const setCitiesFetchInfo = useSetAtom(citiesFetchInfoAtom);
     const setFilteredCities = useSetAtom(filteredCitiesAtom);
 
-    const fetchCities = useCallback(async () => {
+    const handleFetch = useCallback(async () => {
         setCitiesFetchInfo((prevValue) => ({ ...prevValue, isLoading: true, error: false }));
         const cities = await db.cities.reverse().sortBy("population");
 
@@ -25,11 +25,8 @@ const useFetchCities = () => {
         const abortController = new AbortController();
         controller.current = abortController;
 
-        return Promise.all([
-            fetch("/api/v1/worldcities", { signal: abortController.signal }),
-            new Promise((res) => setTimeout(res, 500)),
-        ])
-            .then(async ([res]) => {
+        return fetch("/api/v1/worldcities", { signal: abortController.signal })
+            .then(async (res) => {
                 if (!res.ok) {
                     throw new Error("Failed to fetch cities data");
                 }
@@ -63,7 +60,7 @@ const useFetchCities = () => {
         };
     }, []);
 
-    return useMemo(() => ({ fetchCities }), [fetchCities]);
+    return useMemo(() => ({ handleFetch }), [handleFetch]);
 };
 
 export default useFetchCities;

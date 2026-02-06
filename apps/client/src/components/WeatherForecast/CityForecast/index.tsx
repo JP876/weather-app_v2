@@ -1,6 +1,6 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { Divider, Stack, styled, type StackProps } from "@mui/material";
-import { useAtomValue, useSetAtom } from "jotai";
+import { useAtomValue } from "jotai";
 import { useLocation } from "wouter";
 
 import useCityInfo from "./hooks/useCityInfo";
@@ -10,7 +10,7 @@ import HourlyMain from "./Hourly";
 import LoadingData from "../../Feedback/LoadingData";
 import { weatherFetchInfoAtom } from "../../../atoms";
 import useSnackbar from "../../../hooks/useSnackbar";
-import type { WeatherDataType } from "../../../types/weatherdata";
+import useFetchWeatherData from "./hooks/useFetchWeatherData";
 
 const CityForecastContainer = styled(Stack)<StackProps>(({ theme }) => ({
     gap: theme.spacing(2),
@@ -24,42 +24,27 @@ const FetchLoadingData = () => {
 };
 
 const CityForecastMain = () => {
-    const setWeatherFetchInfo = useSetAtom(weatherFetchInfoAtom);
+    const cityId = useRef<string | null>(null);
     const [, navigate] = useLocation();
 
     const cityInfo = useCityInfo();
     const { openSnackbar } = useSnackbar();
 
+    const { handleFetch } = useFetchWeatherData();
+
     useEffect(() => {
         if (cityInfo) {
-            setWeatherFetchInfo((prevInfo) => ({ ...prevInfo, error: false, isLoading: true }));
-
-            Promise.all([
-                fetch(`/api/v1/weather-forecast?lat=${cityInfo.lat}&lng=${cityInfo.lng}`),
-                new Promise((res) => setTimeout(res, 500)), // min loading time
-            ])
-                .then(async ([res]) => {
-                    if (!res.ok) {
-                        throw new Error("Failed to fetch weather data");
-                    }
-                    const data = (await res.json()) as { results: WeatherDataType };
-                    setWeatherFetchInfo({ data: data.results, error: false, isLoading: false });
-                })
-                .catch((err: unknown) => {
-                    const error = err as Error;
-                    setWeatherFetchInfo({
-                        data: null,
-                        error: { msg: error.message },
-                        isLoading: false,
-                    });
-                });
+            if (cityInfo.id.toString() !== cityId.current) {
+                cityId.current = cityInfo.id.toString();
+                handleFetch(cityInfo);
+            }
         } else {
             navigate("/", { replace: true });
 
             const message = `Hmm… we couldn't load the city details this time.`;
             openSnackbar({ message, severity: "error" });
         }
-    }, [cityInfo, navigate, openSnackbar, setWeatherFetchInfo]);
+    }, [cityInfo, handleFetch, navigate, openSnackbar]);
 
     return (
         <CityForecastContainer>
