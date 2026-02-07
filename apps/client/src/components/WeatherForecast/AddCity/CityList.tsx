@@ -10,6 +10,7 @@ import useCityListHeight from "./hooks/useCityListHeight";
 import CityListSkeleton from "./CityListSkeleton";
 import { citiesFetchInfoAtom, favouriteCitiesAtom, filteredCitiesAtom } from "../../../atoms";
 import { ClampedText } from "../../styledComps";
+import { db } from "../../../utils/db";
 
 type CityListItemType = {
     index: number;
@@ -28,10 +29,6 @@ export const CityListItemContainer = styled(Stack, {
 
     "&:hover": {
         backgroundColor: theme.palette.grey[200],
-    },
-
-    "&:focus, &:focus-visible": {
-        border: `1px solid ${theme.palette.primary.main}`,
     },
 }));
 
@@ -56,13 +53,27 @@ const CityListItem = ({ index }: CityListItemType) => {
         (city) => city.id.toString() === cityInfo?.id.toString(),
     );
 
+    const deleteDataFromDB = () => {
+        if (!cityInfo) return;
+        (async () => {
+            try {
+                const cityId = +cityInfo.id;
+                await db.weatherData.delete(cityId);
+            } catch (err: unknown) {
+                console.error(err);
+            }
+        })();
+    };
+
     const saveFavouriteCity = () => {
         if (!cityInfo) {
             console.warn("City info not found");
             return;
         }
+
         setFavouriteCities((prevValue) => {
             if (isFavourite) {
+                deleteDataFromDB();
                 return prevValue.filter((city) => city.id.toString() !== cityInfo.id.toString());
             }
             return [...(prevValue || []), cityInfo];
@@ -79,7 +90,6 @@ const CityListItem = ({ index }: CityListItemType) => {
             justifyContent="space-between"
             isFavourite={isFavourite}
             onClick={saveFavouriteCity}
-            tabIndex={-1}
         >
             <Stack direction="row" alignItems="center" gap={2}>
                 <Box

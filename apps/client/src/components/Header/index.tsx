@@ -1,5 +1,6 @@
 import { IconButton, Stack, Typography } from "@mui/material";
 import SettingsIcon from "@mui/icons-material/Settings";
+import PanoramaPhotosphereIcon from "@mui/icons-material/PanoramaPhotosphere";
 import { useLocation } from "wouter";
 
 const HeaderLogo = () => {
@@ -10,8 +11,9 @@ const HeaderLogo = () => {
             direction="row"
             alignItems="center"
             onClick={() => navigate("/")}
-            sx={() => ({ cursor: "pointer" })}
+            sx={() => ({ cursor: "pointer", gap: 1.4 })}
         >
+            <PanoramaPhotosphereIcon color="primary" />
             <Typography variant="h5">WeatherSphere</Typography>
         </Stack>
     );

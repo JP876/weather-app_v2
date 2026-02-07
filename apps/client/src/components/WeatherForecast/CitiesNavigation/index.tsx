@@ -7,6 +7,7 @@ import { useLocation } from "wouter";
 import { favouriteCitiesAtom, weatherFetchInfoAtom } from "../../../atoms";
 import type { CityType } from "../../../types";
 import { ClampedText } from "../../styledComps";
+import { db } from "../../../utils/db";
 
 const a11yProps = (index: number) => {
     return {
@@ -24,7 +25,15 @@ const TabLabel = memo(({ id, city }: TabLabelProps) => {
     const setFavouriteCities = useSetAtom(favouriteCitiesAtom);
     const [path, navigate] = useLocation();
 
-    const handleDeleteLocation = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    const deleteDataFromDB = async (id: number) => {
+        try {
+            await db.weatherData.delete(id);
+        } catch (err: unknown) {
+            console.error(err);
+        }
+    };
+
+    const handleDeleteLocation = async (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
         event.stopPropagation();
         let nextValue: CityType[] = [];
 
@@ -32,6 +41,7 @@ const TabLabel = memo(({ id, city }: TabLabelProps) => {
             nextValue = prevState.filter((location) => location.id.toString() !== id.toString());
             return nextValue;
         });
+        await deleteDataFromDB(+id);
 
         const p = path.split("/");
         const cId = p.length === 2 ? p[1] : null;

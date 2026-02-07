@@ -43,12 +43,17 @@ const useFetchCities = () => {
             .catch((err) => {
                 const error = err as Error | DexieError;
 
+                setFilteredCities([]);
                 setCitiesFetchInfo({
                     data: [],
                     isLoading: false,
-                    error: { msg: error.message },
+                    error: {
+                        type: "API",
+                        msg: error.message,
+                        name: error.name,
+                        cause: error.cause,
+                    },
                 });
-                setFilteredCities([]);
             });
     }, [setCitiesFetchInfo, setFilteredCities]);
 

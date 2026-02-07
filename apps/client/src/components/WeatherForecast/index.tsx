@@ -14,7 +14,7 @@ const WeatherForecastContainer = styled(Box)(({ theme }) => ({
     top: `calc(${theme.spacing(MARGIN_BLOCK)} + var(--header_height))`,
     left: theme.spacing(MARGIN_INLINE),
     zIndex: theme.zIndex.appBar,
-    width: "36vw",
+    width: "38vw",
     border: `1px solid ${theme.palette.grey[400]}`,
     borderRadius: theme.shape.borderRadius,
 

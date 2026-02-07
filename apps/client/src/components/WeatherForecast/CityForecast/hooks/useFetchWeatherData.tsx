@@ -57,11 +57,7 @@ const useFetchWeatherData = () => {
                 }
 
                 const data = (await res.json()) as { results: WeatherDataType };
-                setWeatherFetchInfo((prevInfo) => ({
-                    ...prevInfo,
-                    data: data.results,
-                    isLoading: false,
-                }));
+                setWeatherFetchInfo((prevInfo) => ({ ...prevInfo, data: data.results }));
 
                 return Promise.resolve({ weatherData: data.results });
             } catch (err: unknown) {
@@ -92,11 +88,13 @@ const useFetchWeatherData = () => {
                 const cityId = +cityInfo.id;
                 setWeatherFetchInfo((prevInfo) => ({ ...prevInfo, error: false, isLoading: true }));
 
-                const { hasData } = await getWeatherDataFromDB({ cityId });
-                const { weatherData } = await fetchWeatherData({
-                    lat: cityInfo.lat.toString(),
-                    lng: cityInfo.lng.toString(),
-                });
+                const [{ hasData }, { weatherData }] = await Promise.all([
+                    getWeatherDataFromDB({ cityId }),
+                    fetchWeatherData({
+                        lat: cityInfo.lat.toString(),
+                        lng: cityInfo.lng.toString(),
+                    }),
+                ]);
 
                 if (weatherData) {
                     await updateWeatherDataDB({ hasData, cityId, weatherData });
@@ -106,7 +104,12 @@ const useFetchWeatherData = () => {
                 const fetchInfo: FetchInfoType<WeatherDataType> = {
                     data: null,
                     isLoading: false,
-                    error: { msg: error.message },
+                    error: {
+                        type: "API",
+                        msg: error.message,
+                        name: error.name,
+                        cause: error.cause,
+                    },
                 };
 
                 if (error.name === "AbortError") {
