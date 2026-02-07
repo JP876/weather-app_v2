@@ -10,7 +10,7 @@ const HourlyChart = () => {
     const { isLoading, data: weatherData, error } = useAtomValue(weatherFetchInfoAtom);
 
     const dataset = useMemo(() => {
-        if (!weatherData) return [];
+        if (!weatherData) return null;
         return weatherData.hourly
             .filter((_, i) => i % 2 === 0)
             .map((el) => {
@@ -18,7 +18,7 @@ const HourlyChart = () => {
             });
     }, [weatherData]);
 
-    if (isLoading || !!error) {
+    if (isLoading || !!error || dataset === null) {
         return (
             <Box px={2}>
                 <Skeleton height={280} />

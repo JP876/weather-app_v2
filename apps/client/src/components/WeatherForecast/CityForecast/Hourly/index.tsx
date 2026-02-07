@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { memo, useEffect, useMemo, useRef, useState } from "react";
 import { Box, Collapse, Skeleton, Stack, Typography } from "@mui/material";
 import { useAtomValue } from "jotai";
 import { format } from "date-fns";
@@ -41,7 +41,7 @@ const HourlyCardsContainer = () => {
     const { isLoading, data: weatherData, error } = useAtomValue(weatherFetchInfoAtom);
 
     const hourlyData = useMemo(() => {
-        if (!Array.isArray(weatherData?.hourly)) return [];
+        if (!Array.isArray(weatherData?.hourly)) return null;
 
         return weatherData.hourly
             .filter((_, i) => i % 2 === 0)
@@ -76,7 +76,7 @@ const HourlyCardsContainer = () => {
             alignItems="center"
             sx={{ overflowX: "scroll", pb: 2.5 }}
         >
-            {isLoading || !!error
+            {isLoading || !!error || hourlyData === null
                 ? Array.from({ length: 24 }).map((_, index) => (
                       <SkeletonCard key={index} isLoading={isLoading} error={!!error} />
                   ))
@@ -118,4 +118,4 @@ const HourlyMain = () => {
     );
 };
 
-export default HourlyMain;
+export default memo(HourlyMain);

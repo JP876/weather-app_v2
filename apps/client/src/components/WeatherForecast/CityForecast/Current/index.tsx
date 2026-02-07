@@ -1,5 +1,5 @@
-import { useMemo } from "react";
-import { Box, Skeleton, Stack, Typography } from "@mui/material";
+import { memo, useMemo } from "react";
+import { Box, Skeleton, Stack, styled, Typography, type StackProps } from "@mui/material";
 import { useAtomValue } from "jotai";
 
 import useCityInfo from "../hooks/useCityInfo";
@@ -11,6 +11,18 @@ type CurrentTemperatureProps = {
     temp?: string;
     icon?: string;
 };
+
+const CurrentTemperatureContainer = styled(Stack)<StackProps>(({ theme }) => ({
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+
+    top: 0,
+    position: "sticky",
+    backgroundColor: theme.palette.background.default,
+    borderBottom: `1px solid ${theme.palette.divider}`,
+    zIndex: theme.zIndex.appBar,
+}));
 
 const LocationInfo = () => {
     const cityInfo = useCityInfo();
@@ -26,27 +38,15 @@ const LocationInfo = () => {
 };
 
 const CurrentWeatherDetailsContainer = ({ label, value }: { label: string; value?: string }) => {
-    const { isLoading, error } = useAtomValue(weatherFetchInfoAtom);
-
     return (
         <Stack>
             <Typography variant="subtitle1">{label}</Typography>
-            {isLoading || !!error ? (
-                <Skeleton height={32} width={100} />
-            ) : (
-                <Typography variant="h6">{value}</Typography>
-            )}
+            <Typography variant="h6">{value}</Typography>
         </Stack>
     );
 };
 
 const CurrentTemperature = ({ temp, icon }: CurrentTemperatureProps) => {
-    const { isLoading, error } = useAtomValue(weatherFetchInfoAtom);
-
-    if (isLoading || !!error) {
-        return <Skeleton height={100} width={170} />;
-    }
-
     return (
         <Stack direction="row" alignItems="center" gap={3.2}>
             <Typography variant="h5">{`${temp}\u00B0C`}</Typography>
@@ -57,6 +57,38 @@ const CurrentTemperature = ({ temp, icon }: CurrentTemperatureProps) => {
             ) : null}
         </Stack>
     );
+};
+
+const currentInfo = ["Feels like", "Humidity", "Current UV index", "Cloudiness"];
+
+const LoadingDataContainer = ({
+    hasData,
+    children,
+}: {
+    hasData: boolean;
+    children: React.ReactNode;
+}) => {
+    const { isLoading, error } = useAtomValue(weatherFetchInfoAtom);
+
+    if (!hasData || isLoading || !!error) {
+        return (
+            <>
+                <CurrentTemperatureContainer>
+                    <LocationInfo />
+                    <Skeleton height={100} width={170} />
+                </CurrentTemperatureContainer>
+                <Box sx={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 1 }}>
+                    {currentInfo.map((value, index) => (
+                        <Stack key={index}>
+                            <Typography variant="subtitle1">{value}</Typography>
+                            <Skeleton height={32} width={100} />
+                        </Stack>
+                    ))}
+                </Box>
+            </>
+        );
+    }
+    return children;
 };
 
 const CurrentMain = () => {
@@ -73,27 +105,14 @@ const CurrentMain = () => {
     }, [weatherData]);
 
     return (
-        <>
-            <Stack
-                direction="row"
-                justifyContent="space-between"
-                alignItems="center"
-                sx={[
-                    (theme) => ({
-                        top: 0,
-                        position: "sticky",
-                        backgroundColor: theme.palette.background.default,
-                        borderBottom: `1px solid ${theme.palette.divider}`,
-                        zIndex: theme.zIndex.appBar,
-                    }),
-                ]}
-            >
+        <LoadingDataContainer hasData={!!currentWeather}>
+            <CurrentTemperatureContainer>
                 <LocationInfo />
                 <CurrentTemperature
                     temp={currentWeather?.temp}
                     icon={currentWeather?.weather[0].icon}
                 />
-            </Stack>
+            </CurrentTemperatureContainer>
 
             <Box sx={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 1 }}>
                 <CurrentWeatherDetailsContainer
@@ -113,8 +132,8 @@ const CurrentMain = () => {
                     value={`${currentWeather?.clouds}%`}
                 />
             </Box>
-        </>
+        </LoadingDataContainer>
     );
 };
 
-export default CurrentMain;
+export default memo(CurrentMain);

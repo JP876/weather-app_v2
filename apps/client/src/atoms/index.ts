@@ -26,11 +26,11 @@ export const weatherFetchInfoAtom = atom<FetchInfoType<WeatherDataType>>(initial
 
 export const searchValueAtom = atom("");
 export const filteredCitiesAtom = atom<CityType[] | null>(null);
-export const favouriteCitiesAtom = atomWithStorage<CityType[]>("favouriteCities", []);
+export const favouriteCitiesAtom = atomWithStorage<CityType[] | null>("favouriteCities", null);
 
 export const snackbarAtom = atom<SnackbarAtomType>({ open: false, message: "" });
 
 export const userSettingsAtom = atomWithStorage<UserSettingsType>("settings", {
-    daily: { list: true, graph: true },
-    hourly: { cards: true, graph: true },
+    daily: { list: false, graph: false },
+    hourly: { cards: false, graph: false },
 });

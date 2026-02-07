@@ -1,4 +1,4 @@
-import { memo } from "react";
+import { memo, useEffect } from "react";
 import { Box, Stack, Tab, Tabs } from "@mui/material";
 import ClearIcon from "@mui/icons-material/Clear";
 import { useAtomValue, useSetAtom } from "jotai";
@@ -23,34 +23,18 @@ type TabLabelProps = {
 
 const TabLabel = memo(({ id, city }: TabLabelProps) => {
     const setFavouriteCities = useSetAtom(favouriteCitiesAtom);
-    const [path, navigate] = useLocation();
 
-    const deleteDataFromDB = async (id: number) => {
-        try {
-            await db.weatherData.delete(id);
-        } catch (err: unknown) {
-            console.error(err);
-        }
-    };
-
-    const handleDeleteLocation = async (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    const handleDeleteLocation = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
         event.stopPropagation();
         let nextValue: CityType[] = [];
 
         setFavouriteCities((prevState) => {
-            nextValue = prevState.filter((location) => location.id.toString() !== id.toString());
+            db.weatherData.delete(+id);
+            nextValue = (prevState || []).filter(
+                (location) => location.id.toString() !== id.toString(),
+            );
             return nextValue;
         });
-        await deleteDataFromDB(+id);
-
-        const p = path.split("/");
-        const cId = p.length === 2 ? p[1] : null;
-
-        if (id !== cId) return;
-
-        const nextPath = nextValue.length > 0 ? nextValue[nextValue.length - 1].id : "";
-
-        navigate(`/${nextPath}`, { replace: true });
     };
 
     return (
@@ -88,19 +72,33 @@ const CitiesNavigation = () => {
     const favouriteCities = useAtomValue(favouriteCitiesAtom);
     const [path, navigate] = useLocation();
 
+    const cId = path.split("/")?.[1];
+    const isFavourite = (() => {
+        if (!Array.isArray(favouriteCities)) return null;
+        return favouriteCities.some((city) => city.id.toString() === cId);
+    })();
+
     const { isLoading } = useAtomValue(weatherFetchInfoAtom);
 
     const value = (() => {
-        if (favouriteCities.length === 0) return "/";
-        const cId = path.split("/")?.[1];
-        if (!cId) return "/";
-        const isFavourite = favouriteCities.some((city) => city.id.toString() === cId);
-        return isFavourite ? path : "/";
+        if (!Array.isArray(favouriteCities)) return null;
+        if (favouriteCities.length === 0 || !cId || !isFavourite) return "/";
+        return path;
     })();
 
     const handleChange = (_: React.SyntheticEvent, newValue: string) => {
         navigate(newValue, { transition: true });
     };
+
+    useEffect(() => {
+        if (Array.isArray(favouriteCities) && cId && isFavourite === false) {
+            const nextPath =
+                favouriteCities.length > 0 ? favouriteCities[favouriteCities.length - 1].id : "";
+            navigate(`/${nextPath}`, { replace: true });
+        }
+    }, [cId, favouriteCities, isFavourite, navigate]);
+
+    if (favouriteCities === null) return null;
 
     return (
         <Box id="cities-navigation-tabs-container" sx={{ borderBottom: 1, borderColor: "divider" }}>

@@ -68,7 +68,7 @@ const DailyList = () => {
     const { isLoading, data: weatherData, error } = useAtomValue(weatherFetchInfoAtom);
 
     const dailyData = useMemo(() => {
-        if (!Array.isArray(weatherData?.daily)) return [];
+        if (!Array.isArray(weatherData?.daily)) return null;
 
         return weatherData.daily.map((d) => ({
             ...d,
@@ -84,7 +84,7 @@ const DailyList = () => {
         }));
     }, [weatherData]);
 
-    if (isLoading || !!error) {
+    if (isLoading || !!error || dailyData === null) {
         return <LoadingDailyList />;
     }
 

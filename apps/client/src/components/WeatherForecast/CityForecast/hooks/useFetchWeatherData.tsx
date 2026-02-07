@@ -29,14 +29,17 @@ const useFetchWeatherData = () => {
             let hasData = false;
 
             try {
-                const [results] = await Promise.all([
-                    db.weatherData.where("id").equals(cityId).toArray(),
-                    new Promise((resolve) => setTimeout(resolve, 400)),
-                ]);
+                const results = await db.weatherData.where("id").equals(cityId).toArray();
                 hasData = Array.isArray(results) && results.length === 1;
 
                 if (hasData) {
                     setWeatherFetchInfo({ data: results[0], isLoading: false, error: false });
+                } else {
+                    setWeatherFetchInfo((prevInfo) => ({
+                        ...prevInfo,
+                        error: false,
+                        isLoading: true,
+                    }));
                 }
 
                 return Promise.resolve({ hasData });
@@ -51,7 +54,10 @@ const useFetchWeatherData = () => {
     const fetchWeatherData = useCallback(
         async ({ lat, lng }: FetchWeatherDataOptions) => {
             try {
-                const res = await fetch(`/api/v1/weather-forecast?lat=${lat}&lng=${lng}`);
+                const [res] = await Promise.all([
+                    fetch(`/api/v1/weather-forecast?lat=${lat}&lng=${lng}`),
+                    new Promise((resolve) => setTimeout(resolve, 500)),
+                ]);
 
                 if (!res.ok) {
                     throw new Error("Failed to fetch weather data");
@@ -91,7 +97,6 @@ const useFetchWeatherData = () => {
         async (cityInfo: CityType) => {
             try {
                 const cityId = +cityInfo.id;
-                setWeatherFetchInfo((prevInfo) => ({ ...prevInfo, error: false, isLoading: true }));
 
                 const { hasData } = await getWeatherDataFromDB({ cityId });
                 const { weatherData } = await fetchWeatherData({
