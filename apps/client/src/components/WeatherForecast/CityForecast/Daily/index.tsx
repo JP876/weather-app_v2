@@ -20,13 +20,7 @@ const GraphContainer = ({ children }: { children: React.ReactNode }) => {
 const DailyMain = () => {
     return (
         <Box>
-            <Stack
-                direction="row"
-                mb={4}
-                justifyContent="space-between"
-                alignItems="center"
-                gap={2}
-            >
+            <Stack direction="row" mb={4} justifyContent="space-between" gap={2}>
                 <Typography variant="h5">Daily Forecast</Typography>
                 <UserSettings />
             </Stack>

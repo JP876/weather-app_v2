@@ -1,7 +1,7 @@
-import { memo, useEffect, useMemo, useRef, useState } from "react";
+import { memo, useCallback, useEffect, useRef, useState } from "react";
 import { Box, Collapse, Skeleton, Stack, Typography } from "@mui/material";
+import { AutoSizer, Grid, type GridCellProps } from "react-virtualized";
 import { useAtomValue } from "jotai";
-import { format } from "date-fns";
 
 import HourlyCard, { HourlyCardContainer } from "./HourlyCard";
 import HourlyChart from "./HourlyChart";
@@ -34,26 +34,42 @@ const SkeletonCard = ({ isLoading, error }: { isLoading: boolean; error: boolean
     );
 };
 
+const style: React.CSSProperties = {
+    overflowY: "hidden",
+};
+
+const HourlyCardsGrid = memo(() => {
+    const cellRenderer = useCallback(({ columnIndex, key, style }: GridCellProps) => {
+        return (
+            <Box key={key} style={{ ...style }} sx={{ px: 1 }}>
+                <HourlyCard index={columnIndex} />
+            </Box>
+        );
+    }, []);
+
+    return (
+        <AutoSizer disableHeight>
+            {({ width }) => (
+                <Grid
+                    rowCount={1}
+                    columnCount={24}
+                    columnWidth={164}
+                    height={264}
+                    rowHeight={264}
+                    width={width}
+                    cellRenderer={cellRenderer}
+                    style={style}
+                />
+            )}
+        </AutoSizer>
+    );
+});
+
 const HourlyCardsContainer = () => {
     const justMounted = useRef(true);
     const [cardsContainer, setCardsContainer] = useState<HTMLDivElement | null>(null);
 
     const { isLoading, data: weatherData, error } = useAtomValue(weatherFetchInfoAtom);
-
-    const hourlyData = useMemo(() => {
-        if (!Array.isArray(weatherData?.hourly)) return null;
-
-        return weatherData.hourly
-            .filter((_, i) => i % 2 === 0)
-            .map((d) => ({
-                ...d,
-                date: format(new Date(d.dt * 1_000), "HH:mm"),
-                temp: d.temp.toFixed(1),
-                feels_like: d.feels_like.toFixed(1),
-                rain: d?.rain ? `${(d.rain["1h"] * 100).toFixed(0)}mm/h` : null,
-                pop: `${(d.pop * 100).toFixed(0)}%`,
-            }));
-    }, [weatherData]);
 
     useEffect(() => {
         if (!justMounted.current && weatherData?.hourly && cardsContainer) {
@@ -71,16 +87,17 @@ const HourlyCardsContainer = () => {
         <Stack
             ref={setCardsContainer}
             id="hourly-cards-container"
-            gap={2}
             direction="row"
             alignItems="center"
-            sx={{ overflowX: "scroll", pb: 2.5 }}
+            sx={{ pb: 2.5 }}
         >
-            {isLoading || !!error || hourlyData === null
-                ? Array.from({ length: 24 }).map((_, index) => (
-                      <SkeletonCard key={index} isLoading={isLoading} error={!!error} />
-                  ))
-                : hourlyData.map((data) => <HourlyCard key={data.dt} data={data} />)}
+            {isLoading || !!error || weatherData === null ? (
+                Array.from({ length: 24 }).map((_, index) => (
+                    <SkeletonCard key={index} isLoading={isLoading} error={!!error} />
+                ))
+            ) : (
+                <HourlyCardsGrid />
+            )}
         </Stack>
     );
 };
@@ -98,13 +115,7 @@ const GraphContainer = ({ children }: { children: React.ReactNode }) => {
 const HourlyMain = () => {
     return (
         <Box>
-            <Stack
-                direction="row"
-                mb={4}
-                justifyContent="space-between"
-                alignItems="center"
-                gap={2}
-            >
+            <Stack direction="row" mb={4} justifyContent="space-between" gap={2}>
                 <Typography variant="h5">Hourly Forecast</Typography>
                 <UserSettings />
             </Stack>

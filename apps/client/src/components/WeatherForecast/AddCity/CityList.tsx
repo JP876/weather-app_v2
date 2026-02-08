@@ -49,7 +49,7 @@ const CityListItem = ({ index }: CityListItemType) => {
 
     const cityInfo = filteredCities?.[index] || null;
 
-    const isFavourite = favouriteCities.some(
+    const isFavourite = (favouriteCities || []).some(
         (city) => city.id.toString() === cityInfo?.id.toString(),
     );
 
@@ -74,7 +74,9 @@ const CityListItem = ({ index }: CityListItemType) => {
         setFavouriteCities((prevValue) => {
             if (isFavourite) {
                 deleteDataFromDB();
-                return prevValue.filter((city) => city.id.toString() !== cityInfo.id.toString());
+                return (prevValue || []).filter(
+                    (city) => city.id.toString() !== cityInfo.id.toString(),
+                );
             }
             return [...(prevValue || []), cityInfo];
         });

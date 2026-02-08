@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { memo, useEffect, useRef } from "react";
 import { Divider, Stack, styled, type StackProps } from "@mui/material";
 import { useAtomValue } from "jotai";
 
@@ -16,10 +16,10 @@ const CityForecastContainer = styled(Stack)<StackProps>(({ theme }) => ({
     paddingInline: theme.spacing(2),
 }));
 
-const FetchLoadingData = () => {
+const FetchLoadingData = memo(() => {
     const { isLoading, error } = useAtomValue(weatherFetchInfoAtom);
     return <LoadingData isLoading={isLoading} error={!!error} />;
-};
+});
 
 const CityForecastMain = () => {
     const cityId = useRef<string | null>(null);
@@ -46,4 +46,4 @@ const CityForecastMain = () => {
     );
 };
 
-export default CityForecastMain;
+export default memo(CityForecastMain);
