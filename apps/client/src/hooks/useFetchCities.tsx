@@ -13,8 +13,14 @@ const useFetchCities = () => {
     const setFilteredCities = useSetAtom(filteredCitiesAtom);
 
     const handleFetch = useCallback(async () => {
+        let cities = null;
         setCitiesFetchInfo((prevValue) => ({ ...prevValue, isLoading: true, error: false }));
-        const cities = await db.cities.reverse().sortBy("population");
+
+        try {
+            cities = await db.cities.reverse().sortBy("population");
+        } catch (err: unknown) {
+            console.error(err);
+        }
 
         if (Array.isArray(cities) && cities.length > 0) {
             setCitiesFetchInfo({ data: cities, isLoading: false, error: false });
@@ -25,36 +31,35 @@ const useFetchCities = () => {
         const abortController = new AbortController();
         controller.current = abortController;
 
-        return fetch("/api/v1/worldcities", { signal: abortController.signal })
-            .then(async (res) => {
-                if (!res.ok) {
-                    throw new Error("Failed to fetch cities data");
-                }
+        try {
+            const res = await fetch("/api/v1/worldcities", { signal: abortController.signal });
+            if (!res.ok) {
+                throw new Error("Failed to fetch cities data");
+            }
 
-                const data = (await res.json()) as { results: CityType[] };
+            const data = (await res.json()) as { results: CityType[] };
 
-                setCitiesFetchInfo({ data: data.results, isLoading: false, error: false });
-                setFilteredCities(data?.results);
+            setCitiesFetchInfo({ data: data.results, isLoading: false, error: false });
+            setFilteredCities(data?.results);
 
-                await db.cities.bulkAdd(data.results);
+            await db.cities.bulkAdd(data.results);
 
-                return Promise.resolve(data.results);
-            })
-            .catch((err) => {
-                const error = err as Error | DexieError;
+            return Promise.resolve(data.results);
+        } catch (err: unknown) {
+            const error = err as Error | DexieError;
 
-                setFilteredCities([]);
-                setCitiesFetchInfo({
-                    data: [],
-                    isLoading: false,
-                    error: {
-                        type: "API",
-                        msg: error.message,
-                        name: error.name,
-                        cause: error.cause,
-                    },
-                });
+            setFilteredCities([]);
+            setCitiesFetchInfo({
+                data: [],
+                isLoading: false,
+                error: {
+                    type: "API",
+                    msg: error.message,
+                    name: error.name,
+                    cause: error.cause,
+                },
             });
+        }
     }, [setCitiesFetchInfo, setFilteredCities]);
 
     useEffect(() => {
