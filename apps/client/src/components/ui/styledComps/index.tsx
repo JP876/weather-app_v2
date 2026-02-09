@@ -17,9 +17,11 @@ export const FeedbackContainer = styled(Box, {
     }),
 );
 
-export const ClampedText = styled(Typography, { shouldForwardProp: (prop) => prop !== "maxRows" })<
-    TypographyProps<"span", { maxRows?: number }>
->(({ maxRows = 1 }) => ({
+export type ClampedTextProps = TypographyProps<"span", { maxRows?: number }>;
+
+export const ClampedText = styled(Typography, {
+    shouldForwardProp: (prop) => prop !== "maxRows",
+})<ClampedTextProps>(({ maxRows = 1 }) => ({
     whiteSpace: "wrap",
     wordBreak: "break-all",
     display: "-webkit-box",

@@ -5,7 +5,7 @@ import ClearIcon from "@mui/icons-material/Clear";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 
 import type { CityType } from "../../../../types";
-import { ClampedText } from "../../../ui/styledComps";
+import ClampedTextContainer from "../../../ui/ClampedTextContainer";
 
 type CityInfoProps = Pick<CityType, "iso2" | "country" | "city" | "lat" | "lng"> & {
     isFavourite: boolean;
@@ -34,7 +34,7 @@ const CityInfo = memo(({ iso2, country, city, lat, lng, isFavourite }: CityInfoP
                     alt={`${country} flag`}
                 />
                 <Stack>
-                    <ClampedText
+                    <ClampedTextContainer
                         variant="subtitle1"
                         sx={(theme) => ({
                             marginBottom: theme.spacing(-0.5),
@@ -43,7 +43,7 @@ const CityInfo = memo(({ iso2, country, city, lat, lng, isFavourite }: CityInfoP
                         })}
                     >
                         {city}
-                    </ClampedText>
+                    </ClampedTextContainer>
                     <Typography variant="caption">{country}</Typography>
                 </Stack>
             </Stack>

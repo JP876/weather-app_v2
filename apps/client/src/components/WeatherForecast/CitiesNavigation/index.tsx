@@ -6,8 +6,8 @@ import { useLocation } from "wouter";
 
 import { favouriteCitiesAtom, weatherFetchInfoAtom } from "../../../atoms";
 import type { CityType } from "../../../types";
-import { ClampedText } from "../../ui/styledComps";
 import { db } from "../../../utils/db";
+import ClampedTextContainer from "../../ui/ClampedTextContainer";
 
 const a11yProps = (index: number) => {
     return {
@@ -39,7 +39,7 @@ const TabLabel = memo(({ id, city }: TabLabelProps) => {
 
     return (
         <Stack direction="row" alignItems="center" gap={1}>
-            <ClampedText
+            <ClampedTextContainer
                 variant="body1"
                 sx={[
                     (theme) => ({
@@ -49,7 +49,7 @@ const TabLabel = memo(({ id, city }: TabLabelProps) => {
                 ]}
             >
                 {city}
-            </ClampedText>
+            </ClampedTextContainer>
             <Box
                 onClick={handleDeleteLocation}
                 sx={[

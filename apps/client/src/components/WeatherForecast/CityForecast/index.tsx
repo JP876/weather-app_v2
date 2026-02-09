@@ -38,11 +38,11 @@ const CityForecastMain = () => {
     const { handleFetch } = useFetchWeatherData();
 
     useEffect(() => {
-        if (cityInfo && cityInfo.id.toString() !== cityId.current) {
+        if (cityInfo?.id && cityInfo?.id.toString() !== cityId.current) {
             cityId.current = cityInfo.id.toString();
-            handleFetch(cityInfo);
+            handleFetch({ id: cityInfo.id, lat: cityInfo.lat, lng: cityInfo.lng });
         }
-    }, [cityInfo, handleFetch]);
+    }, [cityInfo?.id, cityInfo?.lat, cityInfo?.lng, handleFetch]);
 
     return (
         <CityForecastContainer>

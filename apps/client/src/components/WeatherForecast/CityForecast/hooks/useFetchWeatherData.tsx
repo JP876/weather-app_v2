@@ -94,7 +94,7 @@ const useFetchWeatherData = () => {
     );
 
     const handleFetch = useCallback(
-        async (cityInfo: CityType) => {
+        async (cityInfo: Pick<CityType, "id" | "lat" | "lng">) => {
             try {
                 const cityId = +cityInfo.id;
 

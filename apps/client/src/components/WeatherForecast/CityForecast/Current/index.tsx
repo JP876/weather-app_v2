@@ -6,6 +6,7 @@ import useCityInfo from "../hooks/useCityInfo";
 import { weatherFetchInfoAtom } from "../../../../atoms";
 import getWeatherIconSrc from "../../../../utils/getWeatherIconSrc";
 import WeatherIcon from "../../../ui/WeatherIcon";
+import ClampedTextContainer from "../../../ui/ClampedTextContainer";
 
 type CurrentTemperatureProps = {
     temp?: string;
@@ -30,9 +31,11 @@ const LocationInfo = () => {
     return (
         <Stack>
             <Stack direction="row" alignItems="center" gap={1}>
-                <Typography variant="h4">{cityInfo?.city}</Typography>
+                <ClampedTextContainer variant="h4">{cityInfo?.city}</ClampedTextContainer>
             </Stack>
-            <Typography variant="body2">{`${cityInfo?.country}, ${cityInfo?.iso2}`}</Typography>
+            <ClampedTextContainer variant="body2">
+                {`${cityInfo?.country}, ${cityInfo?.iso2}`}
+            </ClampedTextContainer>
         </Stack>
     );
 };
