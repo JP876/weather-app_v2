@@ -3,11 +3,12 @@ import { Box, styled, type BoxProps } from "@mui/material";
 
 import CitiesNavigation from "./CitiesNavigation";
 import RouterMain from "../Router";
+import { GlassContainer } from "../ui/styledComps";
 
 const MARGIN_BLOCK = 4;
 const MARGIN_INLINE = 4;
 
-const WeatherForecastContainer = styled(Box)(({ theme }) => ({
+const WeatherForecastContainer = styled(GlassContainer)(({ theme }) => ({
     position: "absolute",
     top: `calc(${theme.spacing(MARGIN_BLOCK)} + var(--header_height))`,
     left: theme.spacing(MARGIN_INLINE),

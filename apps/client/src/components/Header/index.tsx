@@ -1,7 +1,8 @@
-import { IconButton, Stack, Typography } from "@mui/material";
+import { IconButton, Stack, styled, Typography } from "@mui/material";
 import SettingsIcon from "@mui/icons-material/Settings";
 import PanoramaPhotosphereIcon from "@mui/icons-material/PanoramaPhotosphere";
 import { useLocation } from "wouter";
+import { GlassContainer } from "../ui/styledComps";
 
 const HeaderLogo = () => {
     const [, navigate] = useLocation();
@@ -19,30 +20,30 @@ const HeaderLogo = () => {
     );
 };
 
+const HeaderContainer = styled(GlassContainer)(({ theme }) => ({
+    left: 0,
+    top: 0,
+    position: "fixed",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
+    zIndex: 1,
+    width: "100%",
+    height: "var(--header_height)",
+    borderBottom: `1px solid ${theme.palette.grey[400]}`,
+    paddingInline: theme.spacing(4),
+}));
+
 const HeaderMain = () => {
     return (
-        <Stack
-            component="header"
-            direction="row"
-            alignItems="center"
-            justifyContent="space-between"
-            sx={(theme) => ({
-                left: 0,
-                top: 0,
-                position: "fixed",
-                width: "100%",
-                height: "var(--header_height)",
-                borderBottom: `1px solid ${theme.palette.grey[400]}`,
-                paddingInline: theme.spacing(4),
-            })}
-        >
+        <HeaderContainer component="header">
             <HeaderLogo />
             <Stack direction="row" alignItems="center">
                 <IconButton size="small">
                     <SettingsIcon />
                 </IconButton>
             </Stack>
-        </Stack>
+        </HeaderContainer>
     );
 };
 
