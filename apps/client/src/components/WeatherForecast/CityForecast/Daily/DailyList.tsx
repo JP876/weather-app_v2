@@ -7,7 +7,7 @@ import { useAtomValue } from "jotai";
 import { format } from "date-fns";
 import getMinMax from "../../../../utils/getMinMax";
 import { weatherFetchInfoAtom } from "../../../../atoms";
-import WeatherIcon from "../../../WeatherIcon";
+import WeatherIcon from "../../../ui/WeatherIcon";
 
 const DailyItemContainer = styled(Box)(({ theme }) => ({
     width: "100%",

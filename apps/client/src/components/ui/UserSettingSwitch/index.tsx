@@ -2,7 +2,7 @@ import { memo } from "react";
 import { FormControlLabel, Switch } from "@mui/material";
 import { useSetAtom } from "jotai";
 
-import { userSettingsAtom } from "../../atoms";
+import { userSettingsAtom } from "../../../atoms";
 
 type UserSettingSwitchProps = {
     checked: boolean;

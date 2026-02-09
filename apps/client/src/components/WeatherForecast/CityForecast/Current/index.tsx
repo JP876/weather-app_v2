@@ -4,8 +4,8 @@ import { useAtomValue } from "jotai";
 
 import useCityInfo from "../hooks/useCityInfo";
 import { weatherFetchInfoAtom } from "../../../../atoms";
-import WeatherIcon from "../../../WeatherIcon";
 import getWeatherIconSrc from "../../../../utils/getWeatherIconSrc";
+import WeatherIcon from "../../../ui/WeatherIcon";
 
 type CurrentTemperatureProps = {
     temp?: string;

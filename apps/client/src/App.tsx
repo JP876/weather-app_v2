@@ -1,11 +1,11 @@
 import { useEffect, useRef } from "react";
 import { Box, CssBaseline } from "@mui/material";
 
-import SnackbarContainer from "./components/Feedback/SnackbarContainer";
 import useFetchCities from "./hooks/useFetchCities";
 import HeaderMain from "./components/Header";
 import FooterMain from "./components/Footer";
 import WeatherForecast from "./components/WeatherForecast";
+import SnackbarContainer from "./components/ui/Feedback/SnackbarContainer";
 
 const App = () => {
     const justMounted = useRef(true);

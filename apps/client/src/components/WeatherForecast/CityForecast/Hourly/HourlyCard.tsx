@@ -3,17 +3,12 @@ import { Stack, styled, Typography, type StackProps } from "@mui/material";
 import { format } from "date-fns";
 import { useAtomValue } from "jotai";
 
-import WeatherIcon from "../../../WeatherIcon";
 import { weatherFetchInfoAtom } from "../../../../atoms";
-
-type HourlyCardContainerType = StackProps & {
-    isLoading?: boolean;
-    error?: boolean;
-};
+import WeatherIcon from "../../../ui/WeatherIcon";
 
 export const HourlyCardContainer = styled(Stack, {
     shouldForwardProp: (prop) => prop !== "isLoading" && prop !== "error",
-})<HourlyCardContainerType>(({ theme, isLoading, error }) => {
+})<StackProps<"div", { isLoading?: boolean; error?: boolean }>>(({ theme, isLoading, error }) => {
     const borderColor = (() => {
         if (isLoading || error) return theme.palette.action.disabled;
         return theme.palette.primary.main;

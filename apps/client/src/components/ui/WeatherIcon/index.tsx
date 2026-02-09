@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 
 import Skycons from "./skycons-js/skycons";
-import type { SkyconProps, SkyconIconType } from "../../types/weatherIcon";
+import type { SkyconIconType, SkyconProps } from "../../../types/weatherIcon";
 
 type WeatherIconProps = Partial<SkyconProps> & { code: string };
 

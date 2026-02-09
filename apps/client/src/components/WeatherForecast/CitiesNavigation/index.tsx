@@ -6,7 +6,7 @@ import { useLocation } from "wouter";
 
 import { favouriteCitiesAtom, weatherFetchInfoAtom } from "../../../atoms";
 import type { CityType } from "../../../types";
-import { ClampedText } from "../../styledComps";
+import { ClampedText } from "../../ui/styledComps";
 import { db } from "../../../utils/db";
 
 const a11yProps = (index: number) => {

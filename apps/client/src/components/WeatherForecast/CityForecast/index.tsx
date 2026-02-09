@@ -6,9 +6,9 @@ import useCityInfo from "./hooks/useCityInfo";
 import CurrentMain from "./Current";
 import DailyMain from "./Daily";
 import HourlyMain from "./Hourly";
-import LoadingData from "../../Feedback/LoadingData";
 import { weatherFetchInfoAtom } from "../../../atoms";
 import useFetchWeatherData from "./hooks/useFetchWeatherData";
+import LoadingData from "../../ui/Feedback/LoadingData";
 
 const CityForecastContainer = styled(Stack)<StackProps>(({ theme }) => ({
     gap: theme.spacing(2),
@@ -18,6 +18,16 @@ const CityForecastContainer = styled(Stack)<StackProps>(({ theme }) => ({
 
 const FetchLoadingData = memo(() => {
     const { isLoading, error } = useAtomValue(weatherFetchInfoAtom);
+
+    useEffect(() => {
+        const routesContainer = document.getElementById("forecast-routes-container");
+
+        if (routesContainer) {
+            routesContainer.style.overflow = isLoading || !!error ? "hidden" : "auto";
+            routesContainer.style.pointerEvents = isLoading || !!error ? "none" : "all";
+        }
+    }, [error, isLoading]);
+
     return <LoadingData isLoading={isLoading} error={!!error} />;
 });
 

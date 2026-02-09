@@ -1,7 +1,7 @@
 import { Skeleton, Stack } from "@mui/material";
 
-import { CityListItemContainer } from "./CityList";
 import getMinMax from "../../../utils/getMinMax";
+import { CityListItemContainer } from "./styledComps";
 
 const CityListSkeleton = () => {
     return (

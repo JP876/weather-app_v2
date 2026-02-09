@@ -1,10 +1,8 @@
 import { memo } from "react";
 import { Box, styled, type BoxProps } from "@mui/material";
-import { useAtomValue } from "jotai";
 
 import CitiesNavigation from "./CitiesNavigation";
 import RouterMain from "../Router";
-import { citiesFetchInfoAtom, weatherFetchInfoAtom } from "../../atoms";
 
 const MARGIN_BLOCK = 4;
 const MARGIN_INLINE = 4;
@@ -31,19 +29,15 @@ const WeatherForecastContainer = styled(Box)(({ theme }) => ({
 
 const WeatherForecastRoutesContainer = styled(Box, {
     shouldForwardProp: (prop) => prop !== "isLoading",
-})<BoxProps<"div", { isLoading: boolean }>>(({ theme, isLoading }) => ({
+})<BoxProps<"div">>(({ theme }) => ({
     // 100vh - 2 * top/bottom main "margin" - header height - tabs height - footer height
-    "--weather-forecast-routes-container-height": `
+    "--routes-container-height": `
         calc(100vh - 2 * ${theme.spacing(MARGIN_BLOCK)} - var(--header_height) - 3rem  - var(--footer_height))
     `,
-    maxHeight: "var(--weather-forecast-routes-container-height)",
-    overflow: "auto",
+    maxHeight: "var(--routes-container-height)",
     position: "relative",
-
-    ...(isLoading && {
-        overflow: "hidden",
-        pointerEvents: "none",
-    }),
+    overflow: "hidden",
+    pointerEvents: "none",
 }));
 
 const WeatherForecastHeight = styled(Box)(({ theme }) => ({
@@ -55,33 +49,14 @@ const WeatherForecastHeight = styled(Box)(({ theme }) => ({
     "--weather-forecast-container-height": `calc(100vh - 2 * ${theme.spacing(MARGIN_BLOCK)})`,
 }));
 
-const RoutesContainer = ({ children }: { children: React.ReactNode }) => {
-    const weatherFetchInfo = useAtomValue(weatherFetchInfoAtom);
-    const citiesFetchInfo = useAtomValue(citiesFetchInfoAtom);
-
-    return (
-        <WeatherForecastRoutesContainer
-            id="forecast-routes-container"
-            isLoading={
-                weatherFetchInfo.isLoading ||
-                !!weatherFetchInfo.error ||
-                citiesFetchInfo.isLoading ||
-                !!citiesFetchInfo.error
-            }
-        >
-            {children}
-        </WeatherForecastRoutesContainer>
-    );
-};
-
 const WeatherForecast = () => {
     return (
         <WeatherForecastContainer>
             <WeatherForecastHeight id="wether-forecast-container-height" />
             <CitiesNavigation />
-            <RoutesContainer>
+            <WeatherForecastRoutesContainer id="forecast-routes-container">
                 <RouterMain />
-            </RoutesContainer>
+            </WeatherForecastRoutesContainer>
         </WeatherForecastContainer>
     );
 };

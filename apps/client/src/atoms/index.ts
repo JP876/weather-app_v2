@@ -5,10 +5,17 @@ import type { CityType, UserSettingsType } from "../types";
 import type { WeatherDataType } from "../types/weatherdata";
 import type { AlertProps, SnackbarProps } from "@mui/material";
 
+type FetchInfoError = {
+    msg: string;
+    type: "DB" | "API";
+    name: string;
+    cause?: unknown;
+};
+
 export type FetchInfoType<T> = {
     data: T | null;
     isLoading: boolean;
-    error: boolean | { msg: string; type: "DB" | "API"; name: string; cause?: unknown };
+    error: boolean | FetchInfoError;
 };
 
 type AlertPropsType = Pick<AlertProps, "severity" | "variant">;
@@ -31,6 +38,6 @@ export const favouriteCitiesAtom = atomWithStorage<CityType[] | null>("favourite
 export const snackbarAtom = atom<SnackbarAtomType>({ open: false, message: "" });
 
 export const userSettingsAtom = atomWithStorage<UserSettingsType>("settings", {
-    daily: { list: false, graph: false },
-    hourly: { cards: false, graph: false },
+    daily: { list: true, graph: true },
+    hourly: { cards: true, graph: true },
 });

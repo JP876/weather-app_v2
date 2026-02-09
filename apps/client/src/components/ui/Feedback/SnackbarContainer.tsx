@@ -2,8 +2,8 @@ import { memo } from "react";
 import { Alert, Snackbar } from "@mui/material";
 import { useAtomValue } from "jotai";
 
-import { snackbarAtom } from "../../atoms";
-import useSnackbar from "../../hooks/useSnackbar";
+import { snackbarAtom } from "../../../atoms";
+import useSnackbar from "../../../hooks/useSnackbar";
 
 const SnackbarContainer = () => {
     const info = useAtomValue(snackbarAtom);

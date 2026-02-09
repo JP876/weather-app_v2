@@ -8,7 +8,7 @@ export const FeedbackContainer = styled(Box, {
         top: top,
         left: 0,
         width: "100%",
-        height: "var(--weather-forecast-routes-container-height)",
+        height: "var(--routes-container-height)",
         backgroundColor: theme.alpha(theme.palette.grey[200], 0.4),
         zIndex: theme.zIndex.drawer + 1,
         display: isLoading || error ? "flex" : "none",
