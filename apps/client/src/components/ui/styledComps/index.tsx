@@ -34,7 +34,7 @@ export const ClampedText = styled(Typography, {
 export const GlassContainer = styled(Box)<BoxProps>(({ theme }) => ({
     background: "rgba(255, 255, 255, 0.15)",
     backdropFilter: `blur(${theme.spacing(4)})`,
-    "-webkit-backdrop-filter": `blur(${theme.spacing(4)})`,
+    WebkitBackdropFilter: `blur(${theme.spacing(4)})`,
     boxShadow: `0 8px 32px rgba(0, 0, 0, 0.1),
                 inset 0 1px 0 rgba(255, 255, 255, 0.5),
                 inset 0 -1px 0 rgba(255, 255, 255, 0.1),

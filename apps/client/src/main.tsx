@@ -1,4 +1,3 @@
-import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { ThemeProvider } from "@mui/material";
 import { Provider } from "jotai";
@@ -14,13 +13,11 @@ import "@fontsource/roboto-mono/500.css";
 import "@fontsource/roboto-mono/700.css";
 
 createRoot(document.getElementById("root")!).render(
-    <StrictMode>
-        <Provider>
-            <Router>
-                <ThemeProvider theme={theme}>
-                    <App />
-                </ThemeProvider>
-            </Router>
-        </Provider>
-    </StrictMode>,
+    <Provider>
+        <Router>
+            <ThemeProvider theme={theme}>
+                <App />
+            </ThemeProvider>
+        </Router>
+    </Provider>,
 );

@@ -12,20 +12,23 @@ const EarthMain = lazy(() => import("./components/Earth"));
 const App = () => {
     const justMounted = useRef(true);
 
-    const { handleFetch } = useFetchCities();
+    const cities = useFetchCities();
 
     useEffect(() => {
         if (justMounted.current) {
-            handleFetch();
+            (async () => {
+                Promise.allSettled([cities.handleFetch()]);
+            })();
         }
         justMounted.current = false;
-    }, [handleFetch]);
+    }, [cities]);
 
     return (
-        <Box component="main" sx={{ "--header_height": "4rem", "--footer_height": "4rem" }}>
+        <Box component="main" sx={{ "--header_height": "3.6rem", "--footer_height": "3.6rem" }}>
             <CssBaseline />
-            <HeaderMain />
             <SnackbarContainer />
+
+            <HeaderMain />
             <Box sx={{ position: "relative" }}>
                 <WeatherForecast />
             </Box>

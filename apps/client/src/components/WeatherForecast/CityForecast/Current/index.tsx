@@ -14,6 +14,7 @@ type CurrentTemperatureProps = {
 };
 
 const CurrentTemperatureContainer = styled(Stack)<StackProps>(({ theme }) => ({
+    display: "flex",
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
@@ -21,6 +22,9 @@ const CurrentTemperatureContainer = styled(Stack)<StackProps>(({ theme }) => ({
     top: 0,
     position: "sticky",
     backgroundColor: theme.palette.background.default,
+    // background: "rgba(255, 255, 255, 0.8)",
+    // backdropFilter: `blur(${theme.spacing(8)})`,
+    // WebkitBackdropFilter: `blur(${theme.spacing(4)})`,
     borderBottom: `1px solid ${theme.palette.divider}`,
     zIndex: theme.zIndex.appBar,
 }));

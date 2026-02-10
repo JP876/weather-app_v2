@@ -70,6 +70,37 @@ app.get("/api/v1/worldcities", rateLimiter, slowDownLimiter, (req, res) => {
         });
 });
 
+app.get("/api/v1/earth-texture", rateLimiter, slowDownLimiter, async (req, res) => {
+    const URL = process.env.TOMTOM_API_BASE_URL;
+    const API_KEY = process.env.TOMTOM_API_KEY;
+    const VERSION = process.env.TOMTOM_API_VERSION;
+
+    if (!URL || !API_KEY || !VERSION) {
+        res.status(500).send("");
+    }
+
+    const zoom = 0;
+    const coordinates = { x: 0, y: 0 };
+
+    try {
+        const response = await fetch(
+            `${URL}/map/${VERSION}/tile/sat/main/${zoom}/${coordinates.x}/${coordinates.y}.jpg?key=${API_KEY}`,
+        );
+
+        if (!response.ok) {
+            return res.status(404).send("Failed to fetch earth textures");
+        }
+
+        const blob = await response.blob();
+        const buffer = Buffer.from(await blob.arrayBuffer());
+
+        res.json({ results: "data:" + blob.type + ";base64," + buffer.toString("base64") });
+    } catch (error) {
+        console.log(error);
+        res.status(500).send("Failed to fetch earth textures");
+    }
+});
+
 app.get("/api/v1/weather-forecast", rateLimiter, slowDownLimiter, async (req, res) => {
     const URL = process.env.OPEN_WEATHER_30_API_BASE_URL;
     const API_KEY = process.env.OPEN_WEATHER_API_KEY;

@@ -13,15 +13,15 @@ const WeatherForecastContainer = styled(GlassContainer)(({ theme }) => ({
     top: `calc(${theme.spacing(MARGIN_BLOCK)} + var(--header_height))`,
     left: theme.spacing(MARGIN_INLINE),
     zIndex: theme.zIndex.appBar,
-    width: "38vw",
+    width: "40vw",
     border: `1px solid ${theme.palette.grey[400]}`,
     borderRadius: theme.shape.borderRadius,
 
     [theme.breakpoints.down("xl")]: {
-        width: "42vw",
+        width: "46vw",
     },
     [theme.breakpoints.down("lg")]: {
-        width: "48vw",
+        width: "52vw",
     },
     [theme.breakpoints.down("md")]: {
         width: `calc(100vw - 2 * ${theme.spacing(MARGIN_INLINE)})`,

@@ -30,6 +30,7 @@ const initialFetchInfo = { data: null, isLoading: false, error: false };
 
 export const citiesFetchInfoAtom = atom<FetchInfoType<CityType[]>>(initialFetchInfo);
 export const weatherFetchInfoAtom = atom<FetchInfoType<WeatherDataType>>(initialFetchInfo);
+export const earthFetchInfoAtom = atom<FetchInfoType<string>>(initialFetchInfo);
 
 export const searchValueAtom = atom("");
 export const filteredCitiesAtom = atom<CityType[] | null>(null);
