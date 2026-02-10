@@ -1,6 +1,6 @@
-import { useCallback } from "react";
+import { useCallback, useMemo } from "react";
 import { useAtomValue } from "jotai";
-import { Box } from "@mui/material";
+import { Box, useTheme } from "@mui/material";
 import { AutoSizer, List, type ListRowProps } from "react-virtualized";
 
 import useCityListHeight from "../hooks/useCityListHeight";
@@ -8,16 +8,24 @@ import CityListSkeleton from "../CityListSkeleton";
 import { citiesFetchInfoAtom, filteredCitiesAtom } from "../../../../atoms";
 import CityListItem from "./CityListItem";
 
-const listStyle: React.CSSProperties = {
-    paddingLeft: "1rem",
-    paddingBlock: "1rem",
-};
-
 const CityList = () => {
     const { isLoading, error } = useAtomValue(citiesFetchInfoAtom);
     const filteredCities = useAtomValue(filteredCitiesAtom);
 
     const { height } = useCityListHeight();
+
+    const theme = useTheme();
+
+    const listStyle = useMemo<React.CSSProperties>(() => {
+        return {
+            padding: "1rem",
+            overflow: "auto",
+            scrollbarColor: `${theme.palette.primary.light} transparent`,
+            scrollbarWidth: "thin",
+            scrollBehavior: "smooth",
+            scrollMargin: 0,
+        };
+    }, [theme.palette.primary.light]);
 
     const rowRenderer = useCallback(({ index, key, style }: ListRowProps) => {
         return (

@@ -1,5 +1,5 @@
 import { memo, useRef } from "react";
-import { Canvas, useFrame } from "@react-three/fiber";
+import { Canvas } from "@react-three/fiber";
 import { OrbitControls, useTexture } from "@react-three/drei";
 import * as THREE from "three";
 
@@ -21,8 +21,6 @@ const EarthModel = memo(() => {
         texture.colorSpace = THREE.LinearSRGBColorSpace;
         texture.anisotropy = 8;
     });
-
-    useFrame((state, delta) => {});
 
     return (
         <mesh>

@@ -39,6 +39,8 @@ const WeatherForecastRoutesContainer = styled(Box, {
     position: "relative",
     overflow: "hidden",
     pointerEvents: "none",
+    scrollbarColor: `${theme.palette.primary.light} rgba(255, 255, 255, 0.0)`,
+    scrollbarWidth: "thin",
 }));
 
 const WeatherForecastHeight = styled(Box)(({ theme }) => ({
