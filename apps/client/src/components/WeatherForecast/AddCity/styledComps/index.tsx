@@ -5,13 +5,13 @@ export const CityListItemContainer = styled(Stack, {
 })<StackProps<"div", { isFavourite: boolean }>>(({ theme, isFavourite }) => ({
     paddingInline: theme.spacing(2),
     cursor: "pointer",
-    backgroundColor: isFavourite ? theme.palette.grey[100] : "transparent",
+    backgroundColor: "transparent",
     transition: theme.transitions.create(["background-color", "border-color"]),
     border: `1px solid ${isFavourite ? theme.palette.primary.dark : "transparent"}`,
     borderRadius: theme.shape.borderRadius,
     gap: theme.spacing(4),
 
     "&:hover": {
-        backgroundColor: theme.palette.grey[200],
+        backgroundColor: theme.alpha(theme.palette.background.default, 0.2),
     },
 }));

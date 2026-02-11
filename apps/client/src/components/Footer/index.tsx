@@ -1,4 +1,4 @@
-import { memo, useState } from "react";
+import { memo, useMemo, useState } from "react";
 import {
     Button,
     Dialog,
@@ -30,9 +30,36 @@ const FooterContainer = styled(GlassContainer)(({ theme }) => ({
     paddingInline: theme.spacing(4),
 }));
 
+const useAttributions = () => {
+    return useMemo(() => {
+        return [
+            {
+                label: "Weather data provided by:",
+                links: [{ label: "OpenWeather", href: "https://openweathermap.org/" }],
+            },
+            {
+                label: "World Cities data provided by:",
+                links: [{ label: "Simplemaps.com", href: "https://simplemaps.com/" }],
+            },
+            {
+                label: "Earth textures provided by:",
+                links: [
+                    { label: "Solar System Scope", href: "https://www.solarsystemscope.com/" },
+                    {
+                        label: "Natural Earth III, Tom Patterson",
+                        href: "https://www.shadedrelief.com",
+                    },
+                ],
+            },
+        ];
+    }, []);
+};
+
 type AttributionModalProps = {} & DialogProps;
 
 const AttributionModal = ({ ...rest }: AttributionModalProps) => {
+    const attributions = useAttributions();
+
     const onClick = (event: React.MouseEvent<HTMLButtonElement>) => {
         if (rest.onClose && typeof rest.onClose === "function") {
             rest.onClose(event, "backdropClick");
@@ -40,32 +67,29 @@ const AttributionModal = ({ ...rest }: AttributionModalProps) => {
     };
 
     return (
-        <Dialog {...rest}>
+        <Dialog sx={{ "& .MuiPaper-root": { minWidth: "30rem" } }} {...rest}>
             <Stack direction="row" alignItems="center" justifyContent="space-between">
                 <DialogTitle>Attributions</DialogTitle>
                 <IconButton size="small" onClick={onClick} sx={{ mr: 2 }}>
                     <CloseIcon />
                 </IconButton>
             </Stack>
-            <DialogContent dividers sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
-                <Typography variant="body1">
-                    Weather data provided by:{" "}
-                    <Link target="_blank" rel="noreferrer" href="https://openweathermap.org/">
-                        OpenWeather
-                    </Link>
-                </Typography>
-                <Typography variant="body1">
-                    World Cities data provided by:{" "}
-                    <Link target="_blank" rel="noreferrer" href="https://simplemaps.com/">
-                        Simplemaps.com
-                    </Link>
-                </Typography>
-                <Typography variant="body1">
-                    Earth textures provided by:{" "}
-                    <Link target="_blank" rel="noreferrer" href="https://www.solarsystemscope.com/">
-                        Solar System Scope
-                    </Link>
-                </Typography>
+            <DialogContent dividers sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+                {attributions.map(({ label, links }) => (
+                    <Stack key={label}>
+                        <Typography variant="body1">{label}</Typography>
+                        {links.map((link) => (
+                            <Link
+                                key={link.label}
+                                target="_blank"
+                                rel="noreferrer"
+                                href={link.href}
+                            >
+                                {link.label}
+                            </Link>
+                        ))}
+                    </Stack>
+                ))}
             </DialogContent>
         </Dialog>
     );
@@ -76,7 +100,7 @@ const FooterMain = () => {
 
     return (
         <>
-            <FooterContainer component="footer">
+            <FooterContainer component="footer" onlyTopShadow>
                 <Button
                     startIcon={<AttributionIcon />}
                     size="small"

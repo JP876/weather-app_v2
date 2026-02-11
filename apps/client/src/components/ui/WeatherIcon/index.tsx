@@ -1,4 +1,5 @@
 import { useEffect, useRef } from "react";
+import { useTheme } from "@mui/material";
 
 import Skycons from "./skycons-js/skycons";
 import type { SkyconIconType, SkyconProps } from "../../../types/weatherIcon";
@@ -7,6 +8,7 @@ type WeatherIconProps = Partial<SkyconProps> & { code: string };
 
 const WeatherIcon = ({ icon, code, size, color, animate = true }: WeatherIconProps) => {
     const canvasRef = useRef<HTMLCanvasElement>(null);
+    const theme = useTheme();
 
     useEffect(() => {
         const ICON = (() => {
@@ -30,8 +32,9 @@ const WeatherIcon = ({ icon, code, size, color, animate = true }: WeatherIconPro
                 return code.includes("d") ? "CLEAR_DAY" : "CLEAR_NIGHT";
             }
         })() as SkyconIconType;
+        const initialColor = theme.palette.mode === "dark" ? "white" : "black";
 
-        const skycons = new Skycons({ color, resizeClear: true });
+        const skycons = new Skycons({ color: initialColor || color, resizeClear: true });
         skycons.add(canvasRef.current, ICON);
 
         if (animate) skycons.play();
@@ -40,7 +43,7 @@ const WeatherIcon = ({ icon, code, size, color, animate = true }: WeatherIconPro
             skycons.pause();
             skycons.remove();
         };
-    }, [code, color, animate, icon]);
+    }, [code, color, animate, icon, theme.palette.mode]);
 
     return <canvas ref={canvasRef} height={size} width={size}></canvas>;
 };

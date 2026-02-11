@@ -36,7 +36,7 @@ const HeaderContainer = styled(GlassContainer)(({ theme }) => ({
 
 const HeaderMain = () => {
     return (
-        <HeaderContainer component="header">
+        <HeaderContainer component="header" onlyBottomShadow>
             <HeaderLogo />
             <Stack direction="row" alignItems="center">
                 <IconButton size="small">

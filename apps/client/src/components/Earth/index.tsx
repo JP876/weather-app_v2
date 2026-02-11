@@ -28,6 +28,10 @@ const EarthModel = () => {
         texture.colorSpace = THREE.LinearSRGBColorSpace;
         texture.anisotropy = 8;
     });
+    const boundariesTexture = useTexture("./earth/boundaries.png", (texture) => {
+        texture.colorSpace = THREE.SRGBColorSpace;
+        texture.anisotropy = 8;
+    });
 
     return (
         <mesh>
@@ -40,6 +44,7 @@ const EarthModel = () => {
                     uDayTexture: new THREE.Uniform(earthDayTexture),
                     uNightTexture: new THREE.Uniform(earthNightTexture),
                     uSpecularCloudsTexture: new THREE.Uniform(earthSpecularCloudsTexture),
+                    uBoundariesTexture: new THREE.Uniform(boundariesTexture),
                     uSunDirection: new THREE.Uniform(new THREE.Vector3(0, 1, 0)),
                     uAtmosphereDayColor: new THREE.Uniform(new THREE.Color(ATMOSPHERE_DAY_COLOR)),
                     uAtmosphereTwilightColor: new THREE.Uniform(
@@ -89,12 +94,12 @@ const EarthMain = () => {
         <Canvas
             onCreated={({ gl }) => {
                 gl.toneMapping = THREE.NoToneMapping;
-                gl.setPixelRatio(window.devicePixelRatio);
+                gl.setPixelRatio(Math.min(window.devicePixelRatio, 2));
                 gl.setClearColor("#000011");
             }}
         >
             <Experince />
-            <OrbitControls enablePan={false} maxDistance={4} minDistance={2.8} />
+            <OrbitControls enablePan={false} maxDistance={4} minDistance={2.4} />
         </Canvas>
     );
 };

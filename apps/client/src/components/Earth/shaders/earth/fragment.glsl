@@ -1,6 +1,7 @@
 uniform sampler2D uDayTexture;
 uniform sampler2D uNightTexture;
 uniform sampler2D uSpecularCloudsTexture;
+uniform sampler2D uBoundariesTexture;
 uniform vec3 uSunDirection;
 uniform vec3 uAtmosphereDayColor;
 uniform vec3 uAtmosphereTwilightColor;
@@ -47,6 +48,10 @@ void main()
     
     vec3 specularColor = mix(vec3(1.0), atmosphereColor, fresnel);
     color += specular * specularColor;
+
+    // Boundaries
+    vec3 boundaries = texture(uBoundariesTexture, vUv).rgb;
+    color += boundaries;
 
     // Final color
     gl_FragColor = vec4(color, 1.0);
