@@ -1,7 +1,7 @@
 import { Box, styled, Typography, type BoxProps, type TypographyProps } from "@mui/material";
 
 export const GlassContainer = styled(Box)<BoxProps>(({ theme }) => ({
-    background: "rgba(255, 255, 255, 0.15)",
+    background: "rgba(255, 255, 255, 0.2)",
     backdropFilter: `blur(${theme.spacing(4)})`,
     WebkitBackdropFilter: `blur(${theme.spacing(4)})`,
     boxShadow: `0 8px 32px rgba(0, 0, 0, 0.1),

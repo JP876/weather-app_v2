@@ -5,8 +5,15 @@ import * as THREE from "three";
 
 import fragmentShader from "./shaders/earth/fragment.glsl";
 import vertexShader from "./shaders/earth/vertex.glsl";
+import atmosphereFragmentShader from "./shaders/atmosphere/fragment.glsl";
+import atmosphereVertexShader from "./shaders/atmosphere/vertex.glsl";
 
-const EarthModel = memo(() => {
+const ATMOSPHERE_DAY_COLOR = "#00aaff";
+const ATMOSPHERE_TWILIGHT_COLOR = "#ff6600";
+const SUN_DIRECTION = new THREE.Vector3(0, 1, 0);
+const EARTH_RADIUS = 1.8;
+
+const EarthModel = () => {
     const shaderRef = useRef<THREE.ShaderMaterial | null>(null);
 
     const earthDayTexture = useTexture("./earth/day.jpg", (texture) => {
@@ -24,7 +31,7 @@ const EarthModel = memo(() => {
 
     return (
         <mesh>
-            <sphereGeometry args={[1.8, 64, 64]} />
+            <sphereGeometry args={[EARTH_RADIUS, 64, 64]} />
             <shaderMaterial
                 ref={shaderRef}
                 vertexShader={vertexShader}
@@ -33,17 +40,60 @@ const EarthModel = memo(() => {
                     uDayTexture: new THREE.Uniform(earthDayTexture),
                     uNightTexture: new THREE.Uniform(earthNightTexture),
                     uSpecularCloudsTexture: new THREE.Uniform(earthSpecularCloudsTexture),
-                    uSunDirection: new THREE.Uniform(new THREE.Vector3(0, 0, 1)),
+                    uSunDirection: new THREE.Uniform(new THREE.Vector3(0, 1, 0)),
+                    uAtmosphereDayColor: new THREE.Uniform(new THREE.Color(ATMOSPHERE_DAY_COLOR)),
+                    uAtmosphereTwilightColor: new THREE.Uniform(
+                        new THREE.Color(ATMOSPHERE_TWILIGHT_COLOR),
+                    ),
                 }}
             />
         </mesh>
     );
-});
+};
+
+const Atmosphere = () => {
+    const shaderRef = useRef<THREE.ShaderMaterial | null>(null);
+
+    return (
+        <mesh>
+            <sphereGeometry args={[EARTH_RADIUS * 1.04, 64, 64]} />
+            <shaderMaterial
+                ref={shaderRef}
+                side={THREE.BackSide}
+                transparent
+                vertexShader={atmosphereVertexShader}
+                fragmentShader={atmosphereFragmentShader}
+                uniforms={{
+                    uSunDirection: new THREE.Uniform(SUN_DIRECTION),
+                    uAtmosphereDayColor: new THREE.Uniform(new THREE.Color(ATMOSPHERE_DAY_COLOR)),
+                    uAtmosphereTwilightColor: new THREE.Uniform(
+                        new THREE.Color(ATMOSPHERE_TWILIGHT_COLOR),
+                    ),
+                }}
+            />
+        </mesh>
+    );
+};
+
+const Experince = () => {
+    return (
+        <>
+            <EarthModel />
+            <Atmosphere />
+        </>
+    );
+};
 
 const EarthMain = () => {
     return (
-        <Canvas gl={{ toneMapping: THREE.NoToneMapping, antialias: true }}>
-            <EarthModel />
+        <Canvas
+            onCreated={({ gl }) => {
+                gl.toneMapping = THREE.NoToneMapping;
+                gl.setPixelRatio(window.devicePixelRatio);
+                gl.setClearColor("#000011");
+            }}
+        >
+            <Experince />
             <OrbitControls enablePan={false} maxDistance={4} minDistance={2.8} />
         </Canvas>
     );
