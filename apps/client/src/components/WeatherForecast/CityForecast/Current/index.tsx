@@ -19,13 +19,14 @@ const CurrentTemperatureContainer = styled(Stack)<StackProps>(({ theme }) => ({
     justifyContent: "space-between",
     alignItems: "center",
     borderBottom: `1px solid ${theme.palette.divider}`,
+    height: "6.4rem",
 }));
 
 const LocationInfo = () => {
     const cityInfo = useCityInfo();
 
     return (
-        <Stack>
+        <Stack mr={4}>
             <Stack direction="row" alignItems="center" gap={1}>
                 <ClampedTextContainer variant="h4">{cityInfo?.city}</ClampedTextContainer>
             </Stack>
@@ -87,7 +88,8 @@ const LoadingDataContainer = ({
             </>
         );
     }
-    return children;
+
+    return <Box component="section">{children}</Box>;
 };
 
 const CurrentMain = () => {
@@ -113,7 +115,7 @@ const CurrentMain = () => {
                 />
             </CurrentTemperatureContainer>
 
-            <Box sx={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 1 }}>
+            <Box sx={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 1, mt: 2 }}>
                 <CurrentWeatherDetailsContainer
                     label="Feels like"
                     value={`${currentWeather?.feels_like.toFixed(1)}\u00B0C`}

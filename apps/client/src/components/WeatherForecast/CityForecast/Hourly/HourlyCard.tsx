@@ -21,6 +21,11 @@ export const HourlyCardContainer = styled(Stack, {
         borderRadius: theme.spacing(2),
         border: `1px solid ${borderColor}`,
         boxShadow: theme.shadows[1],
+        transition: theme.transitions.create(["background"]),
+
+        "&:hover": {
+            background: theme.alpha(theme.palette.background.default, 0.2),
+        },
     };
 });
 

@@ -23,7 +23,7 @@ const DailyItemContainer = styled(Box)(({ theme }) => ({
     },
 
     "&:hover": {
-        background: theme.alpha(theme.palette.divider, 0.08),
+        background: theme.alpha(theme.palette.background.default, 0.2),
     },
 }));
 

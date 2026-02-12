@@ -67,13 +67,29 @@ const AttributionModal = ({ ...rest }: AttributionModalProps) => {
     };
 
     return (
-        <Dialog sx={{ "& .MuiPaper-root": { minWidth: "30rem" } }} {...rest}>
+        <Dialog
+            sx={(theme) => ({
+                "& .MuiPaper-root": {
+                    minWidth: "30rem",
+                    backgroundColor: "transparent",
+                    backdropFilter: `blur(${theme.spacing(6)})`,
+                    WebkitBackdropFilter: `blur(${theme.spacing(6)})`,
+                    boxShadow: `0 8px 32px rgba(0, 0, 0, 0.1),
+                            inset 0 1px 0 rgba(255, 255, 255, 0.5),
+                            inset 0 -1px 0 rgba(255, 255, 255, 0.1),
+                            inset 0 0 ${4 * 2}px ${4}px rgba(255, 255, 255, ${4 / 10})
+                    `,
+                },
+            })}
+            {...rest}
+        >
             <Stack direction="row" alignItems="center" justifyContent="space-between">
                 <DialogTitle>Attributions</DialogTitle>
                 <IconButton size="small" onClick={onClick} sx={{ mr: 2 }}>
                     <CloseIcon />
                 </IconButton>
             </Stack>
+
             <DialogContent dividers sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
                 {attributions.map(({ label, links }) => (
                     <Stack key={label}>

@@ -4,13 +4,16 @@ const BLUR_VALUE = 6;
 const REFRACTION = 0.14;
 const DEPTH = 4;
 
-type GlassContainerProps = {
-    blur?: number;
-    refraction?: number;
-    depth?: number;
-    onlyBottomShadow?: boolean;
-    onlyTopShadow?: boolean;
-};
+type GlassContainerProps = BoxProps<
+    "div",
+    {
+        blur?: number;
+        refraction?: number;
+        depth?: number;
+        onlyBottomShadow?: boolean;
+        onlyTopShadow?: boolean;
+    }
+>;
 
 // https://hype4.academy/tools/glassmorphism-generator
 export const GlassContainer = styled(Box, {
@@ -20,63 +23,61 @@ export const GlassContainer = styled(Box, {
         props !== "depth" &&
         props !== "onlyBottomShadow" &&
         props !== "onlyTopShadow",
-})<BoxProps<"div", GlassContainerProps>>(
-    ({ theme, blur, refraction, depth, onlyBottomShadow, onlyTopShadow }) => ({
-        background: `rgba(255, 255, 255, ${refraction ?? REFRACTION})`,
-        backdropFilter: `blur(${theme.spacing(blur ?? BLUR_VALUE)})`,
-        WebkitBackdropFilter: `blur(${theme.spacing(blur ?? BLUR_VALUE)})`,
-        boxShadow: `0 8px 32px rgba(0, 0, 0, 0.1),
+})<GlassContainerProps>(({ theme, blur, refraction, depth, onlyBottomShadow, onlyTopShadow }) => ({
+    background: `rgba(255, 255, 255, ${refraction ?? REFRACTION})`,
+    backdropFilter: `blur(${theme.spacing(blur ?? BLUR_VALUE)})`,
+    WebkitBackdropFilter: `blur(${theme.spacing(blur ?? BLUR_VALUE)})`,
+    boxShadow: `0 8px 32px rgba(0, 0, 0, 0.1),
                 inset 0 1px 0 rgba(255, 255, 255, 0.5),
                 inset 0 -1px 0 rgba(255, 255, 255, 0.1),
                 inset 0 0 ${depth ?? DEPTH * 2}px ${depth ?? DEPTH}px rgba(255, 255, 255, ${depth ?? DEPTH / 10})
+    `,
+
+    ...(onlyBottomShadow && {
+        boxShadow: `
+            inset 0 ${-DEPTH * 2}px ${depth ?? DEPTH * 2}px ${depth ?? -DEPTH}px rgba(255, 255, 255, ${depth ?? DEPTH / 10})
         `,
+    }),
 
-        ...(onlyBottomShadow && {
-            boxShadow: `
-                inset 0 ${-DEPTH * 2}px ${depth ?? DEPTH * 2}px ${depth ?? -DEPTH}px rgba(255, 255, 255, ${depth ?? DEPTH / 10})
-            `,
-        }),
+    ...(onlyTopShadow && {
+        boxShadow: `
+            inset 0 ${DEPTH * 2}px ${depth ?? DEPTH * 2}px ${depth ?? -DEPTH}px rgba(255, 255, 255, ${depth ?? DEPTH / 10})
+        `,
+    }),
 
-        ...(onlyTopShadow && {
-            boxShadow: `
-                inset 0 ${DEPTH * 2}px ${depth ?? DEPTH * 2}px ${depth ?? -DEPTH}px rgba(255, 255, 255, ${depth ?? DEPTH / 10})
-            `,
-        }),
-
-        ...(!onlyBottomShadow &&
-            !onlyTopShadow && {
-                "&::before": {
-                    content: "''",
-                    position: "absolute",
-                    top: 0,
-                    left: 0,
-                    right: 0,
-                    height: "1px",
-                    background: `linear-gradient(
+    ...(!onlyBottomShadow &&
+        !onlyTopShadow && {
+            "&::before": {
+                content: "''",
+                position: "absolute",
+                top: 0,
+                left: 0,
+                right: 0,
+                height: "1px",
+                background: `linear-gradient(
                     90deg,
                     transparent,
                     rgba(255, 255, 255, 0.8),
                     transparent
                     )`,
-                },
+            },
 
-                "&::after": {
-                    content: "''",
-                    position: "absolute",
-                    top: 0,
-                    left: 0,
-                    width: "1px",
-                    height: "100%",
-                    background: `linear-gradient(
+            "&::after": {
+                content: "''",
+                position: "absolute",
+                top: 0,
+                left: 0,
+                width: "1px",
+                height: "100%",
+                background: `linear-gradient(
                         180deg,
                         rgba(255, 255, 255, 0.8),
                         transparent,
                         rgba(255, 255, 255, 0.3)
                         )`,
-                },
-            }),
-    }),
-);
+            },
+        }),
+}));
 
 export const FeedbackContainer = styled(Box, {
     shouldForwardProp: (prop) => prop !== "isLoading" && prop !== "top" && prop !== "error",

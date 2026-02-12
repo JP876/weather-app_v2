@@ -17,11 +17,21 @@ const App = () => {
     useEffect(() => {
         if (justMounted.current) {
             (async () => {
-                Promise.allSettled([cities.handleFetch()]);
+                await Promise.allSettled([cities.handleFetch()]);
             })();
         }
         justMounted.current = false;
     }, [cities]);
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            const event = new CustomEvent("second-passed");
+            document.dispatchEvent(event);
+        }, 1_000);
+        return () => {
+            clearInterval(interval);
+        };
+    }, []);
 
     return (
         <Box component="main" sx={{ "--header_height": "3.6rem", "--footer_height": "3.6rem" }}>

@@ -2,7 +2,9 @@ import { IconButton, Stack, styled, Typography } from "@mui/material";
 import SettingsIcon from "@mui/icons-material/Settings";
 import PanoramaPhotosphereIcon from "@mui/icons-material/PanoramaPhotosphere";
 import { useLocation } from "wouter";
+
 import { GlassContainer } from "../ui/styledComps";
+import Clock from "../ui/Clock";
 
 const HeaderLogo = () => {
     const [, navigate] = useLocation();
@@ -38,7 +40,8 @@ const HeaderMain = () => {
     return (
         <HeaderContainer component="header" onlyBottomShadow>
             <HeaderLogo />
-            <Stack direction="row" alignItems="center">
+            <Stack direction="row" alignItems="center" gap={2}>
+                <Clock />
                 <IconButton size="small">
                     <SettingsIcon />
                 </IconButton>

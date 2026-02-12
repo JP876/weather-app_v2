@@ -19,7 +19,7 @@ const GraphContainer = ({ children }: { children: React.ReactNode }) => {
 
 const DailyMain = () => {
     return (
-        <Box>
+        <Box component="section">
             <Stack direction="row" mb={4} justifyContent="space-between" gap={2}>
                 <Typography variant="h5">Daily Forecast</Typography>
                 <UserSettings />

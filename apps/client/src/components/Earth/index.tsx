@@ -1,4 +1,4 @@
-import { memo, useRef } from "react";
+import { memo, useEffect, useRef } from "react";
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls, useTexture } from "@react-three/drei";
 import * as THREE from "three";
@@ -56,6 +56,34 @@ const EarthModel = () => {
     );
 };
 
+const CityMarkers = () => {
+    const meshRef = useRef<THREE.Mesh | null>(null);
+
+    useEffect(() => {
+        if (meshRef.current) {
+            const lat = 45.81444;
+            const lon = 15.97798;
+
+            const latRad = lat * (Math.PI / 180);
+            const lonRad = -lon * (Math.PI / 180);
+
+            meshRef.current.position.set(
+                Math.cos(latRad) * Math.cos(lonRad) * EARTH_RADIUS,
+                Math.sin(latRad) * EARTH_RADIUS,
+                Math.cos(latRad) * Math.sin(lonRad) * EARTH_RADIUS,
+            );
+            meshRef.current.rotation.set(0.0, -lonRad, latRad - Math.PI * 0.5);
+        }
+    }, []);
+
+    return (
+        <mesh ref={meshRef}>
+            <octahedronGeometry args={[0.004, 1]} />
+            <pointsMaterial color="red" />
+        </mesh>
+    );
+};
+
 const Atmosphere = () => {
     const shaderRef = useRef<THREE.ShaderMaterial | null>(null);
 
@@ -85,6 +113,7 @@ const Experince = () => {
         <>
             <EarthModel />
             <Atmosphere />
+            <CityMarkers />
         </>
     );
 };

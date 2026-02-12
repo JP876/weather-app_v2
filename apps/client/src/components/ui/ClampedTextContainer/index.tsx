@@ -10,8 +10,8 @@ const ClampedTextContainer = ({ tooltipProps, ...rest }: ClampedTextContainerPro
     const [itemEl, setItemEl] = useState<HTMLSpanElement | null>(null);
 
     const updateShow = useCallback((target: Element) => {
-        const nextValue = target?.clientHeight !== target?.scrollHeight;
-        setShow(nextValue);
+        const nextValue = (target?.scrollHeight + 2) / target?.clientHeight;
+        setShow(nextValue >= 2);
     }, []);
 
     const renderTitle = useCallback((show: boolean, children: React.ReactNode) => {
