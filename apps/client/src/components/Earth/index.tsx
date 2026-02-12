@@ -1,4 +1,4 @@
-import { memo, useEffect, useRef } from "react";
+import { memo, useRef } from "react";
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls, useTexture } from "@react-three/drei";
 import * as THREE from "three";
@@ -29,7 +29,7 @@ const EarthModel = () => {
         texture.anisotropy = 8;
     });
     const boundariesTexture = useTexture("./earth/boundaries.png", (texture) => {
-        texture.colorSpace = THREE.SRGBColorSpace;
+        texture.colorSpace = THREE.LinearSRGBColorSpace;
         texture.anisotropy = 8;
     });
 
@@ -56,7 +56,7 @@ const EarthModel = () => {
     );
 };
 
-const CityMarkers = () => {
+/* const CityMarkers = () => {
     const meshRef = useRef<THREE.Mesh | null>(null);
 
     useEffect(() => {
@@ -82,7 +82,7 @@ const CityMarkers = () => {
             <pointsMaterial color="red" />
         </mesh>
     );
-};
+}; */
 
 const Atmosphere = () => {
     const shaderRef = useRef<THREE.ShaderMaterial | null>(null);
@@ -113,7 +113,7 @@ const Experince = () => {
         <>
             <EarthModel />
             <Atmosphere />
-            <CityMarkers />
+            {/* <CityMarkers /> */}
         </>
     );
 };

@@ -8,6 +8,7 @@ import { rateLimit } from "express-rate-limit";
 import { slowDown } from "express-slow-down";
 import dotenv from "dotenv";
 import helmet from "helmet";
+import tzlookup from "tz-lookup";
 
 import type { CityType } from "./types";
 
@@ -60,7 +61,14 @@ app.get("/api/v1/worldcities", rateLimiter, slowDownLimiter, (req, res) => {
 
     createReadStream(join(__dirname, "../", "worldcities.csv"))
         .pipe(csvParser())
-        .on("data", (data) => results.push({ ...data, population: +data.population, id: +data.id }))
+        .on("data", (data) => {
+            results.push({
+                ...data,
+                population: +data.population,
+                id: +data.id,
+                timezone: tzlookup(data.lat, data.lng),
+            });
+        })
         .on("end", () => {
             cacheInstance.set(`worldcities`, results, 60 * 60 * 24);
             res.json({ results });

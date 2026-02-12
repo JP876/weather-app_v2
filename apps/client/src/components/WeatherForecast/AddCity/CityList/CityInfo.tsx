@@ -3,11 +3,13 @@ import { Box, Stack, styled, Typography, type BoxProps } from "@mui/material";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import ClearIcon from "@mui/icons-material/Clear";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
+import AccessTimeIcon from "@mui/icons-material/AccessTime";
 
 import type { CityType } from "../../../../types";
 import ClampedTextContainer from "../../../ui/ClampedTextContainer";
+import Clock from "../../../ui/Clock";
 
-type CityInfoProps = Pick<CityType, "iso2" | "country" | "city" | "lat" | "lng"> & {
+type CityInfoProps = Pick<CityType, "iso2" | "country" | "city" | "lat" | "lng" | "timezone"> & {
     isFavourite: boolean;
 };
 
@@ -22,7 +24,7 @@ const CityListItemButton = styled(Box)<BoxProps>(({ theme }) => ({
     },
 }));
 
-const CityInfo = memo(({ iso2, country, city, lat, lng, isFavourite }: CityInfoProps) => {
+const CityInfo = memo(({ iso2, country, city, lat, lng, isFavourite, timezone }: CityInfoProps) => {
     return (
         <>
             <Stack direction="row" alignItems="center" gap={2}>
@@ -47,32 +49,35 @@ const CityInfo = memo(({ iso2, country, city, lat, lng, isFavourite }: CityInfoP
                     <Typography variant="caption">{country}</Typography>
                 </Stack>
             </Stack>
-            <Stack
-                direction="row"
-                alignItems="center"
-                justifyContent="space-between"
-                sx={(theme) => ({
-                    flex: "0 0 42%",
-                    [theme.breakpoints.down("lg")]: {
-                        justifyContent: "flex-end",
-                        flex: "0 0 max-content",
-                    },
-                })}
-            >
-                <Stack
-                    direction="row"
-                    alignItems="center"
-                    gap={1}
+            <Stack direction="row" alignItems="center" justifyContent="space-between" gap={4}>
+                <Box
                     sx={(theme) => ({
-                        [theme.breakpoints.down("lg")]: { display: "none" },
+                        display: "grid",
+                        gridTemplateColumns: "1fr",
+                        fontSize: theme.typography.body2.fontSize,
+                        gap: theme.spacing(0.4),
+
+                        [theme.breakpoints.down("md")]: {
+                            display: "none",
+                        },
+                        svg: {
+                            width: "1rem",
+                            height: "1rem",
+                        },
                     })}
                 >
-                    <LocationOnIcon fontSize="small" />
-                    <Typography variant="body2">
-                        {`${parseFloat(lat.toString()).toFixed(2)} - 
+                    <Stack direction="row" alignItems="center" gap={1}>
+                        <LocationOnIcon />
+                        <Typography variant="body2">
+                            {`${parseFloat(lat.toString()).toFixed(2)} - 
                         ${parseFloat(lng.toString()).toFixed(2)}`}
-                    </Typography>
-                </Stack>
+                        </Typography>
+                    </Stack>
+                    <Stack direction="row" alignItems="center" gap={1}>
+                        <AccessTimeIcon />
+                        <Clock timezone={timezone} format="HH:mm dd/MMM/yy" />
+                    </Stack>
+                </Box>
                 <CityListItemButton>
                     <FavoriteBorderIcon sx={{ opacity: +!isFavourite }} />
                     <ClearIcon sx={{ opacity: +isFavourite }} />

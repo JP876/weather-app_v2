@@ -10,15 +10,7 @@ const UserSettings = () => {
     const { isLoading, error } = useAtomValue(weatherFetchInfoAtom);
 
     return (
-        <Stack
-            gap={0.5}
-            sx={(theme) => ({
-                flexDirection: "row",
-                [theme.breakpoints.down("lg")]: {
-                    flexDirection: "column",
-                },
-            })}
-        >
+        <Stack gap={0.5} direction="row">
             <UserSettingSwitch
                 checked={!!settings?.hourly?.cards}
                 label={settings?.hourly?.cards ? "Hide cards" : "Show cards"}

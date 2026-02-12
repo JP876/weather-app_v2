@@ -3,6 +3,7 @@ import { Stack, styled, type StackProps } from "@mui/material";
 export const CityListItemContainer = styled(Stack, {
     shouldForwardProp: (prop) => prop !== "isFavourite",
 })<StackProps<"div", { isFavourite: boolean }>>(({ theme, isFavourite }) => ({
+    height: "3.6rem",
     paddingInline: theme.spacing(2),
     cursor: "pointer",
     backgroundColor: "transparent",

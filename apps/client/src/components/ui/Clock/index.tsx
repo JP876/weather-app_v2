@@ -1,14 +1,14 @@
 import { memo, useLayoutEffect, useMemo, useRef } from "react";
-import { format } from "date-fns";
-import { Box } from "@mui/material";
+import { format as formatDate } from "date-fns";
+import { Box, type BoxProps } from "@mui/material";
 
-type ClockProps = {
+type ClockProps = Omit<BoxProps<"time">, "dateTime" | "component" | "ref"> & {
     format?: string;
     timezone?: string;
     locale?: string;
 };
 
-const Clock = (props: ClockProps) => {
+const Clock = ({ format, timezone, locale, ...rest }: ClockProps) => {
     const timeEl = useRef<HTMLTimeElement | null>(null);
 
     const timeFormatOptions = useMemo(() => {
@@ -16,15 +16,15 @@ const Clock = (props: ClockProps) => {
     }, []);
 
     useLayoutEffect(() => {
-        const TIMEZONE = props?.timezone || timeFormatOptions.timeZone;
-        const LOCALE = props?.locale || timeFormatOptions.locale;
-        const DATE_FORMAT = props?.format || "HH:mm:ss dd/MMM/yyyy";
+        const TIMEZONE = timezone || timeFormatOptions.timeZone;
+        const LOCALE = locale || timeFormatOptions.locale;
+        const DATE_FORMAT = format || "HH:mm:ss dd/MMM/yyyy";
 
         const controller = new AbortController();
 
         const getCurrentTime = () => {
             const time = new Date().toLocaleString(LOCALE, { timeZone: TIMEZONE });
-            const formated = format(new Date(time), DATE_FORMAT);
+            const formated = formatDate(new Date(time), DATE_FORMAT);
 
             if (timeEl.current) {
                 timeEl.current.dateTime = formated;
@@ -37,15 +37,9 @@ const Clock = (props: ClockProps) => {
         return () => {
             controller.abort();
         };
-    }, [
-        props?.format,
-        props?.locale,
-        props?.timezone,
-        timeFormatOptions.locale,
-        timeFormatOptions.timeZone,
-    ]);
+    }, [format, locale, timeFormatOptions.locale, timeFormatOptions.timeZone, timezone]);
 
-    return <Box component="time" ref={timeEl} />;
+    return <Box {...rest} component="time" ref={timeEl} />;
 };
 
 export default memo(Clock);
