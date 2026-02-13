@@ -56,6 +56,7 @@ const CityInfo = memo(({ iso2, country, city, lat, lng, isFavourite, timezone }:
                         gridTemplateColumns: "1fr",
                         fontSize: theme.typography.body2.fontSize,
                         gap: theme.spacing(0.4),
+                        minWidth: "10rem",
 
                         [theme.breakpoints.down("md")]: {
                             display: "none",
@@ -73,10 +74,12 @@ const CityInfo = memo(({ iso2, country, city, lat, lng, isFavourite, timezone }:
                         ${parseFloat(lng.toString()).toFixed(2)}`}
                         </Typography>
                     </Stack>
-                    <Stack direction="row" alignItems="center" gap={1}>
-                        <AccessTimeIcon />
-                        <Clock timezone={timezone} format="HH:mm dd/MMM/yy" />
-                    </Stack>
+                    {timezone ? (
+                        <Stack direction="row" alignItems="center" gap={1}>
+                            <AccessTimeIcon />
+                            <Clock timezone={timezone} format="HH:mm dd/MMM/yy" />
+                        </Stack>
+                    ) : null}
                 </Box>
                 <CityListItemButton>
                     <FavoriteBorderIcon sx={{ opacity: +!isFavourite }} />

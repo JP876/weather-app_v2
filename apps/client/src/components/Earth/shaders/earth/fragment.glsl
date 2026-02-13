@@ -19,7 +19,7 @@ void main()
     float sunOrientation = dot(uSunDirection, normal);
 
     // Day/night color
-    float dayMix = smoothstep(-0.2, 0.6, sunOrientation);
+    float dayMix = smoothstep(-0.2, 0.4, sunOrientation);
     vec3 dayColor = texture(uDayTexture, vUv).rgb;
     vec3 nightColor = texture(uNightTexture, vUv).rgb;
     color = mix(nightColor, dayColor, dayMix);

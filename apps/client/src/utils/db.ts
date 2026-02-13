@@ -12,7 +12,7 @@ export class WeatherSphereDB extends Dexie {
     constructor() {
         super("WeatherSphereDB");
         this.version(2).stores({
-            cities: "id, population, city, city_ascii, country",
+            cities: "id, population, city, city_ascii, country, timezone",
             weatherData: "id",
         });
     }

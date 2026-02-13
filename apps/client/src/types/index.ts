@@ -10,7 +10,7 @@ export type CityType = {
     lat: number | string;
     lng: number | string;
     population: number | string;
-    timezone: string;
+    timezone?: string;
 };
 
 export type UserSettingsType = {
