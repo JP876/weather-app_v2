@@ -4,12 +4,16 @@ import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import ClearIcon from "@mui/icons-material/Clear";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
+import LocationCityIcon from "@mui/icons-material/LocationCity";
 
 import type { CityType } from "../../../../types";
 import ClampedTextContainer from "../../../ui/ClampedTextContainer";
 import Clock from "../../../ui/Clock";
 
-type CityInfoProps = Pick<CityType, "iso2" | "country" | "city" | "lat" | "lng" | "timezone"> & {
+type CityInfoProps = Pick<
+    CityType,
+    "iso2" | "country" | "city" | "lat" | "lng" | "timezone" | "capital"
+> & {
     isFavourite: boolean;
 };
 
@@ -24,7 +28,7 @@ const CityListItemButton = styled(Box)<BoxProps>(({ theme }) => ({
     },
 }));
 
-const CityInfo = memo(({ iso2, country, city, lat, lng, isFavourite, timezone }: CityInfoProps) => {
+const CityInfo = memo((props: CityInfoProps) => {
     return (
         <>
             <Stack direction="row" alignItems="center" gap={2}>
@@ -32,21 +36,26 @@ const CityInfo = memo(({ iso2, country, city, lat, lng, isFavourite, timezone }:
                     component="img"
                     width={32}
                     height={20}
-                    src={`https://flagcdn.com/w40/${iso2.toLowerCase()}.png`}
-                    alt={`${country} flag`}
+                    src={`https://flagcdn.com/w40/${props.iso2.toLowerCase()}.png`}
+                    alt={`${props.country} flag`}
                 />
                 <Stack>
-                    <ClampedTextContainer
-                        variant="subtitle1"
-                        sx={(theme) => ({
-                            marginBottom: theme.spacing(-0.5),
-                            fontWeight: theme.typography.fontWeightBold,
-                            fontSize: theme.typography.h6.fontSize,
-                        })}
-                    >
-                        {city}
-                    </ClampedTextContainer>
-                    <Typography variant="caption">{country}</Typography>
+                    <Stack direction="row" gap={1} alignItems="center">
+                        {props.capital === "primary" ? (
+                            <LocationCityIcon fontSize="small" sx={{ mt: "2.4px" }} />
+                        ) : null}
+                        <ClampedTextContainer
+                            variant="subtitle1"
+                            sx={(theme) => ({
+                                marginBottom: theme.spacing(-0.5),
+                                fontWeight: theme.typography.fontWeightBold,
+                                fontSize: theme.typography.h6.fontSize,
+                            })}
+                        >
+                            {props.city}
+                        </ClampedTextContainer>
+                    </Stack>
+                    <Typography variant="caption">{props.country}</Typography>
                 </Stack>
             </Stack>
             <Stack direction="row" alignItems="center" justifyContent="space-between" gap={4}>
@@ -70,20 +79,20 @@ const CityInfo = memo(({ iso2, country, city, lat, lng, isFavourite, timezone }:
                     <Stack direction="row" alignItems="center" gap={1}>
                         <LocationOnIcon />
                         <Typography variant="body2">
-                            {`${parseFloat(lat.toString()).toFixed(2)} - 
-                        ${parseFloat(lng.toString()).toFixed(2)}`}
+                            {`${parseFloat(props.lat.toString()).toFixed(2)} - 
+                        ${parseFloat(props.lng.toString()).toFixed(2)}`}
                         </Typography>
                     </Stack>
-                    {timezone ? (
+                    {props.timezone ? (
                         <Stack direction="row" alignItems="center" gap={1}>
                             <AccessTimeIcon />
-                            <Clock timezone={timezone} format="HH:mm dd/MMM/yy" />
+                            <Clock timezone={props.timezone} format="HH:mm dd/MMM/yy" />
                         </Stack>
                     ) : null}
                 </Box>
                 <CityListItemButton>
-                    <FavoriteBorderIcon sx={{ opacity: +!isFavourite }} />
-                    <ClearIcon sx={{ opacity: +isFavourite }} />
+                    <FavoriteBorderIcon sx={{ opacity: +!props.isFavourite }} />
+                    <ClearIcon sx={{ opacity: +props.isFavourite }} />
                 </CityListItemButton>
             </Stack>
         </>

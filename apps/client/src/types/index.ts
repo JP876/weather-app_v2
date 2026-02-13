@@ -1,6 +1,6 @@
 export type CityType = {
     admin_name: string;
-    capital: string;
+    capital: "primary" | "admin" | "minor" | "";
     city: string;
     city_ascii: string;
     country: string;

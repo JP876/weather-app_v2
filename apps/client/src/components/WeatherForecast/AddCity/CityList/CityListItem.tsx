@@ -77,6 +77,7 @@ const CityListItem = ({ index }: CityListItemType) => {
                 lat={cityInfo.lat}
                 lng={cityInfo.lng}
                 timezone={cityInfo.timezone}
+                capital={cityInfo.capital}
             />
         </CityListItemContainer>
     );

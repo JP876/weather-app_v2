@@ -125,7 +125,7 @@ const FooterMain = () => {
                 >
                     Attributions
                 </Button>
-                <Typography variant="body1">Made with ❤️ by: Josip Popović</Typography>
+                <Typography variant="body1">Developed by Josip Popović</Typography>
             </FooterContainer>
 
             <AttributionModal open={open} onClose={() => setOpen(false)} />
