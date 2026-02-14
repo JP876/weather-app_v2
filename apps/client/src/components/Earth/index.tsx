@@ -1,5 +1,5 @@
 import { memo, useLayoutEffect, useRef } from "react";
-import { Canvas } from "@react-three/fiber";
+import { Canvas, useFrame } from "@react-three/fiber";
 import { OrbitControls, useTexture } from "@react-three/drei";
 import * as THREE from "three";
 
@@ -7,14 +7,16 @@ import fragmentShader from "./shaders/earth/fragment.glsl";
 import vertexShader from "./shaders/earth/vertex.glsl";
 import atmosphereFragmentShader from "./shaders/atmosphere/fragment.glsl";
 import atmosphereVertexShader from "./shaders/atmosphere/vertex.glsl";
-import type { CityType } from "../../types";
-import useCoordinates from "./hooks/useCoordinates";
 import useSunPosition from "./hooks/useSunPosition";
-
-const ATMOSPHERE_DAY_COLOR = "#00aaff";
-const ATMOSPHERE_TWILIGHT_COLOR = "#ff6600";
-const SUN_DIRECTION = new THREE.Vector3(Math.random() / 2, Math.random() / 2, Math.random());
-const EARTH_RADIUS = 1.8;
+import useCoordinates from "./hooks/useCoordinates";
+import type { CityType } from "../../types";
+import {
+    ATMOSPHERE_DAY_COLOR,
+    ATMOSPHERE_TWILIGHT_COLOR,
+    EARTH_RADIUS,
+    SUN_DIRECTION,
+} from "./consts";
+import CitiesMain from "./Cities";
 
 type EarthMeshType = THREE.Mesh<THREE.SphereGeometry, THREE.ShaderMaterial>;
 
@@ -50,27 +52,17 @@ const EarthModel = () => {
         });
     }, [getCoordinates]);
 
-    useLayoutEffect(() => {
-        const controller = new AbortController();
+    useFrame(() => {
+        if (cityRef.current && earthMeshRef.current && atmosphereMeshRef.current) {
+            const position = updateSunPosition({
+                lat: +cityRef.current.lat,
+                lng: +cityRef.current.lng,
+            });
 
-        const update = () => {
-            if (cityRef.current) {
-                const position = updateSunPosition({
-                    lat: +cityRef.current.lat,
-                    lng: +cityRef.current.lng,
-                });
-                if (earthMeshRef.current && atmosphereMeshRef.current) {
-                    earthMeshRef.current.material.uniforms.uSunDirection.value = position;
-                    atmosphereMeshRef.current.material.uniforms.uSunDirection.value = position;
-                }
-            }
-        };
-
-        document.addEventListener("second-passed", update, { signal: controller.signal });
-        return () => {
-            controller.abort();
-        };
-    }, [updateSunPosition]);
+            earthMeshRef.current.material.uniforms.uSunDirection.value = position;
+            atmosphereMeshRef.current.material.uniforms.uSunDirection.value = position;
+        }
+    });
 
     return (
         <group>
@@ -116,39 +108,11 @@ const EarthModel = () => {
     );
 };
 
-/* const CityMarkers = () => {
-    const meshRef = useRef<THREE.Mesh | null>(null);
-
-    useEffect(() => {
-        if (meshRef.current) {
-            const lat = 51.51;
-            const lon = -0.13;
-
-            const latRad = lat * (Math.PI / 180);
-            const lonRad = -lon * (Math.PI / 180);
-
-            meshRef.current.position.set(
-                Math.cos(latRad) * Math.cos(lonRad) * EARTH_RADIUS,
-                Math.sin(latRad) * EARTH_RADIUS,
-                Math.cos(latRad) * Math.sin(lonRad) * EARTH_RADIUS,
-            );
-            meshRef.current.rotation.set(0.0, -lonRad, latRad - Math.PI * 0.5);
-        }
-    }, []);
-
-    return (
-        <mesh ref={meshRef}>
-            <octahedronGeometry args={[0.004, 1]} />
-            <pointsMaterial color="red" />
-        </mesh>
-    );
-}; */
-
 const Experince = () => {
     return (
         <>
             <EarthModel />
-            {/* <CityMarkers /> */}
+            <CitiesMain />
         </>
     );
 };
@@ -163,7 +127,7 @@ const EarthMain = () => {
             }}
         >
             <Experince />
-            <OrbitControls enablePan={false} maxDistance={4} minDistance={2.2} />
+            <OrbitControls enablePan={false} maxDistance={4.8} minDistance={2.2} />
         </Canvas>
     );
 };

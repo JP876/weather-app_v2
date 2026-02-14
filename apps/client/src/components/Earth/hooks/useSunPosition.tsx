@@ -3,18 +3,27 @@ import { getPosition } from "suncalc";
 import { Vector3 } from "three";
 
 const useSunPosition = () => {
-    return useCallback(({ lat, lng }: { lat: number; lng: number }) => {
-        const position = getPosition(new Date(), lat, lng);
+    return useCallback(
+        ({ lat, lng, radius = 1 }: { lat: number; lng: number; radius?: number }) => {
+            const { altitude, azimuth } = getPosition(new Date(), lat, lng);
+            // altitude -> sun altitude above the horizon in radians, e.g. 0 at the
+            //              horizon and PI/2 at the zenith (straight over your head)
+            // azimuth -> sun azimuth in radians (direction along the horizon, measured
+            //          from south to west), e.g. 0 is south and Math.PI * 3/4 is northwest
 
-        const azimuth = position.azimuth + Math.PI / 1.8;
-        const altitude = position.altitude + Math.PI / 1.92;
+            const cosAlt = Math.cos(altitude);
+            const sinAlt = Math.sin(altitude);
+            const sinAzi = Math.sin(azimuth);
+            const cosAzi = Math.cos(azimuth);
 
-        const x = Math.cos(altitude) * Math.sin(azimuth);
-        const y = Math.cos(altitude) * Math.cos(azimuth);
-        const z = Math.sin(altitude);
-
-        return new Vector3(x, y, z);
-    }, []);
+            return new Vector3(
+                radius * cosAlt * cosAzi, // x
+                radius * sinAlt, // y
+                radius * cosAlt * sinAzi, // z
+            );
+        },
+        [],
+    );
 };
 
 export default useSunPosition;

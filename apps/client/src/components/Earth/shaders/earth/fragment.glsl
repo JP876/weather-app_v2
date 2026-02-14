@@ -15,8 +15,9 @@ void main()
     vec3 viewDirection = normalize(vPosition - cameraPosition);
     vec3 normal = normalize(vNormal);
     vec3 color = vec3(0.0);
+    vec3 sunDirection = normalize(uSunDirection);
 
-    float sunOrientation = dot(uSunDirection, normal);
+    float sunOrientation = dot(sunDirection, normal);
 
     // Day/night color
     float dayMix = smoothstep(-0.2, 0.4, sunOrientation);
@@ -40,10 +41,10 @@ void main()
     color = mix(color, atmosphereColor, fresnel * atmosphereDayMix);
 
     // Specular
-    vec3 reflection = reflect(-uSunDirection, normal);
+    vec3 reflection = reflect(-sunDirection, normal);
     float specular = -dot(reflection, viewDirection);
     specular = max(specular, 0.0);
-    specular = pow(specular, 32.0);
+    specular = pow(specular, 64.0);
     specular *= specularCloudsColor.r;
     
     vec3 specularColor = mix(vec3(1.0), atmosphereColor, fresnel);
