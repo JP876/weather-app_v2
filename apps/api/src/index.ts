@@ -124,6 +124,10 @@ app.get("/api/v1/weather-forecast", rateLimiter, slowDownLimiter, async (req, re
 
         const { lat, lng } = req.query;
 
+        // const url = process.env.OPEN_WEATHER_25_API_BASE_URL;
+        // const r = await fetch(`${url}?lat=${lat}&lon=${lng}&appid=${API_KEY}&units=metric`);
+        // console.log(await r.json());
+
         if (cacheInstance.has(`weather_data-${lat}/${lng}`)) {
             return res.json({ results: cacheInstance.get(`weather_data-${lat}/${lng}`) });
         }

@@ -1,8 +1,8 @@
 import { memo, useLayoutEffect, useMemo, useRef } from "react";
 import { format as formatDate } from "date-fns";
-import { Box, type BoxProps } from "@mui/material";
+import { Typography, type TypographyProps } from "@mui/material";
 
-type ClockProps = Omit<BoxProps<"time">, "dateTime" | "component" | "ref"> & {
+type ClockProps = Omit<TypographyProps<"p">, "ref"> & {
     format?: string;
     timezone?: string;
     locale?: string;
@@ -27,7 +27,6 @@ const Clock = ({ format, timezone, locale, ...rest }: ClockProps) => {
             const formated = formatDate(new Date(time), DATE_FORMAT);
 
             if (timeEl.current) {
-                timeEl.current.dateTime = formated;
                 timeEl.current.innerText = formated;
             }
         };
@@ -39,7 +38,7 @@ const Clock = ({ format, timezone, locale, ...rest }: ClockProps) => {
         };
     }, [format, locale, timeFormatOptions.locale, timeFormatOptions.timeZone, timezone]);
 
-    return <Box {...rest} component="time" ref={timeEl} />;
+    return <Typography {...rest} ref={timeEl} />;
 };
 
 export default memo(Clock);

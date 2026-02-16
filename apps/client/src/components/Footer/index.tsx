@@ -1,7 +1,6 @@
 import { memo, useMemo, useState } from "react";
 import {
     Button,
-    Dialog,
     DialogContent,
     DialogTitle,
     IconButton,
@@ -14,7 +13,7 @@ import {
 import CloseIcon from "@mui/icons-material/Close";
 import AttributionIcon from "@mui/icons-material/Attribution";
 
-import { GlassContainer } from "../ui/styledComps";
+import { GlassContainer, GlassDialog } from "../ui/styledComps";
 
 const FooterContainer = styled(GlassContainer)(({ theme }) => ({
     display: "flex",
@@ -57,32 +56,17 @@ const useAttributions = () => {
 
 type AttributionModalProps = {} & DialogProps;
 
-const AttributionModal = ({ ...rest }: AttributionModalProps) => {
+const AttributionModal = ({ onClose, ...rest }: AttributionModalProps) => {
     const attributions = useAttributions();
 
     const onClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-        if (rest.onClose && typeof rest.onClose === "function") {
-            rest.onClose(event, "backdropClick");
+        if (onClose && typeof onClose === "function") {
+            onClose(event, "backdropClick");
         }
     };
 
     return (
-        <Dialog
-            sx={(theme) => ({
-                "& .MuiPaper-root": {
-                    minWidth: "30rem",
-                    backgroundColor: "transparent",
-                    backdropFilter: `blur(${theme.spacing(6)})`,
-                    WebkitBackdropFilter: `blur(${theme.spacing(6)})`,
-                    boxShadow: `0 8px 32px rgba(0, 0, 0, 0.1),
-                            inset 0 1px 0 rgba(255, 255, 255, 0.5),
-                            inset 0 -1px 0 rgba(255, 255, 255, 0.1),
-                            inset 0 0 ${4 * 2}px ${4}px rgba(255, 255, 255, ${4 / 10})
-                    `,
-                },
-            })}
-            {...rest}
-        >
+        <GlassDialog blur={2} onClose={onClose} {...rest}>
             <Stack direction="row" alignItems="center" justifyContent="space-between">
                 <DialogTitle>Attributions</DialogTitle>
                 <IconButton size="small" onClick={onClick} sx={{ mr: 2 }}>
@@ -107,7 +91,7 @@ const AttributionModal = ({ ...rest }: AttributionModalProps) => {
                     </Stack>
                 ))}
             </DialogContent>
-        </Dialog>
+        </GlassDialog>
     );
 };
 

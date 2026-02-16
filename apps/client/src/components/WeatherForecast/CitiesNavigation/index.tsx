@@ -81,8 +81,14 @@ const CitiesNavigation = () => {
     const { isLoading } = useAtomValue(weatherFetchInfoAtom);
 
     const value = (() => {
-        if (!Array.isArray(favouriteCities)) return null;
-        if (favouriteCities.length === 0 || !cId || !isFavourite) return "/";
+        if (
+            !Array.isArray(favouriteCities) ||
+            favouriteCities.length === 0 ||
+            !cId ||
+            !isFavourite
+        ) {
+            return "/";
+        }
         return path;
     })();
 
@@ -98,12 +104,10 @@ const CitiesNavigation = () => {
         }
     }, [cId, favouriteCities, isFavourite, navigate]);
 
-    if (favouriteCities === null) return null;
-
     return (
         <Box id="cities-navigation-tabs-container" sx={{ borderBottom: 1, borderColor: "divider" }}>
             <Tabs
-                value={value}
+                value={value || "/"}
                 onChange={handleChange}
                 aria-label="cities tab navigation"
                 role="navigation"
@@ -111,7 +115,7 @@ const CitiesNavigation = () => {
                 variant="scrollable"
             >
                 <Tab label="Add city" value="/" {...a11yProps(0)} />
-                {favouriteCities.map((el) => (
+                {(favouriteCities || []).map((el) => (
                     <Tab
                         key={el.id}
                         value={`/${el.id}`}

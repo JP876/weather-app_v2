@@ -2,9 +2,12 @@ import { IconButton, Stack, styled, Typography } from "@mui/material";
 import SettingsIcon from "@mui/icons-material/Settings";
 import PanoramaPhotosphereIcon from "@mui/icons-material/PanoramaPhotosphere";
 import { useLocation } from "wouter";
+import { useSetAtom } from "jotai";
 
 import { GlassContainer } from "../ui/styledComps";
 import Clock from "../ui/Clock";
+import SettingsMain from "./Settings";
+import { openSettingsAtom } from "../../atoms";
 
 const HeaderLogo = () => {
     const [, navigate] = useLocation();
@@ -37,15 +40,20 @@ const HeaderContainer = styled(GlassContainer)(({ theme }) => ({
 }));
 
 const HeaderMain = () => {
+    const setOpen = useSetAtom(openSettingsAtom);
+
     return (
         <HeaderContainer component="header" onlyBottomShadow>
             <HeaderLogo />
+
             <Stack direction="row" alignItems="center" gap={2}>
                 <Clock />
-                <IconButton size="small">
+                <IconButton size="small" onClick={() => setOpen(true)}>
                     <SettingsIcon />
                 </IconButton>
             </Stack>
+
+            <SettingsMain />
         </HeaderContainer>
     );
 };

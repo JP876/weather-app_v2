@@ -1,4 +1,12 @@
-import { Box, styled, Typography, type BoxProps, type TypographyProps } from "@mui/material";
+import {
+    Box,
+    Dialog,
+    styled,
+    Typography,
+    type BoxProps,
+    type DialogProps,
+    type TypographyProps,
+} from "@mui/material";
 
 const BLUR_VALUE = 6;
 const REFRACTION = 0.14;
@@ -78,6 +86,25 @@ export const GlassContainer = styled(Box, {
             },
         }),
 }));
+
+export const GlassDialog = styled(Dialog, {
+    shouldForwardProp: (props) =>
+        props !== "blur" && props !== "refraction" && props !== "depth" && props !== "minWidth",
+})<DialogProps & { blur?: number; refraction?: number; depth?: number; minWidth?: string }>(
+    ({ theme, blur, refraction, depth, minWidth }) => ({
+        "& .MuiPaper-root": {
+            minWidth: minWidth || "30rem",
+            background: `rgba(255, 255, 255, ${refraction ?? REFRACTION})`,
+            backdropFilter: `blur(${theme.spacing(blur ?? BLUR_VALUE)})`,
+            WebkitBackdropFilter: `blur(${theme.spacing(blur ?? BLUR_VALUE)})`,
+            boxShadow: `0 8px 32px rgba(0, 0, 0, 0.1),
+                inset 0 1px 0 rgba(255, 255, 255, 0.5),
+                inset 0 -1px 0 rgba(255, 255, 255, 0.1),
+                inset 0 0 ${depth ?? DEPTH * 2}px ${depth ?? DEPTH}px rgba(255, 255, 255, ${depth ?? DEPTH / 10})
+            `,
+        },
+    }),
+);
 
 export const FeedbackContainer = styled(Box, {
     shouldForwardProp: (prop) => prop !== "isLoading" && prop !== "top" && prop !== "error",

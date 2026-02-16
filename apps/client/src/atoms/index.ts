@@ -42,3 +42,13 @@ export const userSettingsAtom = atomWithStorage<UserSettingsType>("settings", {
     daily: { list: true, graph: true },
     hourly: { cards: true, graph: true },
 });
+
+export const selectedCityAtom = atom<CityType | null>(null);
+
+export type GeneralSettingKeys = "dateFormat" | "addCityMode";
+
+export const openSettingsAtom = atom(false);
+export const generalSettingAtom = atom<{
+    dateFormat: string;
+    addCityMode: "default" | "inversely";
+}>({ dateFormat: "", addCityMode: "default" });
