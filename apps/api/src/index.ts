@@ -73,6 +73,40 @@ app.get("/api/v1/worldcities", rateLimiter, slowDownLimiter, (req, res) => {
         });
 });
 
+app.get("/api/v1/current-weather", rateLimiter, slowDownLimiter, async (req, res) => {
+    const URL = process.env.OPEN_WEATHER_25_API_BASE_URL;
+    const API_KEY = process.env.OPEN_WEATHER_API_KEY;
+
+    try {
+        if (!req.query?.lat || !req.query?.lng) {
+            return res
+                .status(404)
+                .send(
+                    "You must include city coordinates in the request, formatted as lat and lng.",
+                );
+        }
+
+        const { lat, lng } = req.query;
+
+        if (cacheInstance.has(`current_weather_data-${lat}/${lng}`)) {
+            return res.json({ results: cacheInstance.get(`current_weather_data-${lat}/${lng}`) });
+        }
+
+        const response = await fetch(`${URL}?lat=${lat}&lon=${lng}&appid=${API_KEY}&units=metric`);
+
+        if (!response.ok) {
+            return res.status(404).send("Failed to fetch current weather data");
+        }
+
+        const data = await response.json();
+        cacheInstance.set(`current_weather_data-${lat}/${lng}`, data, 60 * 10);
+
+        res.json({ results: data });
+    } catch (error) {
+        res.status(500).send("Failed to fetch current weather data");
+    }
+});
+
 app.get("/api/v1/weather-forecast", rateLimiter, slowDownLimiter, async (req, res) => {
     const URL = process.env.OPEN_WEATHER_30_API_BASE_URL;
     const API_KEY = process.env.OPEN_WEATHER_API_KEY;
@@ -87,10 +121,6 @@ app.get("/api/v1/weather-forecast", rateLimiter, slowDownLimiter, async (req, re
         }
 
         const { lat, lng } = req.query;
-
-        // const url = process.env.OPEN_WEATHER_25_API_BASE_URL;
-        // const r = await fetch(`${url}?lat=${lat}&lon=${lng}&appid=${API_KEY}&units=metric`);
-        // console.log(await r.json());
 
         if (cacheInstance.has(`weather_data-${lat}/${lng}`)) {
             return res.json({ results: cacheInstance.get(`weather_data-${lat}/${lng}`) });
