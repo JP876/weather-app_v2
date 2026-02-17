@@ -1,6 +1,9 @@
 import { memo, useLayoutEffect, useMemo, useRef } from "react";
 import { format as formatDate } from "date-fns";
 import { Typography, type TypographyProps } from "@mui/material";
+import { useAtomValue } from "jotai";
+
+import { userSettingsAtom } from "../../../atoms";
 
 type ClockProps = Omit<TypographyProps<"p">, "ref"> & {
     format?: string;
@@ -10,6 +13,7 @@ type ClockProps = Omit<TypographyProps<"p">, "ref"> & {
 
 const Clock = ({ format, timezone, locale, ...rest }: ClockProps) => {
     const timeEl = useRef<HTMLTimeElement | null>(null);
+    const { dateFormat } = useAtomValue(userSettingsAtom);
 
     const timeFormatOptions = useMemo(() => {
         return Intl.DateTimeFormat().resolvedOptions();
@@ -18,7 +22,7 @@ const Clock = ({ format, timezone, locale, ...rest }: ClockProps) => {
     useLayoutEffect(() => {
         const TIMEZONE = timezone || timeFormatOptions.timeZone;
         const LOCALE = locale || timeFormatOptions.locale;
-        const DATE_FORMAT = format || "HH:mm:ss dd/MMM/yyyy";
+        const DATE_FORMAT = format || dateFormat || "HH:mm:ss dd/MMM/yyyy";
 
         const controller = new AbortController();
 
@@ -36,7 +40,14 @@ const Clock = ({ format, timezone, locale, ...rest }: ClockProps) => {
         return () => {
             controller.abort();
         };
-    }, [format, locale, timeFormatOptions.locale, timeFormatOptions.timeZone, timezone]);
+    }, [
+        dateFormat,
+        format,
+        locale,
+        timeFormatOptions.locale,
+        timeFormatOptions.timeZone,
+        timezone,
+    ]);
 
     return <Typography {...rest} ref={timeEl} />;
 };

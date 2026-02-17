@@ -1,10 +1,11 @@
+import { useEffect } from "react";
 import { DialogContent, DialogTitle, IconButton, Stack } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
+import { useAtom, useAtomValue, useSetAtom } from "jotai";
 
 import { GlassDialog } from "../../ui/styledComps";
-import { useAtom } from "jotai";
-import { openSettingsAtom } from "../../../atoms";
-import GeneralSettingsMain from "./GeneralSettings";
+import { generalSettingAtom, openSettingsAtom, userSettingsAtom } from "../../../atoms";
+import SettingsNavigation from "./SettingsNavigation";
 
 type SettingsProps = {
     children: React.ReactNode;
@@ -13,9 +14,24 @@ type SettingsProps = {
 const SettingsDialog = ({ children }: SettingsProps) => {
     const [open, setOpen] = useAtom(openSettingsAtom);
 
+    const userSettings = useAtomValue(userSettingsAtom);
+    const setGeneralSettings = useSetAtom(generalSettingAtom);
+
     const onClose = () => {
         setOpen(false);
     };
+
+    useEffect(() => {
+        if (open) {
+            // set initial settings
+            setGeneralSettings({
+                dateFormat: userSettings.dateFormat || "HH:mm:ss dd/MMM/yyyy",
+                leftClick: userSettings.leftClick || "add",
+                middleClick: userSettings.middleClick || "navigate",
+            });
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [open]);
 
     return (
         <GlassDialog open={open} onClose={onClose} minWidth="50rem">
@@ -35,7 +51,7 @@ const SettingsDialog = ({ children }: SettingsProps) => {
 const SettingsMain = () => {
     return (
         <SettingsDialog>
-            <GeneralSettingsMain />
+            <SettingsNavigation />
         </SettingsDialog>
     );
 };

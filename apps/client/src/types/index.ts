@@ -12,14 +12,3 @@ export type CityType = {
     population: number | string;
     timezone?: string;
 };
-
-export type UserSettingsType = {
-    daily: {
-        list: boolean;
-        graph: boolean;
-    };
-    hourly: {
-        cards: boolean;
-        graph: boolean;
-    };
-};

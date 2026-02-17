@@ -1,13 +1,15 @@
-import { IconButton, Stack, styled, Typography } from "@mui/material";
+import { lazy, Suspense } from "react";
+import { IconButton, Stack, styled, Tooltip, Typography } from "@mui/material";
 import SettingsIcon from "@mui/icons-material/Settings";
 import PanoramaPhotosphereIcon from "@mui/icons-material/PanoramaPhotosphere";
 import { useLocation } from "wouter";
 import { useSetAtom } from "jotai";
 
 import { GlassContainer } from "../ui/styledComps";
-import Clock from "../ui/Clock";
-import SettingsMain from "./Settings";
 import { openSettingsAtom } from "../../atoms";
+import Clock from "../ui/Clock";
+
+const SettingsMain = lazy(() => import("./Settings"));
 
 const HeaderLogo = () => {
     const [, navigate] = useLocation();
@@ -48,12 +50,16 @@ const HeaderMain = () => {
 
             <Stack direction="row" alignItems="center" gap={2}>
                 <Clock />
-                <IconButton size="small" onClick={() => setOpen(true)}>
-                    <SettingsIcon />
-                </IconButton>
+                <Tooltip arrow disableInteractive title="Settings">
+                    <IconButton size="small" onClick={() => setOpen(true)}>
+                        <SettingsIcon />
+                    </IconButton>
+                </Tooltip>
             </Stack>
 
-            <SettingsMain />
+            <Suspense fallback={null}>
+                <SettingsMain />
+            </Suspense>
         </HeaderContainer>
     );
 };

@@ -2,7 +2,7 @@ import React from "react";
 import { useAtom, useAtomValue } from "jotai";
 import { useLocation } from "wouter";
 
-import { favouriteCitiesAtom, filteredCitiesAtom } from "../../../../atoms";
+import { favouriteCitiesAtom, filteredCitiesAtom, userSettingsAtom } from "../../../../atoms";
 import { CityListItemContainer } from "../styledComps";
 import { db } from "../../../../utils/db";
 import CityInfo from "./CityInfo";
@@ -13,12 +13,13 @@ type CityListItemType = {
 
 const CityListItem = ({ index }: CityListItemType) => {
     const [favouriteCities, setFavouriteCities] = useAtom(favouriteCitiesAtom);
+
     const filteredCities = useAtomValue(filteredCitiesAtom);
+    const { leftClick, middleClick } = useAtomValue(userSettingsAtom);
 
     const [, navigate] = useLocation();
 
     const cityInfo = filteredCities?.[index] || null;
-
     const isFavourite = (favouriteCities || []).some(
         (city) => city.id.toString() === cityInfo?.id.toString(),
     );
@@ -31,8 +32,11 @@ const CityListItem = ({ index }: CityListItemType) => {
         }
     };
 
-    const navigateToFavouriteCity = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-        if (event.button !== 1 || !cityInfo) return;
+    const navigateToFavouriteCity = () => {
+        if (!cityInfo) {
+            console.warn("City info not found");
+            return;
+        }
 
         if (!isFavourite) {
             setFavouriteCities((prevValue) => [...(prevValue || []), cityInfo]);
@@ -57,6 +61,28 @@ const CityListItem = ({ index }: CityListItemType) => {
         });
     };
 
+    const onClick = () => {
+        switch (leftClick) {
+            case "add":
+                saveFavouriteCity();
+                break;
+            case "navigate":
+                navigateToFavouriteCity();
+        }
+    };
+
+    const onAuxClick = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+        if (event.button !== 1) return;
+
+        switch (middleClick) {
+            case "add":
+                saveFavouriteCity();
+                break;
+            case "navigate":
+                navigateToFavouriteCity();
+        }
+    };
+
     if (!cityInfo) return null;
 
     return (
@@ -66,8 +92,8 @@ const CityListItem = ({ index }: CityListItemType) => {
             alignItems="center"
             justifyContent="space-between"
             isFavourite={isFavourite}
-            onClick={saveFavouriteCity}
-            onAuxClick={navigateToFavouriteCity}
+            onClick={onClick}
+            onAuxClick={onAuxClick}
         >
             <CityInfo
                 isFavourite={isFavourite}

@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useState } from "react";
 import { Tooltip, Typography, type TooltipProps } from "@mui/material";
 
-import { ClampedText, type ClampedTextProps } from "../styledComps";
+import { ClampedText } from "../styledComps";
+import type { ClampedTextProps } from "../styledComps/types";
 
 type ClampedTextContainerProps = { tooltipProps?: TooltipProps } & ClampedTextProps;
 

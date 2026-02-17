@@ -10,7 +10,7 @@ import {
 
 export type SelectItemType = {
     value: string | number;
-    label: React.ReactNode;
+    label?: React.ReactNode;
     menuItemProps?: MenuItemProps;
 };
 
