@@ -2,9 +2,10 @@ import { useCallback, useMemo } from "react";
 import { useSetAtom } from "jotai";
 
 import type { CityType } from "../../../../types";
-import { weatherFetchInfoAtom, type FetchInfoType } from "../../../../atoms";
+import { weatherFetchInfoAtom } from "../../../../atoms";
 import type { WeatherDataType } from "../../../../types/weatherdata";
 import { db } from "../../../../utils/db";
+import type { FetchInfoType } from "../../../../atoms/types";
 
 type GetWeatherDataFromDBOptions = {
     cityId: number;

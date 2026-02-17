@@ -20,12 +20,12 @@ const formatOptions: SelectItemType[] = [
     { value: "HH:mm dd/MM/yyyy", label: "HH:mm dd/MM/yyyy" },
 ];
 
-const addCityActions: SelectItemType[] = [
+const addCityActions: SelectItemType<MouseClickActionType>[] = [
     { label: "Add/remove the city to/from navigation bar", value: "add" },
     { label: "Add the city and immediately open it", value: "navigate" },
 ];
 
-const modeOptions: SelectItemType[] = [
+const modeOptions: SelectItemType<ThemeModeType>[] = [
     { label: "Light", value: "light" },
     { label: "System", value: "system" },
     { label: "Dark", value: "dark" },
@@ -96,7 +96,7 @@ const LeftMouseAction = memo(
                     items={addCityActions}
                     value={value}
                     onChange={(event) => {
-                        const value = event.target.value as "add" | "navigate";
+                        const value = event.target.value as MouseClickActionType;
                         updateSettings({
                             leftClick: value,
                             middleClick: value === "add" ? "navigate" : "add",

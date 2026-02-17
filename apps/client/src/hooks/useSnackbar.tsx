@@ -1,7 +1,8 @@
 import { useCallback, useMemo } from "react";
 import { useSetAtom } from "jotai";
 
-import { snackbarAtom, type SnackbarAtomType } from "../atoms";
+import { snackbarAtom } from "../atoms";
+import type { SnackbarAtomType } from "../atoms/types";
 
 const useSnackbar = () => {
     const setSnackbarInfo = useSetAtom(snackbarAtom);

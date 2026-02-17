@@ -8,8 +8,8 @@ import {
     type SelectProps,
 } from "@mui/material";
 
-export type SelectItemType = {
-    value: string | number;
+export type SelectItemType<TValue = string | number> = {
+    value: TValue;
     label?: React.ReactNode;
     menuItemProps?: MenuItemProps;
 };
