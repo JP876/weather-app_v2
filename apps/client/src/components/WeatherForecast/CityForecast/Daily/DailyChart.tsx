@@ -5,9 +5,11 @@ import { BarChart } from "@mui/x-charts";
 import { format } from "date-fns";
 
 import { weatherFetchInfoAtom } from "../../../../atoms";
+import useMeasurementUnits from "../../../../hooks/useMeasurementUnits";
 
 const DailyChart = () => {
     const { isLoading, data: weatherData, error } = useAtomValue(weatherFetchInfoAtom);
+    const { temp } = useMeasurementUnits();
 
     const dataset = useMemo(() => {
         if (!weatherData) return [];
@@ -32,7 +34,7 @@ const DailyChart = () => {
             height={280}
             dataset={dataset}
             xAxis={[{ dataKey: "date", scaleType: "band", height: 28 }]}
-            yAxis={[{ label: `Temperature\u00B0C`, width: 48 }]}
+            yAxis={[{ label: `Temperature${temp}`, width: 48 }]}
             grid={{ horizontal: true }}
             series={[
                 { dataKey: "tempMin", label: `Min` },

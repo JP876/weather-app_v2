@@ -18,6 +18,7 @@ export const favouriteCitiesAtom = atomWithStorage<CityType[] | null>("favourite
 export const snackbarAtom = atom<Types.SnackbarAtomType>({ open: false, message: "" });
 
 const generalSettings: Types.GeneralSettingsType = {
+    units: "metric",
     dateFormat: "HH:mm:ss dd/MMM/yyyy",
     leftClick: "add",
     middleClick: "navigate",

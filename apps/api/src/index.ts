@@ -87,19 +87,24 @@ app.get("/api/v1/current-weather", rateLimiter, slowDownLimiter, async (req, res
         }
 
         const { lat, lng } = req.query;
+        const units = req.query?.units || "metric";
 
-        if (cacheInstance.has(`current_weather_data-${lat}/${lng}`)) {
-            return res.json({ results: cacheInstance.get(`current_weather_data-${lat}/${lng}`) });
+        if (cacheInstance.has(`current_weather_data-${lat}/${lng}/${units}`)) {
+            return res.json({
+                results: cacheInstance.get(`current_weather_data-${lat}/${lng}/${units}`),
+            });
         }
 
-        const response = await fetch(`${URL}?lat=${lat}&lon=${lng}&appid=${API_KEY}&units=metric`);
+        const response = await fetch(
+            `${URL}?lat=${lat}&lon=${lng}&appid=${API_KEY}&units=${units}`,
+        );
 
         if (!response.ok) {
             return res.status(404).send("Failed to fetch current weather data");
         }
 
         const data = await response.json();
-        cacheInstance.set(`current_weather_data-${lat}/${lng}`, data, 60 * 10);
+        cacheInstance.set(`current_weather_data-${lat}/${lng}/${units}`, data, 60 * 2);
 
         res.json({ results: data });
     } catch (error) {
@@ -121,19 +126,22 @@ app.get("/api/v1/weather-forecast", rateLimiter, slowDownLimiter, async (req, re
         }
 
         const { lat, lng } = req.query;
+        const units = req.query?.units || "metric";
 
-        if (cacheInstance.has(`weather_data-${lat}/${lng}`)) {
-            return res.json({ results: cacheInstance.get(`weather_data-${lat}/${lng}`) });
+        if (cacheInstance.has(`weather_data-${lat}/${lng}/${units}`)) {
+            return res.json({ results: cacheInstance.get(`weather_data-${lat}/${lng}/${units}`) });
         }
 
-        const response = await fetch(`${URL}?lat=${lat}&lon=${lng}&appid=${API_KEY}&units=metric`);
+        const response = await fetch(
+            `${URL}?lat=${lat}&lon=${lng}&appid=${API_KEY}&units=${units}`,
+        );
 
         if (!response.ok) {
             return res.status(404).send("Failed to fetch weather forecast");
         }
 
         const data = await response.json();
-        cacheInstance.set(`weather_data-${lat}/${lng}`, data, 60 * 10);
+        cacheInstance.set(`weather_data-${lat}/${lng}/${units}`, data, 60 * 10);
 
         res.json({ results: data });
     } catch (error) {

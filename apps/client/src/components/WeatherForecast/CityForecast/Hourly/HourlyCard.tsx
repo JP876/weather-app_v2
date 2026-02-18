@@ -5,6 +5,7 @@ import { useAtomValue } from "jotai";
 
 import { weatherFetchInfoAtom } from "../../../../atoms";
 import WeatherIcon from "../../../ui/WeatherIcon";
+import useMeasurementUnits from "../../../../hooks/useMeasurementUnits";
 
 export const HourlyCardContainer = styled(Stack, {
     shouldForwardProp: (prop) => prop !== "isLoading" && prop !== "error",
@@ -31,6 +32,7 @@ export const HourlyCardContainer = styled(Stack, {
 
 const HourlyCard = ({ index }: { index: number }) => {
     const { data: weatherData, isLoading } = useAtomValue(weatherFetchInfoAtom);
+    const { temp } = useMeasurementUnits();
 
     const hourlyData = useMemo(() => {
         if (!Array.isArray(weatherData?.hourly)) return null;
@@ -47,10 +49,10 @@ const HourlyCard = ({ index }: { index: number }) => {
 
     const tooltipTitleInfo = useMemo(() => {
         return [
-            { label: "Feels Like", value: `${hourlyData?.feels_like}\u00B0C` },
+            { label: "Feels Like", value: `${hourlyData?.feels_like}${temp}` },
             { label: "Humidity", value: `${hourlyData?.humidity}%` },
         ];
-    }, [hourlyData]);
+    }, [hourlyData?.feels_like, hourlyData?.humidity, temp]);
 
     return (
         <HourlyCardContainer isLoading={isLoading}>
@@ -60,7 +62,7 @@ const HourlyCard = ({ index }: { index: number }) => {
                 </Typography>
 
                 <Stack direction="row" alignItems="center">
-                    <Typography>{`${hourlyData?.temp}\u00B0C`}</Typography>
+                    <Typography>{`${hourlyData?.temp}${temp}`}</Typography>
                 </Stack>
             </Stack>
 

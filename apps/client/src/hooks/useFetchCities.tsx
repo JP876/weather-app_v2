@@ -50,7 +50,7 @@ const useFetchCities = () => {
 
             setFilteredCities([]);
             setCitiesFetchInfo({
-                data: [],
+                data: null,
                 isLoading: false,
                 error: {
                     type: "API",

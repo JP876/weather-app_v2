@@ -1,4 +1,4 @@
-import { memo, useEffect, useRef } from "react";
+import { memo, useCallback, useEffect, useRef } from "react";
 import { Divider, Stack, styled, type StackProps } from "@mui/material";
 import { useAtomValue } from "jotai";
 
@@ -6,9 +6,10 @@ import useCityInfo from "./hooks/useCityInfo";
 import CurrentMain from "./Current";
 import DailyMain from "./Daily";
 import HourlyMain from "./Hourly";
-import { weatherFetchInfoAtom } from "../../../atoms";
+import { userSettingsAtom, weatherFetchInfoAtom } from "../../../atoms";
 import useFetchWeatherData from "./hooks/useFetchWeatherData";
 import LoadingData from "../../ui/Feedback/LoadingData";
+import { db } from "../../../utils/db";
 
 const CityForecastContainer = styled(Stack)<StackProps>(({ theme }) => ({
     gap: theme.spacing(2),
@@ -32,17 +33,49 @@ const FetchLoadingData = memo(() => {
 });
 
 const CityForecastMain = () => {
+    const userSettings = useAtomValue(userSettingsAtom);
+
+    const unitsRef = useRef(userSettings.units);
     const cityId = useRef<string | null>(null);
 
     const cityInfo = useCityInfo();
     const { handleFetch } = useFetchWeatherData();
 
-    useEffect(() => {
-        if (cityInfo?.id && cityInfo?.id.toString() !== cityId.current) {
-            cityId.current = cityInfo.id.toString();
-            handleFetch({ id: cityInfo.id, lat: cityInfo.lat, lng: cityInfo.lng });
+    const clearWeatherDataTable = useCallback(async () => {
+        try {
+            await db.weatherData.clear();
+        } catch (err) {
+            console.error(err);
         }
-    }, [cityInfo?.id, cityInfo?.lat, cityInfo?.lng, handleFetch]);
+    }, []);
+
+    useEffect(() => {
+        if (
+            cityInfo?.id &&
+            (cityInfo?.id.toString() !== cityId.current || userSettings?.units !== unitsRef.current)
+        ) {
+            if (userSettings?.units !== unitsRef.current) {
+                clearWeatherDataTable();
+            }
+
+            cityId.current = cityInfo.id.toString();
+            unitsRef.current = userSettings?.units;
+
+            handleFetch({
+                id: cityInfo.id,
+                lat: cityInfo.lat,
+                lng: cityInfo.lng,
+                units: userSettings?.units || "metric",
+            });
+        }
+    }, [
+        cityInfo?.id,
+        cityInfo?.lat,
+        cityInfo?.lng,
+        userSettings?.units,
+        clearWeatherDataTable,
+        handleFetch,
+    ]);
 
     return (
         <CityForecastContainer>

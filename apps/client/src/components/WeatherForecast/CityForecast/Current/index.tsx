@@ -7,6 +7,7 @@ import { weatherFetchInfoAtom } from "../../../../atoms";
 import getWeatherIconSrc from "../../../../utils/getWeatherIconSrc";
 import WeatherIcon from "../../../ui/WeatherIcon";
 import ClampedTextContainer from "../../../ui/ClampedTextContainer";
+import useMeasurementUnits from "../../../../hooks/useMeasurementUnits";
 
 type CurrentTemperatureProps = {
     temp?: string;
@@ -47,9 +48,11 @@ const CurrentWeatherDetailsContainer = ({ label, value }: { label: string; value
 };
 
 const CurrentTemperature = ({ temp, icon }: CurrentTemperatureProps) => {
+    const units = useMeasurementUnits();
+
     return (
         <Stack direction="row" alignItems="center" gap={3.2}>
-            <Typography variant="h5">{`${temp}\u00B0C`}</Typography>
+            <Typography variant="h5">{`${temp}${units.temp}`}</Typography>
             {icon ? (
                 <Box my={2.5}>
                     <WeatherIcon code={icon} size={60} />
@@ -94,6 +97,7 @@ const LoadingDataContainer = ({
 
 const CurrentMain = () => {
     const { data: weatherData } = useAtomValue(weatherFetchInfoAtom);
+    const units = useMeasurementUnits();
 
     const currentWeather = useMemo(() => {
         if (!weatherData?.current) return null;
@@ -118,7 +122,7 @@ const CurrentMain = () => {
             <Box sx={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 1, mt: 2 }}>
                 <CurrentWeatherDetailsContainer
                     label="Feels like"
-                    value={`${currentWeather?.feels_like.toFixed(1)}\u00B0C`}
+                    value={`${currentWeather?.feels_like.toFixed(1)}${units.temp}`}
                 />
                 <CurrentWeatherDetailsContainer
                     label="Humidity"

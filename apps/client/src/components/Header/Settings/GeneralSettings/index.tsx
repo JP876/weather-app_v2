@@ -9,6 +9,7 @@ import type {
     GeneralSettingsType,
     MouseClickActionType,
     ThemeModeType,
+    UnitsType,
 } from "../../../../atoms/types";
 import SaveButton from "./SaveButton";
 import CloseModalButton from "../CloseModalButton";
@@ -29,6 +30,11 @@ const modeOptions: SelectItemType<ThemeModeType>[] = [
     { label: "Light", value: "light" },
     { label: "System", value: "system" },
     { label: "Dark", value: "dark" },
+];
+
+const unitOptions: SelectItemType<UnitsType>[] = [
+    { label: "Metric", value: "metric" },
+    { label: "Imperial", value: "imperial" },
 ];
 
 const SectionContainer = styled(Box)(({ theme }) => ({
@@ -129,6 +135,21 @@ const MiddleMouseAction = memo(
     },
 );
 
+const UnitsSelect = memo(({ value, updateSettings }: SingleSettingProps<UnitsType>) => {
+    return (
+        <SectionContainer>
+            <Typography variant="body1">Units of measurement</Typography>
+            <SelectMain
+                items={unitOptions}
+                value={value || "metric"}
+                onChange={(event) => {
+                    updateSettings({ units: event.target.value as UnitsType });
+                }}
+            />
+        </SectionContainer>
+    );
+});
+
 const GeneralSettingsMain = () => {
     const [settings, setSettings] = useAtom(generalSettingAtom);
 
@@ -142,6 +163,7 @@ const GeneralSettingsMain = () => {
     return (
         <Stack gap={2}>
             <ThemeMode />
+            <UnitsSelect value={settings.units} updateSettings={updateSettings} />
             <HeaderDateFormat value={settings.dateFormat} updateSettings={updateSettings} />
             <Stack mt={2}>
                 <Divider textAlign="left" sx={{ mb: 1 }}>

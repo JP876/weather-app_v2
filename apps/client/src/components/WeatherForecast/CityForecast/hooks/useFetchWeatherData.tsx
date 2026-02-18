@@ -5,7 +5,7 @@ import type { CityType } from "../../../../types";
 import { weatherFetchInfoAtom } from "../../../../atoms";
 import type { WeatherDataType } from "../../../../types/weatherdata";
 import { db } from "../../../../utils/db";
-import type { FetchInfoType } from "../../../../atoms/types";
+import type { FetchInfoType, UnitsType } from "../../../../atoms/types";
 
 type GetWeatherDataFromDBOptions = {
     cityId: number;
@@ -14,6 +14,7 @@ type GetWeatherDataFromDBOptions = {
 type FetchWeatherDataOptions = {
     lat: string;
     lng: string;
+    units: UnitsType;
 };
 
 type UpdateWeatherDataDBOptions = {
@@ -21,6 +22,8 @@ type UpdateWeatherDataDBOptions = {
     cityId: number;
     weatherData: WeatherDataType;
 };
+
+type FetchParamsType = { units: UnitsType } & Pick<CityType, "id" | "lat" | "lng">;
 
 const useFetchWeatherData = () => {
     const setWeatherFetchInfo = useSetAtom(weatherFetchInfoAtom);
@@ -53,10 +56,10 @@ const useFetchWeatherData = () => {
     );
 
     const fetchWeatherData = useCallback(
-        async ({ lat, lng }: FetchWeatherDataOptions) => {
+        async ({ lat, lng, units }: FetchWeatherDataOptions) => {
             try {
                 const [res] = await Promise.all([
-                    fetch(`/api/v1/weather-forecast?lat=${lat}&lng=${lng}`),
+                    fetch(`/api/v1/weather-forecast?lat=${lat}&lng=${lng}&units=${units}`),
                     new Promise((resolve) => setTimeout(resolve, 500)),
                 ]);
 
@@ -65,11 +68,7 @@ const useFetchWeatherData = () => {
                 }
 
                 const data = (await res.json()) as { results: WeatherDataType };
-                setWeatherFetchInfo((prevInfo) => ({
-                    ...prevInfo,
-                    data: data.results,
-                    isLoading: false,
-                }));
+                setWeatherFetchInfo({ error: false, isLoading: false, data: data.results });
 
                 return Promise.resolve({ weatherData: data.results });
             } catch (err: unknown) {
@@ -95,7 +94,7 @@ const useFetchWeatherData = () => {
     );
 
     const handleFetch = useCallback(
-        async (cityInfo: Pick<CityType, "id" | "lat" | "lng">) => {
+        async ({ units, ...cityInfo }: FetchParamsType) => {
             try {
                 const cityId = +cityInfo.id;
 
@@ -103,6 +102,7 @@ const useFetchWeatherData = () => {
                 const { weatherData } = await fetchWeatherData({
                     lat: cityInfo.lat.toString(),
                     lng: cityInfo.lng.toString(),
+                    units,
                 });
 
                 if (weatherData) {
@@ -120,10 +120,6 @@ const useFetchWeatherData = () => {
                         cause: error.cause,
                     },
                 };
-
-                if (error.name === "AbortError") {
-                    fetchInfo.error = false;
-                }
 
                 setWeatherFetchInfo(fetchInfo);
             }

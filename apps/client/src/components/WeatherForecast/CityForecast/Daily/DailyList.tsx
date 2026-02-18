@@ -8,6 +8,7 @@ import { format } from "date-fns";
 import getMinMax from "../../../../utils/getMinMax";
 import { weatherFetchInfoAtom } from "../../../../atoms";
 import WeatherIcon from "../../../ui/WeatherIcon";
+import useMeasurementUnits from "../../../../hooks/useMeasurementUnits";
 
 const DailyItemContainer = styled(Box)(({ theme }) => ({
     width: "100%",
@@ -66,6 +67,7 @@ const LoadingDailyList = () => {
 
 const DailyList = () => {
     const { isLoading, data: weatherData, error } = useAtomValue(weatherFetchInfoAtom);
+    const { temp } = useMeasurementUnits();
 
     const dailyData = useMemo(() => {
         if (!Array.isArray(weatherData?.daily)) return null;
@@ -107,10 +109,10 @@ const DailyList = () => {
                         ) : null}
                     </Box>
                     <Box sx={{ justifySelf: "center" }}>
-                        <Typography>{`${d.temp.max}\u00B0C`}</Typography>
+                        <Typography>{`${d.temp.max}${temp}`}</Typography>
                     </Box>
                     <Box sx={{ justifySelf: "center" }}>
-                        <Typography>{`${d.temp.min}\u00B0C`}</Typography>
+                        <Typography>{`${d.temp.min}${temp}`}</Typography>
                     </Box>
                     <Tooltip
                         arrow

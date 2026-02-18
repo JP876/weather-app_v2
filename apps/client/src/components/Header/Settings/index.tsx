@@ -28,6 +28,7 @@ const SettingsDialog = ({ children }: SettingsProps) => {
                 dateFormat: userSettings.dateFormat || "HH:mm:ss dd/MMM/yyyy",
                 leftClick: userSettings.leftClick || "add",
                 middleClick: userSettings.middleClick || "navigate",
+                units: userSettings.units || "metric",
             });
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps

@@ -10,7 +10,7 @@ import { userSettingsAtom, weatherFetchInfoAtom } from "../../../../atoms";
 
 const SkeletonCard = ({ isLoading, error }: { isLoading: boolean; error: boolean }) => {
     return (
-        <HourlyCardContainer isLoading={isLoading} error={error}>
+        <HourlyCardContainer sx={{ mx: 1 }} isLoading={isLoading} error={error}>
             <Stack direction="row" alignItems="center" justifyContent="space-between">
                 <Skeleton width={42} height={24} />
                 <Skeleton width={42} height={24} />
@@ -100,7 +100,7 @@ const HourlyCardsContainer = () => {
             sx={{ pb: 2.5 }}
         >
             {isLoading || !!error || weatherData === null ? (
-                Array.from({ length: 24 }).map((_, index) => (
+                Array.from({ length: 12 }).map((_, index) => (
                     <SkeletonCard key={index} isLoading={isLoading} error={!!error} />
                 ))
             ) : (

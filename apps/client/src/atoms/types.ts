@@ -23,8 +23,10 @@ export type SnackbarAtomType = {
 
 export type ThemeModeType = "dark" | "system" | "light";
 export type MouseClickActionType = "add" | "navigate";
+export type UnitsType = "metric" | "imperial";
 
 export type GeneralSettingsType = {
+    units: UnitsType;
     dateFormat: string;
     leftClick: MouseClickActionType;
     middleClick: MouseClickActionType;
