@@ -17,11 +17,21 @@ export const favouriteCitiesAtom = atomWithStorage<CityType[] | null>("favourite
 
 export const snackbarAtom = atom<Types.SnackbarAtomType>({ open: false, message: "" });
 
+export const initialCityDescription: Types.CityItemType = {
+    flag: "show",
+    isCapital: "show",
+    topLeft: "city",
+    topRight: "coordinates",
+    bottomLeft: "country",
+    bottomRight: "localtime",
+};
+
 const generalSettings: Types.GeneralSettingsType = {
     units: "metric",
     dateFormat: "HH:mm:ss dd/MMM/yyyy",
     leftClick: "add",
     middleClick: "navigate",
+    cityItem: initialCityDescription,
 };
 
 export const userSettingsAtom = atomWithStorage<Types.UserSettingsType>("settings", {

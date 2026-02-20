@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { lazy, useState } from "react";
 import { Box, Tab, Tabs, type BoxProps } from "@mui/material";
-import GeneralSettingsMain from "../GeneralSettings";
+
+const GeneralSettingsMain = lazy(() => import("../GeneralSettings"));
 
 type TabPanelProps = Omit<BoxProps, "id" | "hidden"> & {
     children: React.ReactNode;

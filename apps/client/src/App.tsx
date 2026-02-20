@@ -24,8 +24,8 @@ const App = () => {
     }, [cities]);
 
     useEffect(() => {
+        const event = new CustomEvent("second-passed");
         const interval = setInterval(() => {
-            const event = new CustomEvent("second-passed");
             document.dispatchEvent(event);
         }, 1_000);
         return () => {

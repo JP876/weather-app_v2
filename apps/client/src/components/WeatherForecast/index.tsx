@@ -1,9 +1,10 @@
-import { memo } from "react";
+import { lazy, memo, Suspense } from "react";
 import { Box, styled, type BoxProps } from "@mui/material";
 
-import CitiesNavigation from "./CitiesNavigation";
 import RouterMain from "../Router";
 import { GlassContainer } from "../ui/styledComps";
+
+const CitiesNavigation = lazy(() => import("./CitiesNavigation"));
 
 const MARGIN_BLOCK = 4;
 const MARGIN_INLINE = 4;
@@ -61,7 +62,9 @@ const WeatherForecast = () => {
     return (
         <WeatherForecastContainer>
             <WeatherForecastHeight id="wether-forecast-container-height" />
-            <CitiesNavigation />
+            <Suspense fallback={null}>
+                <CitiesNavigation />
+            </Suspense>
             <WeatherForecastRoutesContainer id="forecast-routes-container">
                 <RouterMain />
             </WeatherForecastRoutesContainer>

@@ -86,7 +86,11 @@ const CityInfo = memo((props: CityInfoProps) => {
                     {props.timezone ? (
                         <Stack direction="row" alignItems="center" gap={1}>
                             <AccessTimeIcon />
-                            <Clock timezone={props.timezone} format="HH:mm dd/MMM/yy" />
+                            <Clock
+                                timezone={props.timezone}
+                                format="HH:mm dd/MMM/yy"
+                                variant="body2"
+                            />
                         </Stack>
                     ) : null}
                 </Box>

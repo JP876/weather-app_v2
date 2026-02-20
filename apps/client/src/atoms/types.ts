@@ -25,11 +25,29 @@ export type ThemeModeType = "dark" | "system" | "light";
 export type MouseClickActionType = "add" | "navigate";
 export type UnitsType = "metric" | "imperial";
 
+export type CityDescriptionOptions =
+    | "city"
+    | "cityiso2"
+    | "countryiso2"
+    | "country"
+    | "coordinates"
+    | "localtime"
+    | "none";
+export type CityItemType = {
+    flag: "show" | "hide";
+    isCapital: "show" | "hide";
+    topLeft: CityDescriptionOptions;
+    topRight: CityDescriptionOptions;
+    bottomLeft: CityDescriptionOptions;
+    bottomRight: CityDescriptionOptions;
+};
+
 export type GeneralSettingsType = {
     units: UnitsType;
     dateFormat: string;
     leftClick: MouseClickActionType;
     middleClick: MouseClickActionType;
+    cityItem: CityItemType;
 };
 
 export type UserSettingsType = GeneralSettingsType & {

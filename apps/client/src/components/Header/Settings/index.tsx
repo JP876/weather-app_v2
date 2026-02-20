@@ -4,7 +4,12 @@ import CloseIcon from "@mui/icons-material/Close";
 import { useAtom, useAtomValue, useSetAtom } from "jotai";
 
 import { GlassDialog } from "../../ui/styledComps";
-import { generalSettingAtom, openSettingsAtom, userSettingsAtom } from "../../../atoms";
+import {
+    generalSettingAtom,
+    initialCityDescription,
+    openSettingsAtom,
+    userSettingsAtom,
+} from "../../../atoms";
 import SettingsNavigation from "./SettingsNavigation";
 
 type SettingsProps = {
@@ -29,6 +34,7 @@ const SettingsDialog = ({ children }: SettingsProps) => {
                 leftClick: userSettings.leftClick || "add",
                 middleClick: userSettings.middleClick || "navigate",
                 units: userSettings.units || "metric",
+                cityItem: userSettings.cityItem || initialCityDescription,
             });
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps

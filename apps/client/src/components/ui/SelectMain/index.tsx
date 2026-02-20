@@ -1,9 +1,10 @@
-import { useId } from "react";
+import { memo, useId } from "react";
 import {
     FormControl,
     InputLabel,
     MenuItem,
     Select,
+    type FormControlProps,
     type MenuItemProps,
     type SelectProps,
 } from "@mui/material";
@@ -14,13 +15,16 @@ export type SelectItemType<TValue = string | number> = {
     menuItemProps?: MenuItemProps;
 };
 
-type SelectMainProps = { items: SelectItemType[] } & SelectProps;
+type SelectMainProps = {
+    items: SelectItemType[];
+    formControlProps?: FormControlProps;
+} & SelectProps<string>;
 
-const SelectMain = ({ label, items, ...rest }: SelectMainProps) => {
+const SelectMain = ({ label, items, formControlProps, ...rest }: SelectMainProps) => {
     const labelId = useId();
 
     return (
-        <FormControl size="small" fullWidth>
+        <FormControl size="small" fullWidth {...formControlProps}>
             <InputLabel id={labelId}>{label}</InputLabel>
             <Select id="simple-select" label={label} {...rest} labelId={labelId}>
                 {items.map((item, index) => {
@@ -35,4 +39,4 @@ const SelectMain = ({ label, items, ...rest }: SelectMainProps) => {
     );
 };
 
-export default SelectMain;
+export default memo(SelectMain);

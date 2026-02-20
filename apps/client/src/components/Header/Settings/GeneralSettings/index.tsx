@@ -1,11 +1,20 @@
 import { memo, useCallback } from "react";
-import { Box, Divider, Stack, styled, Typography, useColorScheme } from "@mui/material";
+import {
+    Box,
+    Divider,
+    Stack,
+    styled,
+    Typography,
+    useColorScheme,
+    type SelectChangeEvent,
+} from "@mui/material";
 import { useAtom } from "jotai";
 
 import { generalSettingAtom } from "../../../../atoms";
 import SelectMain, { type SelectItemType } from "../../../ui/SelectMain";
 import Clock from "../../../ui/Clock";
 import type {
+    CityItemType,
     GeneralSettingsType,
     MouseClickActionType,
     ThemeModeType,
@@ -13,6 +22,7 @@ import type {
 } from "../../../../atoms/types";
 import SaveButton from "./SaveButton";
 import CloseModalButton from "../CloseModalButton";
+import CityListItemConfig from "./CityListItemConfig";
 
 const formatOptions: SelectItemType[] = [
     { value: "HH:mm:ss dd/MMM/yyyy", label: "HH:mm:ss dd/MMM/yyyy" },
@@ -53,11 +63,6 @@ const SettingsActions = memo(() => {
     );
 });
 
-type SingleSettingProps<T> = {
-    value: T;
-    updateSettings: (value: Partial<GeneralSettingsType>) => void;
-};
-
 const ThemeMode = memo(() => {
     const { mode, setMode } = useColorScheme();
 
@@ -75,110 +80,109 @@ const ThemeMode = memo(() => {
     );
 });
 
-const HeaderDateFormat = memo(({ value, updateSettings }: SingleSettingProps<string>) => {
-    return (
-        <SectionContainer>
-            <Stack>
-                <Typography variant="body1">Header date format</Typography>
-                <Clock format={value} variant="caption" />
+type GenearlAppSettingsProps = {
+    units: string;
+    dateFormat: string;
+    updateSettings: (e: SelectChangeEvent) => void;
+};
+
+const GenearlAppSettings = memo(
+    ({ units, dateFormat, updateSettings }: GenearlAppSettingsProps) => {
+        return (
+            <Stack gap={2}>
+                <ThemeMode />
+                <SectionContainer>
+                    <Typography variant="body1">Units of measurement</Typography>
+                    <SelectMain
+                        name="units"
+                        items={unitOptions}
+                        value={units}
+                        onChange={updateSettings}
+                    />
+                </SectionContainer>
+                <SectionContainer>
+                    <Stack>
+                        <Typography variant="body1">Header date format</Typography>
+                        <Clock format={dateFormat} variant="caption" />
+                    </Stack>
+                    <SelectMain
+                        name="dateFormat"
+                        items={formatOptions}
+                        value={dateFormat}
+                        onChange={updateSettings}
+                    />
+                </SectionContainer>
             </Stack>
-            <SelectMain
-                items={formatOptions}
-                value={value}
-                onChange={(event) => {
-                    updateSettings({ dateFormat: event.target.value as string });
-                }}
-            />
-        </SectionContainer>
-    );
-});
-
-const LeftMouseAction = memo(
-    ({ value, updateSettings }: SingleSettingProps<MouseClickActionType>) => {
-        return (
-            <>
-                <Typography variant="body1">Left mouse click</Typography>
-                <SelectMain
-                    items={addCityActions}
-                    value={value}
-                    onChange={(event) => {
-                        const value = event.target.value as MouseClickActionType;
-                        updateSettings({
-                            leftClick: value,
-                            middleClick: value === "add" ? "navigate" : "add",
-                        });
-                    }}
-                />
-            </>
         );
     },
 );
 
-const MiddleMouseAction = memo(
-    ({ value, updateSettings }: SingleSettingProps<MouseClickActionType>) => {
+type AddCityTabSettingsProps = {
+    leftClick: string;
+    middleClick: string;
+    cityItem: CityItemType;
+    updateSettings: (e: SelectChangeEvent) => void;
+};
+
+const AddCityTabSettings = memo(
+    ({ leftClick, middleClick, cityItem, updateSettings }: AddCityTabSettingsProps) => {
         return (
-            <>
-                <Typography variant="body1">Middle mouse click</Typography>
-                <SelectMain
-                    items={addCityActions}
-                    value={value}
-                    onChange={(event) => {
-                        const value = event.target.value as "add" | "navigate";
-                        updateSettings({
-                            middleClick: value,
-                            leftClick: value === "add" ? "navigate" : "add",
-                        });
-                    }}
-                />
-            </>
+            <Stack mt={2}>
+                <Divider sx={{ mb: 2 }}>
+                    <Typography variant="subtitle1" sx={{ minWidth: "8rem" }}>
+                        Add city tab
+                    </Typography>
+                </Divider>
+                <SectionContainer>
+                    <Typography variant="body1">Left mouse click</Typography>
+                    <SelectMain
+                        name="leftClick"
+                        items={addCityActions}
+                        value={leftClick}
+                        onChange={updateSettings}
+                    />
+                    <Typography variant="body1">Middle mouse click</Typography>
+                    <SelectMain
+                        name="middleClick"
+                        items={addCityActions}
+                        value={middleClick}
+                        onChange={updateSettings}
+                    />
+                </SectionContainer>
+                <CityListItemConfig value={cityItem} />
+            </Stack>
         );
     },
 );
-
-const UnitsSelect = memo(({ value, updateSettings }: SingleSettingProps<UnitsType>) => {
-    return (
-        <SectionContainer>
-            <Typography variant="body1">Units of measurement</Typography>
-            <SelectMain
-                items={unitOptions}
-                value={value || "metric"}
-                onChange={(event) => {
-                    updateSettings({ units: event.target.value as UnitsType });
-                }}
-            />
-        </SectionContainer>
-    );
-});
 
 const GeneralSettingsMain = () => {
     const [settings, setSettings] = useAtom(generalSettingAtom);
 
     const updateSettings = useCallback(
-        (value: Partial<GeneralSettingsType>) => {
-            setSettings((prevValue) => ({ ...prevValue, ...value }));
+        (event: SelectChangeEvent) => {
+            const value = event.target.value as string;
+            const name = event.target.name as keyof GeneralSettingsType;
+
+            setSettings((prevValue) => {
+                return { ...prevValue, [name]: value };
+            });
         },
         [setSettings],
     );
 
     return (
         <Stack gap={2}>
-            <ThemeMode />
-            <UnitsSelect value={settings.units} updateSettings={updateSettings} />
-            <HeaderDateFormat value={settings.dateFormat} updateSettings={updateSettings} />
-            <Stack mt={2}>
-                <Divider textAlign="left" sx={{ mb: 1 }}>
-                    <Typography variant="subtitle1" sx={{ minWidth: "8rem" }}>
-                        Add city tab
-                    </Typography>
-                </Divider>
-                <SectionContainer>
-                    <LeftMouseAction value={settings.leftClick} updateSettings={updateSettings} />
-                    <MiddleMouseAction
-                        value={settings.middleClick}
-                        updateSettings={updateSettings}
-                    />
-                </SectionContainer>
-            </Stack>
+            <GenearlAppSettings
+                updateSettings={updateSettings}
+                units={settings.units}
+                dateFormat={settings.dateFormat}
+            />
+            <AddCityTabSettings
+                updateSettings={updateSettings}
+                leftClick={settings.leftClick}
+                middleClick={settings.middleClick}
+                cityItem={settings.cityItem}
+            />
             <Divider />
             <SettingsActions />
         </Stack>

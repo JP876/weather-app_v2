@@ -1,15 +1,18 @@
-import { memo, useCallback, useEffect, useRef } from "react";
+import { lazy, memo, Suspense, useCallback, useEffect, useRef } from "react";
 import { Divider, Stack, styled, type StackProps } from "@mui/material";
 import { useAtomValue } from "jotai";
 
 import useCityInfo from "./hooks/useCityInfo";
-import CurrentMain from "./Current";
-import DailyMain from "./Daily";
-import HourlyMain from "./Hourly";
+
 import { userSettingsAtom, weatherFetchInfoAtom } from "../../../atoms";
 import useFetchWeatherData from "./hooks/useFetchWeatherData";
 import LoadingData from "../../ui/Feedback/LoadingData";
 import { db } from "../../../utils/db";
+import LoadingRoute from "../../ui/Feedback/LoadingRoute";
+
+const CurrentMain = lazy(() => import("./Current"));
+const DailyMain = lazy(() => import("./Daily"));
+const HourlyMain = lazy(() => import("./Hourly"));
 
 const CityForecastContainer = styled(Stack)<StackProps>(({ theme }) => ({
     gap: theme.spacing(2),
@@ -80,11 +83,13 @@ const CityForecastMain = () => {
     return (
         <CityForecastContainer>
             <FetchLoadingData />
-            <CurrentMain />
-            <Divider />
-            <HourlyMain />
-            <Divider />
-            <DailyMain />
+            <Suspense fallback={<LoadingRoute />}>
+                <CurrentMain />
+                <Divider />
+                <HourlyMain />
+                <Divider />
+                <DailyMain />
+            </Suspense>
         </CityForecastContainer>
     );
 };
