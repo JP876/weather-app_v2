@@ -1,34 +1,49 @@
-import { useState } from "react";
-import { Html } from "@react-three/drei";
+import { memo } from "react";
+import { styled } from "@mui/material";
 import { useAtomValue } from "jotai";
 
 import { selectedCityAtom } from "../../../atoms";
-import { Paper, Stack, Typography } from "@mui/material";
+import SelectedCityDetails from "./SelectedCityDetails";
+import { GlassContainer } from "../../ui/styledComps";
+import { MARGIN_INLINE } from "../../../consts";
+
+/* 
+<group ref={groupRef}>
+    <Html
+        position={selectedCity.position}
+        occlude={true}
+        onOcclude={setHidden}
+        style={{
+            transition: "all 0.5s",
+            opacity: +show,
+            transform: `scale(${show ? 1 : 0.5})`,
+        }}
+    >
+        <SelectedCityDetails city={selectedCity} closeDetails={closeDetails} />
+    </Html>
+</group>
+*/
+
+const SelectedCityContainer = styled(GlassContainer)(({ theme }) => ({
+    position: "absolute",
+    top: "var(--content-top-position)",
+    right: theme.spacing(MARGIN_INLINE),
+    borderRadius: theme.shape.borderRadius,
+    zIndex: 10,
+    width: "20vw",
+    height: "60vh",
+}));
 
 const SelectedCityMain = () => {
     const selectedCity = useAtomValue(selectedCityAtom);
 
-    const [hidden, setHidden] = useState(true);
-    const show = Boolean(!hidden || selectedCity?.id);
+    if (!selectedCity) return null;
 
     return (
-        <Html
-            occlude
-            onOcclude={setHidden}
-            transform
-            style={{
-                transition: "all 0.5s",
-                opacity: +show,
-                transform: `scale(${show ? 1 : 0.5})`,
-            }}
-        >
-            <Paper>
-                <Stack>
-                    <Typography>{selectedCity?.city}</Typography>
-                </Stack>
-            </Paper>
-        </Html>
+        <SelectedCityContainer>
+            <SelectedCityDetails />
+        </SelectedCityContainer>
     );
 };
 
-export default SelectedCityMain;
+export default memo(SelectedCityMain);

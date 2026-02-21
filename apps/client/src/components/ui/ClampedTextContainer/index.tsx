@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { memo, useCallback, useEffect, useState } from "react";
 import { Tooltip, Typography, type TooltipProps } from "@mui/material";
 
 import { ClampedText } from "../styledComps";
@@ -68,4 +68,4 @@ const ClampedTextContainer = ({ tooltipProps, ...rest }: ClampedTextContainerPro
     );
 };
 
-export default ClampedTextContainer;
+export default memo(ClampedTextContainer);

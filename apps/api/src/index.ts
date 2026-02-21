@@ -96,7 +96,7 @@ app.get("/api/v1/current-weather", rateLimiter, slowDownLimiter, async (req, res
         }
 
         const response = await fetch(
-            `${URL}?lat=${lat}&lon=${lng}&appid=${API_KEY}&units=${units}`,
+            `${URL}?lat=${lat}&lon=${lng}&appid=${API_KEY}&units=${units}&exclude=minutely`,
         );
 
         if (!response.ok) {
@@ -133,7 +133,7 @@ app.get("/api/v1/weather-forecast", rateLimiter, slowDownLimiter, async (req, re
         }
 
         const response = await fetch(
-            `${URL}?lat=${lat}&lon=${lng}&appid=${API_KEY}&units=${units}`,
+            `${URL}?lat=${lat}&lon=${lng}&appid=${API_KEY}&units=${units}&exclude=minutely`,
         );
 
         if (!response.ok) {

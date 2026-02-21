@@ -1,13 +1,25 @@
 import { lazy, Suspense, useEffect, useRef } from "react";
-import { Box, CssBaseline } from "@mui/material";
+import { Box, CssBaseline, styled, type BoxProps } from "@mui/material";
 
 import useFetchCities from "./hooks/useFetchCities";
 import HeaderMain from "./components/Header";
 import FooterMain from "./components/Footer";
 import WeatherForecast from "./components/WeatherForecast";
 import SnackbarContainer from "./components/ui/Feedback/SnackbarContainer";
+import { MARGIN_BLOCK } from "./consts";
 
 const EarthMain = lazy(() => import("./components/Earth"));
+
+const AppContainer = (props: BoxProps) => <Box component="main" {...props} />;
+
+const Main = styled(AppContainer)(({ theme }) => ({
+    "--header_height": "3.6rem",
+    "--footer_height": "3.6rem",
+    "--content-top-position": `calc(${theme.spacing(MARGIN_BLOCK)} + var(--header_height))`,
+    scrollbarColor: `${theme.palette.primary.light} transparent`,
+    scrollBehavior: "smooth",
+    scrollMargin: 0,
+}));
 
 const App = () => {
     const justMounted = useRef(true);
@@ -34,7 +46,7 @@ const App = () => {
     }, []);
 
     return (
-        <Box component="main" sx={{ "--header_height": "3.6rem", "--footer_height": "3.6rem" }}>
+        <Main>
             <CssBaseline />
             <SnackbarContainer />
 
@@ -56,7 +68,7 @@ const App = () => {
                 </Box>
             </Box>
             <FooterMain />
-        </Box>
+        </Main>
     );
 };
 

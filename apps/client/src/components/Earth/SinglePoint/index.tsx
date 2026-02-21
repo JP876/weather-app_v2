@@ -2,7 +2,7 @@ import { useEffect, useRef } from "react";
 import type { ThreeElements } from "@react-three/fiber";
 import * as THREE from "three";
 
-import { EARTH_RADIUS } from "../consts";
+import calcCoordToPos from "../../../utils/calcCoordToPos";
 
 const singlePointMat = new THREE.MeshBasicMaterial({ color: "red" });
 const singlePointGeo = new THREE.OctahedronGeometry(0.006, 1);
@@ -19,11 +19,9 @@ const SinglePoint = ({
             const latRad = lat * (Math.PI / 180);
             const lonRad = -lon * (Math.PI / 180);
 
-            meshRef.current.position.set(
-                Math.cos(latRad) * Math.cos(lonRad) * EARTH_RADIUS,
-                Math.sin(latRad) * EARTH_RADIUS,
-                Math.cos(latRad) * Math.sin(lonRad) * EARTH_RADIUS,
-            );
+            const { x, y, z } = calcCoordToPos({ lat, lng: lon });
+
+            meshRef.current.position.set(x, y, z);
             meshRef.current.rotation.set(0.0, -lonRad, latRad - Math.PI * 0.5);
         }
     }, [lat, lon]);

@@ -1,5 +1,5 @@
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Box, Collapse, Skeleton, Stack, Typography, useTheme } from "@mui/material";
+import { Box, Collapse, Skeleton, Stack, Typography } from "@mui/material";
 import { AutoSizer, Grid, type GridCellProps } from "react-virtualized";
 import { useAtomValue } from "jotai";
 
@@ -35,17 +35,14 @@ const SkeletonCard = ({ isLoading, error }: { isLoading: boolean; error: boolean
 };
 
 const HourlyCardsGrid = memo(() => {
-    const theme = useTheme();
-
     const gridStyle = useMemo<React.CSSProperties>(() => {
         return {
             overflowY: "hidden",
-            scrollbarColor: `${theme.palette.primary.light} transparent`,
             scrollbarWidth: "thin",
             scrollBehavior: "smooth",
             scrollMargin: 0,
         };
-    }, [theme.palette.primary.light]);
+    }, []);
 
     const cellRenderer = useCallback(({ columnIndex, key, style }: GridCellProps) => {
         return (

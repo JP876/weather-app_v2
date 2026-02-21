@@ -1,5 +1,6 @@
 import { atom } from "jotai";
 import { atomWithStorage } from "jotai/utils";
+import type { Vector3 } from "three";
 
 import type { CityType } from "../types";
 import type { WeatherDataType } from "../types/weatherdata";
@@ -40,7 +41,8 @@ export const userSettingsAtom = atomWithStorage<Types.UserSettingsType>("setting
     ...generalSettings,
 });
 
-export const selectedCityAtom = atom<CityType | null>(null);
+export const selectedCityAtom = atom<(CityType & { position: Vector3 }) | null>(null);
+export const citiesByCountry = atom<CityType[] | null>(null);
 
 export const openSettingsAtom = atom(false);
 export const generalSettingAtom = atom<Types.GeneralSettingsType>(generalSettings);

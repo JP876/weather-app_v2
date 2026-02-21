@@ -3,16 +3,13 @@ import { Box, styled, type BoxProps } from "@mui/material";
 
 import RouterMain from "../Router";
 import { GlassContainer } from "../ui/styledComps";
+import { CONTAINER_PADDING, MARGIN_BLOCK, MARGIN_INLINE } from "../../consts";
 
 const CitiesNavigation = lazy(() => import("./CitiesNavigation"));
 
-const MARGIN_BLOCK = 4;
-const MARGIN_INLINE = 4;
-const CONTAINER_PADDING = 1;
-
 const WeatherForecastContainer = styled(GlassContainer)(({ theme }) => ({
     position: "absolute",
-    top: `calc(${theme.spacing(MARGIN_BLOCK)} + var(--header_height))`,
+    top: "var(--content-top-position)",
     left: theme.spacing(MARGIN_INLINE),
     zIndex: theme.zIndex.appBar,
     width: "40vw",
@@ -45,7 +42,6 @@ const WeatherForecastRoutesContainer = styled(Box)<BoxProps<"div">>(({ theme }) 
     position: "relative",
     overflow: "hidden",
     pointerEvents: "none",
-    scrollbarColor: `${theme.palette.primary.light} rgba(255, 255, 255, 0.0)`,
     scrollbarWidth: "thin",
 }));
 

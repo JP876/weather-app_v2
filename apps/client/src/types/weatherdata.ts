@@ -97,3 +97,46 @@ export type WeatherDataType = {
     timezone: string;
     timezone_offset: number;
 };
+
+export type CurrentWeatherDataType = {
+    coord: {
+        lon: number;
+        lat: number;
+    };
+    weather: WeatherType[];
+    base: string;
+    name: string;
+    main: {
+        temp: number;
+        feels_like: number;
+        pressure: number;
+        humidity: number;
+        temp_min: number;
+        temp_max: number;
+        sea_level: number;
+        grnd_level: number;
+    };
+    visibility: number;
+    wind: {
+        speed: number;
+        deg: number;
+        gust: number;
+    };
+    clouds: {
+        all: number;
+    };
+    rain?: {
+        ["1h"]: number;
+    };
+    show?: {
+        ["1h"]: number;
+    };
+    sys: {
+        type: number;
+        country: string;
+        id: number;
+        message?: string;
+        sunrise: number;
+        sunset: number;
+    };
+};

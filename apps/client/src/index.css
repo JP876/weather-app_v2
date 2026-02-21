@@ -1,24 +1,8 @@
-*,
-*::before,
-*::after {
-    box-sizing: border-box;
-}
-
-* {
-    margin: 0;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-    html {
-        interpolate-size: allow-keywords;
-    }
-}
-
 body {
     line-height: 1.5;
     -webkit-font-smoothing: antialiased;
     font-family: "Roboto Mono", monospace;
-    background-color: #00aaff;
+    background-color: #000011;
 }
 
 img,
@@ -28,33 +12,4 @@ canvas,
 svg {
     display: block;
     max-width: 100%;
-}
-
-input,
-button,
-textarea,
-select {
-    font: inherit;
-}
-
-p,
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-    overflow-wrap: break-word;
-}
-
-p {
-    text-wrap: pretty;
-}
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-    text-wrap: balance;
 }

@@ -10,7 +10,7 @@ const useMeasurementUnits = () => {
         const temp = userSettings.units === "imperial" ? "\u00B0F" : "\u00B0C";
         const windSpeed = userSettings.units === "imperial" ? "miles/hour" : "meter/sec";
 
-        return { temp, windSpeed };
+        return { temp, windSpeed, units: userSettings.units || "metric" };
     }, [userSettings.units]);
 };
 
