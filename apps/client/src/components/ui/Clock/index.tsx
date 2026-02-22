@@ -1,5 +1,5 @@
 import { memo, useLayoutEffect, useMemo, useRef } from "react";
-import { format as formatDate } from "date-fns";
+// import { format as formatDate } from "date-fns";
 import { Typography, type TypographyProps } from "@mui/material";
 import { useAtomValue } from "jotai";
 
@@ -22,14 +22,14 @@ const Clock = ({ format, timezone, locale, ...rest }: ClockProps) => {
     useLayoutEffect(() => {
         const TIMEZONE = timezone || timeFormatOptions?.timeZone;
         const LOCALE = locale || timeFormatOptions?.locale;
-        const DATE_FORMAT = format || dateFormat || "HH:mm:ss dd/MMM/yyyy";
+        // const DATE_FORMAT = format || dateFormat || "HH:mm:ss dd/MMM/yyyy";
 
         const controller = new AbortController();
 
         const getCurrentTime = () => {
             // const time = new Date().toLocaleString(LOCALE, { timeZone: TIMEZONE });
             // const formated = formatDate(new Date(time), DATE_FORMAT);
-
+            console.log(Intl?.DateTimeFormat()?.resolvedOptions());
             console.log(new Date().toLocaleString(LOCALE, { timeZone: TIMEZONE }));
 
             if (timeEl.current) {
