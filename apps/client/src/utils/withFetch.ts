@@ -34,7 +34,7 @@ async function withFetch(
 
         return [null, res];
     } catch (err) {
-        const error = err as Error;
+        const error = err as NetworkError | APIError | ReferenceError;
         return [error, null];
     }
 }
