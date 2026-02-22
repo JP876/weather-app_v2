@@ -2,7 +2,7 @@ import type { AlertProps, SnackbarProps } from "@mui/material";
 
 export type FetchInfoError = {
     msg: string;
-    type: "DB" | "API";
+    type?: "DB" | "API";
     name: string;
     cause?: unknown;
 };

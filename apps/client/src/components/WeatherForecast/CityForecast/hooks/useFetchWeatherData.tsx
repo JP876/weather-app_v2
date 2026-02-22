@@ -6,6 +6,7 @@ import { weatherFetchInfoAtom } from "../../../../atoms";
 import type { WeatherDataType } from "../../../../types/weatherdata";
 import { db } from "../../../../utils/db";
 import type { FetchInfoType, UnitsType } from "../../../../atoms/types";
+import withFetch from "../../../../utils/withFetch";
 
 type GetWeatherDataFromDBOptions = {
     cityId: number;
@@ -46,10 +47,10 @@ const useFetchWeatherData = () => {
                     }));
                 }
 
-                return Promise.resolve({ hasData });
+                return { hasData };
             } catch (err: unknown) {
                 console.error(err);
-                return Promise.resolve({ hasData });
+                return { hasData };
             }
         },
         [setWeatherFetchInfo],
@@ -57,23 +58,17 @@ const useFetchWeatherData = () => {
 
     const fetchWeatherData = useCallback(
         async ({ lat, lng, units }: FetchWeatherDataOptions) => {
-            try {
-                const [res] = await Promise.all([
-                    fetch(`/api/v1/weather-forecast?lat=${lat}&lng=${lng}&units=${units}`),
-                    new Promise((resolve) => setTimeout(resolve, 500)),
-                ]);
+            const [[error, res]] = await Promise.all([
+                withFetch(`/api/v1/weather-forecast?lat=${lat}&lng=${lng}&units=${units}`),
+                new Promise((resolve) => setTimeout(resolve, 500)),
+            ]);
 
-                if (!res.ok) {
-                    throw new Error("Failed to fetch weather data");
-                }
+            if (error) throw error;
 
-                const data = (await res.json()) as { results: WeatherDataType };
-                setWeatherFetchInfo({ error: false, isLoading: false, data: data.results });
+            const data = (await res.json()) as { results: WeatherDataType };
+            setWeatherFetchInfo({ error: false, isLoading: false, data: data.results });
 
-                return Promise.resolve({ weatherData: data.results });
-            } catch (err: unknown) {
-                return Promise.reject(err);
-            }
+            return { weatherData: data.results };
         },
         [setWeatherFetchInfo],
     );
@@ -113,12 +108,7 @@ const useFetchWeatherData = () => {
                 const fetchInfo: FetchInfoType<WeatherDataType> = {
                     data: null,
                     isLoading: false,
-                    error: {
-                        type: "API",
-                        msg: error.message,
-                        name: error.name,
-                        cause: error.cause,
-                    },
+                    error: { msg: error.message, name: error.name, cause: error.cause },
                 };
 
                 setWeatherFetchInfo(fetchInfo);
