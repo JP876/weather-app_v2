@@ -1,25 +1,20 @@
-import { useCallback, useMemo } from "react";
+import { memo, useCallback, useMemo } from "react";
 import { useAtomValue } from "jotai";
-import { Box } from "@mui/material";
 import { AutoSizer, List, type ListRowProps } from "react-virtualized";
+import { Box, Typography } from "@mui/material";
 
-import useCityListHeight from "../hooks/useCityListHeight";
-import CityListSkeleton from "../CityListSkeleton";
-import { citiesFetchInfoAtom, filteredCitiesAtom } from "../../../../atoms";
 import CityListItem from "./CityListItem";
+import { citiesByCountry } from "../../../../atoms";
 
-export const LIST_ID = "cities_list_all";
+export const LIST_ID = "cities_list_by_country";
 
-const CityList = () => {
-    const { isLoading, error } = useAtomValue(citiesFetchInfoAtom);
-    const filteredCities = useAtomValue(filteredCitiesAtom);
-
-    const { height } = useCityListHeight();
+const CitiesList = memo(() => {
+    const cities = useAtomValue(citiesByCountry);
 
     const listStyle = useMemo<React.CSSProperties>(() => {
         return {
-            padding: "1rem",
-            overflow: "auto",
+            overflowY: "auto",
+            overflowX: "hidden",
             scrollbarWidth: "thin",
             scrollBehavior: "smooth",
             scrollMargin: 0,
@@ -34,8 +29,14 @@ const CityList = () => {
         );
     }, []);
 
-    if (isLoading || !!error || filteredCities === null) {
-        return <CityListSkeleton />;
+    if (!Array.isArray(cities)) return null;
+
+    if (cities.length === 0) {
+        return (
+            <Typography variant="body1" textAlign="center" my={2}>
+                No results
+            </Typography>
+        );
     }
 
     return (
@@ -44,15 +45,15 @@ const CityList = () => {
                 <List
                     id={LIST_ID}
                     width={width}
-                    height={height || 960}
-                    rowCount={filteredCities.length}
-                    rowHeight={64}
+                    height={260}
+                    rowCount={cities.length}
+                    rowHeight={46}
                     rowRenderer={rowRenderer}
                     style={listStyle}
                 />
             )}
         </AutoSizer>
     );
-};
+});
 
-export default CityList;
+export default CitiesList;

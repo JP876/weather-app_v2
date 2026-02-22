@@ -9,7 +9,7 @@ import useMeasurementUnits from "../../../hooks/useMeasurementUnits";
 import ClampedTextContainer from "../../ui/ClampedTextContainer";
 import WeatherIcon from "../../ui/WeatherIcon";
 import useCityItemActions from "../../WeatherForecast/AddCity/hooks/useCityItemActions";
-import { selectedCityAtom } from "../../../atoms";
+import { citiesByCountry, selectedCityAtom } from "../../../atoms";
 import CitiesByCountry from "./CitiesByCountry";
 import type { FetchInfoType } from "../../../atoms/types";
 import getMinMax from "../../../utils/getMinMax";
@@ -57,9 +57,11 @@ const SaveCityButton = memo(() => {
 
 const CloseDetailsButton = memo(() => {
     const setSelectedCity = useSetAtom(selectedCityAtom);
+    const setCitiesByCountry = useSetAtom(citiesByCountry);
 
     const closeDetails = () => {
         setSelectedCity(null);
+        setCitiesByCountry(null);
     };
 
     return (

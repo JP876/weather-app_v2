@@ -7,6 +7,7 @@ import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import { citiesFetchInfoAtom, filteredCitiesAtom, searchValueAtom } from "../../../atoms";
 import type { CityType } from "../../../types";
 import scrollCitiesList from "../../../utils/scrollCitiesList";
+import { LIST_ID } from "./CityList";
 
 const ClearSearchValue = ({ value }: { value: string }) => {
     const setValue = useSetAtom(searchValueAtom);
@@ -15,7 +16,7 @@ const ClearSearchValue = ({ value }: { value: string }) => {
     const { data: cities, isLoading, error } = useAtomValue(citiesFetchInfoAtom);
 
     const handleClear = () => {
-        scrollCitiesList();
+        scrollCitiesList({}, LIST_ID);
         setValue("");
         setFilteredCities(cities);
     };
@@ -52,7 +53,7 @@ const CitySearch = () => {
     const handleOnChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const value = event.target.value;
 
-        scrollCitiesList({ behavior: "auto" });
+        scrollCitiesList({ behavior: "auto" }, LIST_ID);
         setValue(value);
 
         if (!value) {
