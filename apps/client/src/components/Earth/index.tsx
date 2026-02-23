@@ -5,7 +5,6 @@ import { NoToneMapping } from "three";
 
 const CitiesMain = lazy(() => import("./Cities"));
 const EarthModelMain = lazy(() => import("./EarthModel"));
-const SelectedCityMain = lazy(() => import("./SelectedCity"));
 
 const Experince = () => {
     return (
@@ -18,19 +17,16 @@ const Experince = () => {
 
 const EarthMain = () => {
     return (
-        <>
-            <Canvas
-                onCreated={({ gl }) => {
-                    gl.toneMapping = NoToneMapping;
-                    gl.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-                    gl.setClearColor("#000011");
-                }}
-            >
-                <Experince />
-                <OrbitControls enablePan={false} maxDistance={4.8} minDistance={2.2} />
-            </Canvas>
-            <SelectedCityMain />
-        </>
+        <Canvas
+            onCreated={({ gl }) => {
+                gl.toneMapping = NoToneMapping;
+                gl.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+                gl.setClearColor("#000011");
+            }}
+        >
+            <Experince />
+            <OrbitControls enablePan={false} maxDistance={4.8} minDistance={2.2} />
+        </Canvas>
     );
 };
 

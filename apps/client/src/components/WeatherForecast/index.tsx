@@ -3,61 +3,42 @@ import { Box, styled, type BoxProps } from "@mui/material";
 
 import RouterMain from "../Router";
 import { GlassContainer } from "../ui/styledComps";
-import { CONTAINER_PADDING, MARGIN_BLOCK, MARGIN_INLINE } from "../../consts";
+import { CONTAINER_PADDING, NUM_OF_COLUMNS } from "../../consts";
 
 const CitiesNavigation = lazy(() => import("./CitiesNavigation"));
 
 const WeatherForecastContainer = styled(GlassContainer)(({ theme }) => ({
-    position: "absolute",
-    top: "var(--content-top-position)",
-    left: theme.spacing(MARGIN_INLINE),
-    zIndex: theme.zIndex.appBar,
-    width: "40vw",
+    gridRowStart: 2,
+    gridColumnStart: 1,
+    gridColumnEnd: 7,
+    zIndex: 1,
+
+    marginInline: theme.spacing(4),
     border: `1px solid ${theme.palette.grey[400]}`,
     borderRadius: theme.shape.borderRadius,
     padding: theme.spacing(CONTAINER_PADDING),
 
     [theme.breakpoints.down("xl")]: {
-        width: "46vw",
+        gridColumnEnd: 8,
     },
     [theme.breakpoints.down("lg")]: {
-        width: "52vw",
+        gridColumnEnd: 9,
     },
     [theme.breakpoints.down("md")]: {
-        width: `calc(100vw - 2 * ${theme.spacing(MARGIN_INLINE)})`,
+        gridColumnEnd: NUM_OF_COLUMNS + 1,
     },
 }));
 
-const WeatherForecastRoutesContainer = styled(Box)<BoxProps<"div">>(({ theme }) => ({
-    // 100vh - 2 * top/bottom main "margin" - container padding - header height - tabs height - footer height
-    "--routes-container-height": `
-        calc(100vh - 
-            2 * ${theme.spacing(MARGIN_BLOCK)} - 
-            2 * ${theme.spacing(CONTAINER_PADDING)} - 
-            var(--header_height) - 
-            3rem  - 
-            var(--footer_height))
-    `,
-    maxHeight: "var(--routes-container-height)",
+const WeatherForecastRoutesContainer = styled(Box)<BoxProps<"div">>(() => ({
     position: "relative",
     overflow: "hidden",
-    pointerEvents: "none",
-    scrollbarWidth: "thin",
-}));
-
-const WeatherForecastHeight = styled(Box)(({ theme }) => ({
-    visibility: "hidden",
-    position: "absolute",
-    top: 0,
-    left: 0,
-    height: `calc(100vh - 2 * ${theme.spacing(MARGIN_BLOCK)})`,
-    "--weather-forecast-container-height": `calc(100vh - 2 * ${theme.spacing(MARGIN_BLOCK)})`,
+    height: `calc(100% - 48px)`,
+    width: "100%",
 }));
 
 const WeatherForecast = () => {
     return (
-        <WeatherForecastContainer>
-            <WeatherForecastHeight id="wether-forecast-container-height" />
+        <WeatherForecastContainer id="wether-forecast-container-height">
             <Suspense fallback={null}>
                 <CitiesNavigation />
             </Suspense>

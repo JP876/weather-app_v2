@@ -13,6 +13,7 @@ import { citiesByCountry, selectedCityAtom } from "../../../atoms";
 import CitiesByCountry from "./CitiesByCountry";
 import type { FetchInfoType } from "../../../atoms/types";
 import getMinMax from "../../../utils/getMinMax";
+import withFetch from "../../../utils/withFetch";
 
 type CurrentWeatherDetailsContainerProps = {
     label: string;
@@ -26,7 +27,7 @@ const CurrentWeatherDetailsContainer = ({
     isLoading,
 }: CurrentWeatherDetailsContainerProps) => {
     return (
-        <Stack>
+        <Stack alignItems="center" justifyContent="center">
             <Typography variant="subtitle1">{label}</Typography>
             {isLoading ? (
                 <Skeleton height={32} width={getMinMax(64, 72)} />
@@ -89,30 +90,28 @@ const SelectedCityDetails = () => {
                     error: false,
                     isLoading: true,
                 }));
-                try {
-                    const lat = selectedCity.lat;
-                    const lng = selectedCity.lng;
 
-                    const [res] = await Promise.all([
-                        fetch(`/api/v1/current-weather?lat=${lat}&lng=${lng}&units=${units.units}`),
-                        new Promise((resolve) => setTimeout(resolve, 500)),
-                    ]);
+                const lat = selectedCity.lat;
+                const lng = selectedCity.lng;
 
-                    const data = (await res.json()) as { results: CurrentWeatherDataType };
-                    setFetchWeatherInfo({ data: data.results, isLoading: false, error: false });
-                } catch (err: unknown) {
-                    const error = err as Error;
+                const [err, res] = await withFetch(
+                    `/api/v1/current-weather?lat=${lat}&lng=${lng}&units=${units.units}`,
+                    {},
+                    { delay: 500 },
+                );
+
+                if (err) {
+                    const { error, type } = err;
                     setFetchWeatherInfo({
                         data: null,
                         isLoading: false,
-                        error: {
-                            type: "DB",
-                            name: error.name,
-                            msg: error.message,
-                            cause: error.cause,
-                        },
+                        error: { type, msg: error.message, cause: error.cause },
                     });
+                    return null;
                 }
+
+                const data = (await res.json()) as { results: CurrentWeatherDataType };
+                setFetchWeatherInfo({ data: data.results, isLoading: false, error: false });
             })();
         }
     }, [selectedCity?.lat, selectedCity?.lng, units.units]);
@@ -157,7 +156,7 @@ const SelectedCityDetails = () => {
                 )}
             </Stack>
             <Divider />
-            <Box sx={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 1 }}>
+            <Box sx={{ gap: 1, display: "grid", gridTemplateColumns: "1fr 1fr" }}>
                 <CurrentWeatherDetailsContainer
                     label="Minimum"
                     value={`${fetchWeatherInfo.data?.main.temp_min.toFixed(1)}${units.temp}`}

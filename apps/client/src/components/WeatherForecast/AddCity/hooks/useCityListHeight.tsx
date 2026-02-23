@@ -16,7 +16,7 @@ const useCityListHeight = () => {
                 container.clientHeight -
                     tabsContainer.clientHeight -
                     searchContainer.clientHeight -
-                    2,
+                    18,
             );
         });
 

@@ -5,33 +5,26 @@ import { useAtomValue } from "jotai";
 import { selectedCityAtom } from "../../../atoms";
 import SelectedCityDetails from "./SelectedCityDetails";
 import { GlassContainer } from "../../ui/styledComps";
-import { MARGIN_INLINE } from "../../../consts";
-
-/* 
-<group ref={groupRef}>
-    <Html
-        position={selectedCity.position}
-        occlude={true}
-        onOcclude={setHidden}
-        style={{
-            transition: "all 0.5s",
-            opacity: +show,
-            transform: `scale(${show ? 1 : 0.5})`,
-        }}
-    >
-        <SelectedCityDetails city={selectedCity} closeDetails={closeDetails} />
-    </Html>
-</group>
-*/
+import { NUM_OF_COLUMNS } from "../../../consts";
 
 const SelectedCityContainer = styled(GlassContainer)(({ theme }) => ({
-    position: "absolute",
-    top: "var(--content-top-position)",
-    right: theme.spacing(MARGIN_INLINE),
+    zIndex: 1,
     borderRadius: theme.shape.borderRadius,
-    zIndex: 10,
-    width: "20vw",
-    height: "60vh",
+    marginRight: theme.spacing(4),
+
+    gridRowStart: 2,
+    gridColumnStart: NUM_OF_COLUMNS - 2,
+    gridColumnEnd: NUM_OF_COLUMNS + 1,
+
+    [theme.breakpoints.down("xl")]: {
+        gridColumnStart: NUM_OF_COLUMNS - 3,
+    },
+    [theme.breakpoints.down("lg")]: {
+        gridColumnStart: NUM_OF_COLUMNS - 3,
+    },
+    [theme.breakpoints.down("md")]: {
+        display: "none",
+    },
 }));
 
 const SelectedCityMain = () => {

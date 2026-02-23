@@ -1,6 +1,7 @@
 import { atom } from "jotai";
 import { atomWithStorage } from "jotai/utils";
 import type { Vector3 } from "three";
+import Fuse from "fuse.js";
 
 import type { CityType } from "../types";
 import type { WeatherDataType } from "../types/weatherdata";
@@ -13,7 +14,35 @@ export const weatherFetchInfoAtom = atom<Types.FetchInfoType<WeatherDataType>>(i
 export const earthFetchInfoAtom = atom<Types.FetchInfoType<string>>(initialFetchInfo);
 
 export const searchValueAtom = atom("");
-export const filteredCitiesAtom = atom<CityType[] | null>(null);
+
+let fuse: Fuse<CityType> | null = null;
+
+const setFuse = (data: CityType[]) => {
+    return new Fuse<CityType>(data, {
+        includeScore: true,
+        includeMatches: true,
+        threshold: 0.5,
+        keys: [
+            { name: "city", weight: 1 },
+            { name: "country", weight: 0.8 },
+        ],
+    });
+};
+
+export const filteredCitiesAtom = atom((get) => {
+    const value = get(searchValueAtom);
+    const cities = get(citiesFetchInfoAtom).data;
+
+    if (!Array.isArray(cities)) return null;
+    if (value === "") return cities;
+
+    if (fuse === null) fuse = setFuse(cities);
+
+    return fuse
+        .search({ $or: [{ city: value }, { country: value }] })
+        .map((el) => ({ ...el.item }));
+});
+
 export const favouriteCitiesAtom = atomWithStorage<CityType[] | null>("favouriteCities", null);
 
 export const snackbarAtom = atom<Types.SnackbarAtomType>({ open: false, message: "" });

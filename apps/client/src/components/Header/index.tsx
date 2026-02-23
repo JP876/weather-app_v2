@@ -8,6 +8,7 @@ import { useSetAtom } from "jotai";
 import { GlassContainer } from "../ui/styledComps";
 import { openSettingsAtom } from "../../atoms";
 import Clock from "../ui/Clock";
+import { NUM_OF_COLUMNS } from "../../consts";
 
 const SettingsMain = lazy(() => import("./Settings"));
 
@@ -28,9 +29,10 @@ const HeaderLogo = () => {
 };
 
 const HeaderContainer = styled(GlassContainer)(({ theme }) => ({
-    left: 0,
-    top: 0,
-    position: "fixed",
+    gridRowStart: 1,
+    gridColumnStart: 1,
+    gridColumnEnd: NUM_OF_COLUMNS + 1,
+
     display: "flex",
     alignItems: "center",
     justifyContent: "space-between",

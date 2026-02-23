@@ -3,6 +3,7 @@ import { Button, styled, Typography } from "@mui/material";
 import AttributionIcon from "@mui/icons-material/Attribution";
 
 import { GlassContainer } from "../ui/styledComps";
+import { NUM_OF_COLUMNS } from "../../consts";
 
 const AttributionModal = lazy(() => import("./AttributionModal"));
 
@@ -10,14 +11,14 @@ const FooterContainer = styled(GlassContainer)(({ theme }) => ({
     display: "flex",
     alignItems: "center",
     justifyContent: "space-between",
-    left: 0,
-    bottom: 0,
-    zIndex: 1,
-    position: "fixed",
     width: "100%",
     height: "var(--footer_height)",
     borderTop: `1px solid ${theme.palette.grey[400]}`,
     paddingInline: theme.spacing(4),
+
+    gridRowStart: 3,
+    gridColumnStart: 1,
+    gridColumnEnd: NUM_OF_COLUMNS + 1,
 }));
 
 const FooterMain = () => {

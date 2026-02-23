@@ -1,12 +1,14 @@
 import { useCallback, useMemo } from "react";
 import { useSetAtom } from "jotai";
+import type { DexieError } from "dexie";
 
 import type { CityType } from "../../../../types";
 import { weatherFetchInfoAtom } from "../../../../atoms";
 import type { WeatherDataType } from "../../../../types/weatherdata";
 import { db } from "../../../../utils/db";
-import type { FetchInfoType, UnitsType } from "../../../../atoms/types";
-import withFetch from "../../../../utils/withFetch";
+import type { UnitsType } from "../../../../atoms/types";
+import withFetch, { type WithFetchErrors } from "../../../../utils/withFetch";
+import withCatch from "../../../../utils/withCatch";
 
 type GetWeatherDataFromDBOptions = {
     cityId: number;
@@ -30,89 +32,95 @@ const useFetchWeatherData = () => {
     const setWeatherFetchInfo = useSetAtom(weatherFetchInfoAtom);
 
     const getWeatherDataFromDB = useCallback(
-        async ({ cityId }: GetWeatherDataFromDBOptions) => {
+        async ({
+            cityId,
+        }: GetWeatherDataFromDBOptions): Promise<[DexieError, boolean] | [null, boolean]> => {
             let hasData = false;
+            const [error, results] = await withCatch<WeatherDataType[], DexieError>(
+                db.weatherData.where("id").equals(cityId).toArray(),
+            );
 
-            try {
-                const results = await db.weatherData.where("id").equals(cityId).toArray();
-                hasData = Array.isArray(results) && results.length === 1;
+            if (error) return [error, hasData];
 
-                if (hasData) {
-                    setWeatherFetchInfo({ data: results[0], isLoading: false, error: false });
-                } else {
-                    setWeatherFetchInfo((prevInfo) => ({
-                        ...prevInfo,
-                        error: false,
-                        isLoading: true,
-                    }));
-                }
+            hasData = Array.isArray(results) && results.length === 1;
 
-                return { hasData };
-            } catch (err: unknown) {
-                console.error(err);
-                return { hasData };
+            if (hasData) {
+                setWeatherFetchInfo({ data: results[0], isLoading: false, error: false });
+            } else {
+                setWeatherFetchInfo((prevInfo) => ({
+                    ...prevInfo,
+                    error: false,
+                    isLoading: true,
+                }));
             }
+
+            return [null, hasData];
         },
         [setWeatherFetchInfo],
     );
 
     const fetchWeatherData = useCallback(
-        async ({ lat, lng, units }: FetchWeatherDataOptions) => {
-            const [[error, res]] = await Promise.all([
-                withFetch(`/api/v1/weather-forecast?lat=${lat}&lng=${lng}&units=${units}`),
-                new Promise((resolve) => setTimeout(resolve, 500)),
-            ]);
+        async (
+            info: FetchWeatherDataOptions,
+        ): Promise<[null, WeatherDataType] | [WithFetchErrors, null]> => {
+            const [error, res] = await withFetch(
+                `/api/v1/weather-forecast?lat=${info.lat}&lng=${info.lng}&units=${info.units}`,
+                {},
+                { delay: 500 },
+            );
 
-            if (error) throw error;
+            if (error) return [error, null];
 
             const data = (await res.json()) as { results: WeatherDataType };
             setWeatherFetchInfo({ error: false, isLoading: false, data: data.results });
 
-            return { weatherData: data.results };
+            return [null, data.results];
         },
         [setWeatherFetchInfo],
     );
 
     const updateWeatherDataDB = useCallback(
-        async ({ hasData, cityId, weatherData }: UpdateWeatherDataDBOptions) => {
-            try {
-                if (hasData) {
-                    await db.weatherData.update(cityId, weatherData);
-                } else {
-                    await db.weatherData.add({ ...weatherData, id: cityId });
-                }
-            } catch (err: unknown) {
-                console.error(err);
+        async ({
+            hasData,
+            cityId,
+            weatherData,
+        }: UpdateWeatherDataDBOptions): Promise<[DexieError | null]> => {
+            let error = null;
+            if (hasData) {
+                [error] = await withCatch<number, DexieError>(
+                    db.weatherData.update(cityId, weatherData),
+                );
+            } else {
+                [error] = await withCatch<number, DexieError>(
+                    db.weatherData.add({ ...weatherData, id: cityId }),
+                );
             }
+            return [error];
         },
         [],
     );
 
     const handleFetch = useCallback(
         async ({ units, ...cityInfo }: FetchParamsType) => {
-            try {
-                const cityId = +cityInfo.id;
+            const cityId = +cityInfo.id;
 
-                const { hasData } = await getWeatherDataFromDB({ cityId });
-                const { weatherData } = await fetchWeatherData({
-                    lat: cityInfo.lat.toString(),
-                    lng: cityInfo.lng.toString(),
-                    units,
-                });
+            const [, hasData] = await getWeatherDataFromDB({ cityId });
+            const [err, weatherData] = await fetchWeatherData({
+                lat: cityInfo.lat.toString(),
+                lng: cityInfo.lng.toString(),
+                units,
+            });
 
-                if (weatherData) {
-                    await updateWeatherDataDB({ hasData, cityId, weatherData });
-                }
-            } catch (err: unknown) {
-                const error = err as Error;
-                const fetchInfo: FetchInfoType<WeatherDataType> = {
-                    data: null,
+            if (err) {
+                setWeatherFetchInfo((prevValue) => ({
+                    ...prevValue,
                     isLoading: false,
-                    error: { msg: error.message, name: error.name, cause: error.cause },
-                };
-
-                setWeatherFetchInfo(fetchInfo);
+                    error: { msg: err.error.message, type: err.type, cause: err.error.cause },
+                }));
+                return null;
             }
+
+            await updateWeatherDataDB({ hasData, cityId, weatherData });
         },
         [fetchWeatherData, getWeatherDataFromDB, setWeatherFetchInfo, updateWeatherDataDB],
     );

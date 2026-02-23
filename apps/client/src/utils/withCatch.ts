@@ -1,16 +1,10 @@
-function withCatch<T, E extends new (message?: string) => Error>(
-    promise: Promise<T>,
-    errorsToCatch?: E[],
-): Promise<[null, T] | [InstanceType<E>, null]> {
+async function withCatch<T, E = Error>(promise: Promise<T>): Promise<[null, T] | [E, null]> {
     return promise
         .then((data) => {
             return [null, data] as [null, T];
         })
         .catch((error) => {
-            if (!errorsToCatch || errorsToCatch.some((e) => error instanceof e)) {
-                return [error, null];
-            }
-            throw error;
+            return [error, null] as [E, null];
         });
 }
 

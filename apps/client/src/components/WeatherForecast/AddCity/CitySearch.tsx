@@ -1,24 +1,20 @@
-import { memo, useMemo } from "react";
+import { memo } from "react";
 import { IconButton, InputAdornment, TextField } from "@mui/material";
 import ClearIcon from "@mui/icons-material/Clear";
-import Fuse from "fuse.js";
 import { useAtom, useAtomValue, useSetAtom } from "jotai";
 
-import { citiesFetchInfoAtom, filteredCitiesAtom, searchValueAtom } from "../../../atoms";
-import type { CityType } from "../../../types";
+import { citiesFetchInfoAtom, searchValueAtom } from "../../../atoms";
 import scrollCitiesList from "../../../utils/scrollCitiesList";
 import { LIST_ID } from "./CityList";
 
 const ClearSearchValue = ({ value }: { value: string }) => {
     const setValue = useSetAtom(searchValueAtom);
-    const setFilteredCities = useSetAtom(filteredCitiesAtom);
 
-    const { data: cities, isLoading, error } = useAtomValue(citiesFetchInfoAtom);
+    const { isLoading, error } = useAtomValue(citiesFetchInfoAtom);
 
     const handleClear = () => {
         scrollCitiesList({}, LIST_ID);
         setValue("");
-        setFilteredCities(cities);
     };
 
     return (
@@ -35,40 +31,13 @@ const ClearSearchValue = ({ value }: { value: string }) => {
 const CitySearch = () => {
     const [value, setValue] = useAtom(searchValueAtom);
 
-    const setFilteredCities = useSetAtom(filteredCitiesAtom);
-    const { data: cities, isLoading, error } = useAtomValue(citiesFetchInfoAtom);
-
-    const fuse = useMemo(() => {
-        return new Fuse<CityType>(cities || [], {
-            includeScore: true,
-            includeMatches: true,
-            threshold: 0.5,
-            keys: [
-                { name: "city", weight: 1 },
-                { name: "country", weight: 0.8 },
-            ],
-        });
-    }, [cities]);
+    const { isLoading, error } = useAtomValue(citiesFetchInfoAtom);
 
     const handleOnChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const value = event.target.value;
 
         scrollCitiesList({ behavior: "auto" }, LIST_ID);
         setValue(value);
-
-        if (!value) {
-            setFilteredCities(cities);
-        } else {
-            const results = fuse.search(value);
-            setFilteredCities(results.map((el) => ({ ...el.item })));
-            // (async () => {
-            //     const results = await db.cities
-            //         .where("city")
-            //         .startsWithAnyOfIgnoreCase(value)
-            //         .toArray();
-            //     setFilteredCities(results);
-            // })();
-        }
     };
 
     return (

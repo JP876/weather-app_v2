@@ -24,7 +24,7 @@ const FetchLoadingData = () => {
 
 const AddCityMain = () => {
     return (
-        <Stack sx={{ height: "var(--routes-container-height)" }}>
+        <Stack>
             <FetchLoadingData />
             <Box id="city-search-container" sx={{ p: 2 }}>
                 <CitySearch />

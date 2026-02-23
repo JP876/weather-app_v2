@@ -107,7 +107,6 @@ export const FeedbackContainer = styled(Box, {
     top: top,
     left: 0,
     width: "100%",
-    height: "var(--routes-container-height)",
     zIndex: theme.zIndex.drawer + 1,
     display: isLoading || error ? "flex" : "none",
     justifyContent: "center",

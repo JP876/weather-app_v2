@@ -15,9 +15,11 @@ const DailyMain = lazy(() => import("./Daily"));
 const HourlyMain = lazy(() => import("./Hourly"));
 
 const CityForecastContainer = styled(Stack)<StackProps>(({ theme }) => ({
+    height: "100%",
     gap: theme.spacing(2),
-    position: "relative",
     paddingInline: theme.spacing(2),
+    overflow: "auto",
+    scrollbarWidth: "thin",
 }));
 
 const FetchLoadingData = memo(() => {

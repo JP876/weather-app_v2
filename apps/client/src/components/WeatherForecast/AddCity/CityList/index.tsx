@@ -44,7 +44,7 @@ const CityList = () => {
                 <List
                     id={LIST_ID}
                     width={width}
-                    height={height || 960}
+                    height={height || 720}
                     rowCount={filteredCities.length}
                     rowHeight={64}
                     rowRenderer={rowRenderer}

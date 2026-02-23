@@ -1,42 +1,34 @@
-class NetworkError extends Error {
-    constructor(msg?: string) {
-        super(msg);
-        Object.setPrototypeOf(this, new.target.prototype);
-        this.name = "NetworkError";
-    }
-}
+type WithFetchOptions = {
+    delay?: number;
+};
 
-class APIError extends Error {
-    constructor(msg?: string) {
-        super(msg);
-        Object.setPrototypeOf(this, new.target.prototype);
-        this.name = "APIError";
-    }
-}
+export type WithFetchErrors =
+    | { type: "NETWORK_ERROR"; error: Error }
+    | { type: "API_ERROR"; error: Error };
 
 async function withFetch(
     input: RequestInfo | URL,
     init?: RequestInit,
-): Promise<[null, Response] | [Error, null]> {
+    options?: WithFetchOptions,
+): Promise<[null, Response] | [WithFetchErrors, null]> {
+    let res: Response | null = null;
+
     try {
-        let res: Response | null = null;
-
-        try {
-            res = await fetch(input, init);
-        } catch (err: unknown) {
-            const error = err as Error;
-            throw new NetworkError(error.message);
-        }
-
-        if (!res.ok) {
-            throw new APIError("Failed to fetch resources");
-        }
-
-        return [null, res];
-    } catch (err) {
-        const error = err as NetworkError | APIError | ReferenceError;
-        return [error, null];
+        [res] = await Promise.all([
+            fetch(input, init),
+            new Promise((resolve) => setTimeout(resolve, options?.delay || 0)),
+        ]);
+    } catch (err: unknown) {
+        const error = err as Error;
+        return [{ type: "NETWORK_ERROR", error }, null];
     }
+
+    if (!res.ok) {
+        const error = new Error(`Failed to fetch resources. Status text: ${res.statusText}`);
+        return [{ type: "API_ERROR", error }, null];
+    }
+
+    return [null, res];
 }
 
 export default withFetch;
