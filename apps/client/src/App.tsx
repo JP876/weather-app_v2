@@ -14,8 +14,9 @@ const SelectedCityMain = lazy(() => import("./components/Earth/SelectedCity"));
 const AppContainer = (props: BoxProps) => <Box component="main" {...props} />;
 
 const Main = styled(AppContainer)(({ theme }) => ({
-    "--header_height": "3.6rem",
-    "--footer_height": "3.6rem",
+    "--header-height": "3.6rem",
+    "--footer-height": "3.6rem",
+    "--content-height": `calc(100vh - var(--header-height) - var(--footer-height) - 2 * ${theme.spacing(GRID_GAP)})`,
 
     scrollbarColor: `${theme.palette.primary.light} transparent`,
     scrollBehavior: "smooth",
@@ -25,11 +26,7 @@ const Main = styled(AppContainer)(({ theme }) => ({
     width: "100vw",
     display: "grid",
     gridTemplateColumns: `repeat(${NUM_OF_COLUMNS}, 1fr)`,
-    gridTemplateRows: `
-        var(--header_height) 
-        calc(100vh - var(--header_height) - var(--footer_height) - 2 * ${theme.spacing(GRID_GAP)}) 
-        var(--footer_height)
-    `,
+    gridTemplateRows: `var(--header-height) var(--content-height) var(--footer-height)`,
     gap: theme.spacing(GRID_GAP),
 }));
 

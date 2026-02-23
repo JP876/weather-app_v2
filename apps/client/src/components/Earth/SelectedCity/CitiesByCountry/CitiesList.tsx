@@ -1,4 +1,4 @@
-import { memo, useCallback, useMemo } from "react";
+import { memo, useCallback, useEffect, useMemo, useState } from "react";
 import { useAtomValue } from "jotai";
 import { AutoSizer, List, type ListRowProps } from "react-virtualized";
 import { Box, Typography } from "@mui/material";
@@ -8,8 +8,9 @@ import { citiesByCountry } from "../../../../atoms";
 
 export const LIST_ID = "cities_list_by_country";
 
-const CitiesList = memo(() => {
+const CitiesList = () => {
     const cities = useAtomValue(citiesByCountry);
+    const [height, setHeight] = useState<number | null>(null);
 
     const listStyle = useMemo<React.CSSProperties>(() => {
         return {
@@ -29,6 +30,26 @@ const CitiesList = memo(() => {
         );
     }, []);
 
+    useEffect(() => {
+        const observer = new MutationObserver((_, observer) => {
+            const el = document.getElementById("cities-by-country-container");
+
+            if (el) {
+                // clientHeight - search input - padding
+                const height = el.clientHeight - 40 - 16;
+                setHeight(height);
+                observer.disconnect();
+            }
+        });
+
+        const main = document.getElementsByTagName("main");
+        observer.observe([...main][0], { childList: true, subtree: true });
+
+        return () => {
+            observer.disconnect();
+        };
+    }, []);
+
     if (!Array.isArray(cities)) return null;
 
     if (cities.length === 0) {
@@ -45,7 +66,7 @@ const CitiesList = memo(() => {
                 <List
                     id={LIST_ID}
                     width={width}
-                    height={260}
+                    height={height || 300}
                     rowCount={cities.length}
                     rowHeight={46}
                     rowRenderer={rowRenderer}
@@ -54,6 +75,6 @@ const CitiesList = memo(() => {
             )}
         </AutoSizer>
     );
-});
+};
 
-export default CitiesList;
+export default memo(CitiesList);

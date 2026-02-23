@@ -1,5 +1,5 @@
 import { memo, useEffect, useState } from "react";
-import { Box, Divider, IconButton, Skeleton, Stack, Tooltip, Typography } from "@mui/material";
+import { Box, IconButton, Skeleton, Stack, Tooltip, Typography } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import { useAtomValue, useSetAtom } from "jotai";
@@ -119,8 +119,21 @@ const SelectedCityDetails = () => {
     if (!selectedCity) return null;
 
     return (
-        <Stack p={2} gap={2} sx={{ height: "100%", width: "100%" }}>
-            <Stack direction="row" alignItems="center" justifyContent="space-between">
+        <Box
+            p={2}
+            sx={{
+                height: "100%",
+                display: "grid",
+                gridTemplateRows: "repeat(10, 1fr)",
+                gap: 2,
+            }}
+        >
+            <Stack
+                direction="row"
+                alignItems="center"
+                justifyContent="space-between"
+                sx={{ gridRowStart: 1, gridRowEnd: 2, alignSelf: "start" }}
+            >
                 <Stack sx={{ maxWidth: "calc(100% - 5.4rem)" }}>
                     <Stack direction="row" alignItems="center" gap={1} sx={{ width: "100%" }}>
                         <Box
@@ -143,7 +156,14 @@ const SelectedCityDetails = () => {
                     <CloseDetailsButton />
                 </Stack>
             </Stack>
-            <Stack direction="row" alignItems="center" justifyContent="center" gap={3.2}>
+
+            <Stack
+                direction="row"
+                alignItems="center"
+                justifyContent="center"
+                gap={3.2}
+                sx={{ gridRowStart: 2, gridRowEnd: 3 }}
+            >
                 {fetchWeatherInfo.isLoading ? (
                     <Skeleton height={60} width={getMinMax(144, 160)} />
                 ) : (
@@ -155,8 +175,18 @@ const SelectedCityDetails = () => {
                     </>
                 )}
             </Stack>
-            <Divider />
-            <Box sx={{ gap: 1, display: "grid", gridTemplateColumns: "1fr 1fr" }}>
+
+            <Box
+                sx={() => ({
+                    gap: 1,
+                    paddingBottom: 2,
+                    gridRowStart: 3,
+                    gridRowEnd: 4,
+                    marginBottom: 2,
+                    display: "grid",
+                    gridTemplateColumns: "1fr 1fr",
+                })}
+            >
                 <CurrentWeatherDetailsContainer
                     label="Minimum"
                     value={`${fetchWeatherInfo.data?.main.temp_min.toFixed(1)}${units.temp}`}
@@ -178,9 +208,11 @@ const SelectedCityDetails = () => {
                     isLoading={fetchWeatherInfo.isLoading}
                 />
             </Box>
-            <Divider />
-            <CitiesByCountry country={selectedCity.country} />
-        </Stack>
+
+            <Box id="cities-by-country-container" sx={{ gridRowStart: 4, gridRowEnd: -1 }}>
+                <CitiesByCountry country={selectedCity.country} />
+            </Box>
+        </Box>
     );
 };
 

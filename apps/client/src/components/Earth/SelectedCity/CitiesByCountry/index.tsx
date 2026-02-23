@@ -9,9 +9,11 @@ import { citiesByCountry } from "../../../../atoms";
 import type { FetchInfoType } from "../../../../atoms/types";
 import type { CityType } from "../../../../types";
 import CitySearch from "./CitySearch";
+import withCatch from "../../../../utils/withCatch";
 
 const CitiesByCountry = ({ country }: { country: string }) => {
     const setCitiesByCountry = useSetAtom(citiesByCountry);
+
     const [fetchCitiesInfo, setFetchCitiesInfo] = useState<FetchInfoType<CityType[]>>({
         data: null,
         isLoading: false,
@@ -26,30 +28,34 @@ const CitiesByCountry = ({ country }: { country: string }) => {
                     error: false,
                     isLoading: true,
                 }));
-                try {
-                    const cities = await db.cities
+
+                const [error, cities] = await withCatch<CityType[], DexieError>(
+                    db.cities
                         .filter((city) => city.country === country)
                         .reverse()
-                        .sortBy("population");
+                        .sortBy("population"),
+                );
 
-                    setFetchCitiesInfo({ data: cities, isLoading: false, error: false });
-                    setCitiesByCountry(cities);
-                } catch (err: unknown) {
-                    const error = err as DexieError;
+                if (error) {
                     setFetchCitiesInfo({
                         data: null,
                         isLoading: false,
-                        error: {
-                            type: "DB",
-                            name: error.name,
-                            msg: error.message,
-                            cause: error.cause,
-                        },
+                        error: { type: "DB", msg: error.message, cause: error.cause },
                     });
+                    return;
                 }
+
+                setFetchCitiesInfo({ data: cities, isLoading: false, error: false });
+                setCitiesByCountry(cities);
             })();
         }
     }, [country, setCitiesByCountry]);
+
+    useEffect(() => {
+        return () => {
+            setCitiesByCountry(null);
+        };
+    }, [setCitiesByCountry]);
 
     return (
         <Stack gap={2}>
