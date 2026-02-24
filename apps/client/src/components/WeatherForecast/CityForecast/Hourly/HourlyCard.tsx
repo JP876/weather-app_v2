@@ -55,7 +55,7 @@ const HourlyCard = ({ index }: { index: number }) => {
     }, [hourlyData?.feels_like, hourlyData?.humidity, temp]);
 
     return (
-        <HourlyCardContainer isLoading={isLoading}>
+        <HourlyCardContainer isLoading={isLoading === "INITIAL"}>
             <Stack direction="row" alignItems="center" justifyContent="space-between">
                 <Typography variant="body1" fontWeight="bold" textAlign="center">
                     {hourlyData?.date}

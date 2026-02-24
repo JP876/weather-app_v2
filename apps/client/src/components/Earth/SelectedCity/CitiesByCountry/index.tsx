@@ -40,7 +40,7 @@ const CitiesByCountry = ({ country }: { country: string }) => {
                     setFetchCitiesInfo({
                         data: null,
                         isLoading: false,
-                        error: { type: "DB", msg: error.message, cause: error.cause },
+                        error: { type: "INDEXED_DB_ERROR", msg: error.message, cause: error.cause },
                     });
                     return;
                 }

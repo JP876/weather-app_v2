@@ -1,13 +1,17 @@
-import { memo, useMemo } from "react";
+import { memo } from "react";
 import { Box, Skeleton, Stack, styled, Typography, type StackProps } from "@mui/material";
 import { useAtomValue } from "jotai";
+import { format } from "date-fns";
 
 import useCityInfo from "../hooks/useCityInfo";
-import { weatherFetchInfoAtom } from "../../../../atoms";
-import getWeatherIconSrc from "../../../../utils/getWeatherIconSrc";
+import {
+    currentWeatherDataAtom,
+    lastTimeUpdatedAtom,
+    weatherFetchInfoAtom,
+} from "../../../../atoms";
 import WeatherIcon from "../../../ui/WeatherIcon";
 import ClampedTextContainer from "../../../ui/ClampedTextContainer";
-import useMeasurementUnits from "../../../../hooks/useMeasurementUnits";
+import StatusFeedback from "./StatusFeedback";
 
 type CurrentTemperatureProps = {
     temp?: string;
@@ -28,8 +32,9 @@ const LocationInfo = () => {
 
     return (
         <Stack mr={4}>
-            <Stack direction="row" alignItems="center" gap={1}>
+            <Stack direction="row" alignItems="center" gap={2}>
                 <ClampedTextContainer variant="h4">{cityInfo?.city}</ClampedTextContainer>
+                <StatusFeedback />
             </Stack>
             <ClampedTextContainer variant="body2">
                 {`${cityInfo?.country}, ${cityInfo?.iso2}`}
@@ -38,7 +43,21 @@ const LocationInfo = () => {
     );
 };
 
-const CurrentWeatherDetailsContainer = ({ label, value }: { label: string; value?: string }) => {
+const LastTimeUpdated = () => {
+    const dt = useAtomValue(lastTimeUpdatedAtom);
+
+    if (!dt) return null;
+
+    return <Typography variant="caption">{`Last update: ${format(dt, "HH:mm")}`}</Typography>;
+};
+
+const CurrentWeatherDetailsContainer = ({
+    label,
+    value,
+}: {
+    label: string;
+    value?: string | number;
+}) => {
     return (
         <Stack>
             <Typography variant="subtitle1">{label}</Typography>
@@ -48,11 +67,12 @@ const CurrentWeatherDetailsContainer = ({ label, value }: { label: string; value
 };
 
 const CurrentTemperature = ({ temp, icon }: CurrentTemperatureProps) => {
-    const units = useMeasurementUnits();
-
     return (
         <Stack direction="row" alignItems="center" gap={3.2}>
-            <Typography variant="h5">{`${temp}${units.temp}`}</Typography>
+            <Stack alignItems="end">
+                <Typography variant="h4">{temp}</Typography>
+                <LastTimeUpdated />
+            </Stack>
             {icon ? (
                 <Box my={2.5}>
                     <WeatherIcon code={icon} size={60} />
@@ -73,7 +93,10 @@ const LoadingDataContainer = ({
 }) => {
     const { isLoading, error } = useAtomValue(weatherFetchInfoAtom);
 
-    if (!hasData || isLoading || !!error) {
+    const errorType = error ? error.type : null;
+    const isError = errorType === "API_ERROR" || errorType === "NETWORK_ERROR";
+
+    if (!hasData || isLoading === "INITIAL" || isError) {
         return (
             <>
                 <CurrentTemperatureContainer>
@@ -96,18 +119,7 @@ const LoadingDataContainer = ({
 };
 
 const CurrentMain = () => {
-    const { data: weatherData } = useAtomValue(weatherFetchInfoAtom);
-    const units = useMeasurementUnits();
-
-    const currentWeather = useMemo(() => {
-        if (!weatherData?.current) return null;
-        const w = weatherData.current;
-        return {
-            ...w,
-            temp: w.temp.toFixed(1),
-            weather: w.weather.map((el) => ({ ...el, iconSrc: getWeatherIconSrc(el.icon) })),
-        };
-    }, [weatherData]);
+    const currentWeather = useAtomValue(currentWeatherDataAtom);
 
     return (
         <LoadingDataContainer hasData={!!currentWeather}>
@@ -122,20 +134,14 @@ const CurrentMain = () => {
             <Box sx={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 1, mt: 2 }}>
                 <CurrentWeatherDetailsContainer
                     label="Feels like"
-                    value={`${currentWeather?.feels_like.toFixed(1)}${units.temp}`}
+                    value={currentWeather?.feels_like}
                 />
-                <CurrentWeatherDetailsContainer
-                    label="Humidity"
-                    value={`${currentWeather?.humidity}%`}
-                />
+                <CurrentWeatherDetailsContainer label="Humidity" value={currentWeather?.humidity} />
                 <CurrentWeatherDetailsContainer
                     label="Current UV index"
-                    value={`${currentWeather?.uvi}`}
+                    value={currentWeather?.uvi}
                 />
-                <CurrentWeatherDetailsContainer
-                    label="Cloudiness"
-                    value={`${currentWeather?.clouds}%`}
-                />
+                <CurrentWeatherDetailsContainer label="Cloudiness" value={currentWeather?.clouds} />
             </Box>
         </LoadingDataContainer>
     );

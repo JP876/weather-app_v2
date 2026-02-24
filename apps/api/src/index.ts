@@ -113,6 +113,9 @@ app.get("/api/v1/current-weather", rateLimiter, slowDownLimiter, async (req, res
 });
 
 app.get("/api/v1/weather-forecast", rateLimiter, slowDownLimiter, async (req, res) => {
+    // await new Promise((resolve) => setTimeout(resolve, 2_000));
+    // return res.status(404).send("Failed to fetch weather forecast");
+
     const URL = process.env.OPEN_WEATHER_30_API_BASE_URL;
     const API_KEY = process.env.OPEN_WEATHER_API_KEY;
 

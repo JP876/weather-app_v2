@@ -69,6 +69,9 @@ const DailyList = () => {
     const { isLoading, data: weatherData, error } = useAtomValue(weatherFetchInfoAtom);
     const { temp } = useMeasurementUnits();
 
+    const errorType = error ? error.type : null;
+    const isError = errorType === "API_ERROR" || errorType === "NETWORK_ERROR";
+
     const dailyData = useMemo(() => {
         if (!Array.isArray(weatherData?.daily)) return null;
 
@@ -86,7 +89,7 @@ const DailyList = () => {
         }));
     }, [weatherData]);
 
-    if (isLoading || !!error || dailyData === null) {
+    if (isLoading || isError || dailyData === null) {
         return <LoadingDailyList />;
     }
 

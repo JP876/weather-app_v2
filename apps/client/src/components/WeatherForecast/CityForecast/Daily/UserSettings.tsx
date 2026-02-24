@@ -9,6 +9,9 @@ const UserSettings = () => {
     const settings = useAtomValue(userSettingsAtom);
     const { isLoading, error } = useAtomValue(weatherFetchInfoAtom);
 
+    const errorType = error ? error.type : null;
+    const isError = errorType === "API_ERROR" || errorType === "NETWORK_ERROR";
+
     return (
         <Stack gap={0.5} flexDirection="row">
             <UserSettingSwitch
@@ -16,14 +19,14 @@ const UserSettings = () => {
                 label={settings?.daily?.list ? "Hide list" : "Show list"}
                 title="list"
                 settingKey="daily"
-                disabled={isLoading || !!error}
+                disabled={isLoading === "INITIAL" || isError}
             />
             <UserSettingSwitch
                 checked={!!settings?.daily?.graph}
                 label={settings?.daily?.graph ? "Hide graph" : "Show graph"}
                 title="graph"
                 settingKey="daily"
-                disabled={isLoading || !!error}
+                disabled={isLoading === "INITIAL" || isError}
             />
         </Stack>
     );

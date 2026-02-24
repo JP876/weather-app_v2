@@ -7,11 +7,40 @@ import type { CityType } from "../types";
 import type { WeatherDataType } from "../types/weatherdata";
 import * as Types from "./types";
 
-const initialFetchInfo = { data: null, isLoading: false, error: false };
+const initialFetchInfo: { data: null; isLoading: false; error: false } = {
+    data: null,
+    isLoading: false,
+    error: false,
+};
 
 export const citiesFetchInfoAtom = atom<Types.FetchInfoType<CityType[]>>(initialFetchInfo);
 export const weatherFetchInfoAtom = atom<Types.FetchInfoType<WeatherDataType>>(initialFetchInfo);
-export const earthFetchInfoAtom = atom<Types.FetchInfoType<string>>(initialFetchInfo);
+
+export const lastTimeUpdatedAtom = atom((get) => {
+    const data = get(weatherFetchInfoAtom).data;
+    if (!data) return null;
+    return new Date(data.current.dt * 1_000);
+});
+
+export const currentWeatherDataAtom = atom((get) => {
+    const data = get(weatherFetchInfoAtom).data;
+    const units = get(userSettingsAtom).units;
+
+    if (!data) return null;
+
+    const temp = units === "imperial" ? "\u00B0F" : "\u00B0C";
+    // const windSpeed = units === "imperial" ? "miles/hour" : "meter/sec";
+
+    const w = data.current;
+
+    return {
+        ...w,
+        temp: `${w.temp.toFixed(1)}${temp}`,
+        feels_like: `${w.feels_like.toFixed(1)}${temp}`,
+        humidity: `${w.humidity}%`,
+        clouds: `${w.clouds}%`,
+    };
+});
 
 export const searchValueAtom = atom("");
 

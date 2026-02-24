@@ -11,6 +11,9 @@ const HourlyChart = () => {
     const { isLoading, data: weatherData, error } = useAtomValue(weatherFetchInfoAtom);
     const { temp } = useMeasurementUnits();
 
+    const errorType = error ? error.type : null;
+    const isError = errorType === "API_ERROR" || errorType === "NETWORK_ERROR";
+
     const dataset = useMemo(() => {
         if (!weatherData) return null;
         return weatherData.hourly
@@ -20,7 +23,7 @@ const HourlyChart = () => {
             });
     }, [weatherData]);
 
-    if (isLoading || !!error || dataset === null) {
+    if (isLoading || isError || dataset === null) {
         return (
             <Box px={2}>
                 <Skeleton height={280} />

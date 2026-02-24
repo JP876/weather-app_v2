@@ -25,16 +25,24 @@ const CityForecastContainer = styled(Stack)<StackProps>(({ theme }) => ({
 const FetchLoadingData = memo(() => {
     const { isLoading, error } = useAtomValue(weatherFetchInfoAtom);
 
+    const errorType = (() => (error ? error.type : null))();
+
     useEffect(() => {
         const routesContainer = document.getElementById("forecast-routes-container");
+        const err = errorType === "API_ERROR" || errorType === "NETWORK_ERROR";
 
         if (routesContainer) {
-            routesContainer.style.overflow = isLoading || !!error ? "hidden" : "auto";
-            routesContainer.style.pointerEvents = isLoading || !!error ? "none" : "all";
+            routesContainer.style.overflow = isLoading || err ? "hidden" : "auto";
+            routesContainer.style.pointerEvents = isLoading || err ? "none" : "all";
         }
-    }, [error, isLoading]);
+    }, [errorType, isLoading]);
 
-    return <LoadingData isLoading={isLoading} error={!!error} />;
+    return (
+        <LoadingData
+            isLoading={isLoading === "INITIAL"}
+            error={errorType === "API_ERROR" || errorType === "NETWORK_ERROR"}
+        />
+    );
 });
 
 const CityForecastMain = () => {

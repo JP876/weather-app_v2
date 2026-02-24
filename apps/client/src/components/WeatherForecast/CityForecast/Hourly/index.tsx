@@ -10,7 +10,11 @@ import { userSettingsAtom, weatherFetchInfoAtom } from "../../../../atoms";
 
 const SkeletonCard = ({ isLoading, error }: { isLoading: boolean; error: boolean }) => {
     return (
-        <HourlyCardContainer sx={{ mx: 1 }} isLoading={isLoading} error={error}>
+        <HourlyCardContainer
+            sx={{ mx: 1, minWidth: "9.28rem" }}
+            isLoading={isLoading}
+            error={error}
+        >
             <Stack direction="row" alignItems="center" justifyContent="space-between">
                 <Skeleton width={42} height={24} />
                 <Skeleton width={42} height={24} />
@@ -76,6 +80,9 @@ const HourlyCardsContainer = () => {
 
     const { isLoading, data: weatherData, error } = useAtomValue(weatherFetchInfoAtom);
 
+    const errorType = error ? error.type : null;
+    const isError = errorType === "API_ERROR" || errorType === "NETWORK_ERROR";
+
     useEffect(() => {
         if (!justMounted.current && weatherData?.hourly && cardsContainer) {
             setTimeout(() => {
@@ -96,9 +103,9 @@ const HourlyCardsContainer = () => {
             alignItems="center"
             sx={{ pb: 2.5 }}
         >
-            {isLoading || !!error || weatherData === null ? (
+            {isLoading || isError || weatherData === null ? (
                 Array.from({ length: 12 }).map((_, index) => (
-                    <SkeletonCard key={index} isLoading={isLoading} error={!!error} />
+                    <SkeletonCard key={index} isLoading={!!isLoading} error={isError} />
                 ))
             ) : (
                 <HourlyCardsGrid />
