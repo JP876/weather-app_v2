@@ -26,7 +26,7 @@ const CitiesByCountry = ({ country }: { country: string }) => {
                 setFetchCitiesInfo((prevValue) => ({
                     ...prevValue,
                     error: false,
-                    isLoading: true,
+                    isLoading: "INITIAL",
                 }));
 
                 const [error, cities] = await withCatch<CityType[], DexieError>(
@@ -59,7 +59,10 @@ const CitiesByCountry = ({ country }: { country: string }) => {
 
     return (
         <Stack gap={2}>
-            <CitySearch cities={fetchCitiesInfo.data || []} isLoading={fetchCitiesInfo.isLoading} />
+            <CitySearch
+                cities={fetchCitiesInfo.data || []}
+                isLoading={fetchCitiesInfo.isLoading === "INITIAL"}
+            />
             <CitiesList />
         </Stack>
     );

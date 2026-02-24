@@ -120,7 +120,7 @@ const CitiesNavigation = () => {
                         key={el.id}
                         value={`/${el.id}`}
                         disableRipple
-                        disabled={isLoading}
+                        disabled={isLoading === "INITIAL"}
                         sx={{ alignItems: "center", p: 1 }}
                         label={<TabLabel id={el.id} city={el.city} />}
                     />

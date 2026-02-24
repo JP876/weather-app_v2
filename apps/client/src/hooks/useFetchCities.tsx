@@ -13,7 +13,7 @@ const useFetchCities = () => {
     const setCitiesFetchInfo = useSetAtom(citiesFetchInfoAtom);
 
     const handleFetch = useCallback(async () => {
-        setCitiesFetchInfo((prevValue) => ({ ...prevValue, isLoading: true, error: false }));
+        setCitiesFetchInfo((prevValue) => ({ ...prevValue, isLoading: "INITIAL", error: false }));
         const [, cities] = await withCatch(db.cities.reverse().sortBy("population"));
 
         if (Array.isArray(cities) && cities.length > 0) {

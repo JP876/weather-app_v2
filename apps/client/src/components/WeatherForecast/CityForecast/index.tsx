@@ -1,5 +1,6 @@
 import { lazy, memo, Suspense, useCallback, useEffect, useRef } from "react";
-import { Divider, Stack, styled, type StackProps } from "@mui/material";
+import { Button, Divider, Stack, styled, type StackProps } from "@mui/material";
+import ReplayIcon from "@mui/icons-material/Replay";
 import { useAtomValue } from "jotai";
 
 import useCityInfo from "./hooks/useCityInfo";
@@ -9,6 +10,7 @@ import useFetchWeatherData from "./hooks/useFetchWeatherData";
 import LoadingData from "../../ui/Feedback/LoadingData";
 import { db } from "../../../utils/db";
 import LoadingRoute from "../../ui/Feedback/LoadingRoute";
+import useRefetchWeatherData from "./hooks/useRefetchWeatherData";
 
 const CurrentMain = lazy(() => import("./Current"));
 const DailyMain = lazy(() => import("./Daily"));
@@ -22,26 +24,45 @@ const CityForecastContainer = styled(Stack)<StackProps>(({ theme }) => ({
     scrollbarWidth: "thin",
 }));
 
-const FetchLoadingData = memo(() => {
+const FetchLoadingData = memo(({ children }: { children: React.ReactNode }) => {
     const { isLoading, error } = useAtomValue(weatherFetchInfoAtom);
+    const refetchData = useRefetchWeatherData();
 
     const errorType = (() => (error ? error.type : null))();
 
-    useEffect(() => {
-        const routesContainer = document.getElementById("forecast-routes-container");
-        const err = errorType === "API_ERROR" || errorType === "NETWORK_ERROR";
-
-        if (routesContainer) {
-            routesContainer.style.overflow = isLoading || err ? "hidden" : "auto";
-            routesContainer.style.pointerEvents = isLoading || err ? "none" : "all";
-        }
-    }, [errorType, isLoading]);
+    const renderActions = () => {
+        return (
+            <Stack direction="row" justifyContent="center">
+                <Button
+                    color="inherit"
+                    variant="outlined"
+                    startIcon={<ReplayIcon />}
+                    loading={isLoading === "REFETCH"}
+                    onClick={refetchData}
+                >
+                    Retry
+                </Button>
+            </Stack>
+        );
+    };
 
     return (
-        <LoadingData
-            isLoading={isLoading === "INITIAL"}
-            error={errorType === "API_ERROR" || errorType === "NETWORK_ERROR"}
-        />
+        <CityForecastContainer
+            sx={{
+                ...((isLoading === "INITIAL" ||
+                    errorType === "API_ERROR" ||
+                    errorType === "NETWORK_ERROR") && {
+                    overflow: "hidden",
+                }),
+            }}
+        >
+            <LoadingData
+                isLoading={isLoading === "INITIAL"}
+                error={errorType === "API_ERROR" || errorType === "NETWORK_ERROR"}
+                renderActions={renderActions}
+            />
+            {children}
+        </CityForecastContainer>
     );
 });
 
@@ -91,8 +112,7 @@ const CityForecastMain = () => {
     ]);
 
     return (
-        <CityForecastContainer>
-            <FetchLoadingData />
+        <FetchLoadingData>
             <Suspense fallback={<LoadingRoute />}>
                 <CurrentMain />
                 <Divider />
@@ -100,7 +120,7 @@ const CityForecastMain = () => {
                 <Divider />
                 <DailyMain />
             </Suspense>
-        </CityForecastContainer>
+        </FetchLoadingData>
     );
 };
 

@@ -88,7 +88,7 @@ const SelectedCityDetails = () => {
                 setFetchWeatherInfo((prevValue) => ({
                     ...prevValue,
                     error: false,
-                    isLoading: true,
+                    isLoading: "INITIAL",
                 }));
 
                 const lat = selectedCity.lat;
@@ -190,22 +190,22 @@ const SelectedCityDetails = () => {
                 <CurrentWeatherDetailsContainer
                     label="Minimum"
                     value={`${fetchWeatherInfo.data?.main.temp_min.toFixed(1)}${units.temp}`}
-                    isLoading={fetchWeatherInfo.isLoading}
+                    isLoading={fetchWeatherInfo.isLoading === "INITIAL"}
                 />
                 <CurrentWeatherDetailsContainer
                     label="Maximum"
                     value={`${fetchWeatherInfo.data?.main.temp_max.toFixed(1)}${units.temp}`}
-                    isLoading={fetchWeatherInfo.isLoading}
+                    isLoading={fetchWeatherInfo.isLoading === "INITIAL"}
                 />
                 <CurrentWeatherDetailsContainer
                     label="Feels like"
                     value={`${fetchWeatherInfo.data?.main?.feels_like.toFixed(1)}${units.temp}`}
-                    isLoading={fetchWeatherInfo.isLoading}
+                    isLoading={fetchWeatherInfo.isLoading === "INITIAL"}
                 />
                 <CurrentWeatherDetailsContainer
                     label="Humidity"
                     value={`${fetchWeatherInfo.data?.main?.humidity}%`}
-                    isLoading={fetchWeatherInfo.isLoading}
+                    isLoading={fetchWeatherInfo.isLoading === "INITIAL"}
                 />
             </Box>
 

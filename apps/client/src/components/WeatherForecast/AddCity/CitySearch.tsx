@@ -21,7 +21,7 @@ const ClearSearchValue = ({ value }: { value: string }) => {
         <IconButton
             size="small"
             onClick={handleClear}
-            disabled={isLoading || !!error || value === ""}
+            disabled={isLoading === "INITIAL" || !!error || value === ""}
         >
             <ClearIcon />
         </IconButton>
@@ -48,7 +48,7 @@ const CitySearch = () => {
             fullWidth
             value={value}
             onChange={handleOnChange}
-            disabled={isLoading || !!error}
+            disabled={isLoading === "INITIAL" || !!error}
             slotProps={{
                 input: {
                     endAdornment: (

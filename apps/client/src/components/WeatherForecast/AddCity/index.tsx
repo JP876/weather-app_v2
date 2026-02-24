@@ -19,7 +19,7 @@ const FetchLoadingData = () => {
         }
     }, [error, isLoading]);
 
-    return <LoadingData isLoading={isLoading} error={!!error} />;
+    return <LoadingData isLoading={isLoading === "INITIAL"} error={!!error} />;
 };
 
 const AddCityMain = () => {

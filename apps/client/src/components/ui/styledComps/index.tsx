@@ -106,6 +106,7 @@ export const FeedbackContainer = styled(Box, {
     position: "absolute",
     top: top,
     left: 0,
+    height: "100%",
     width: "100%",
     zIndex: theme.zIndex.drawer + 1,
     display: isLoading || error ? "flex" : "none",
