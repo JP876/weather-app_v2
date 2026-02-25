@@ -1,5 +1,5 @@
 import { useAtomValue } from "jotai";
-import { IconButton, Tooltip, Typography } from "@mui/material";
+import { Box, CircularProgress, Tooltip, Typography } from "@mui/material";
 import ErrorIcon from "@mui/icons-material/Error";
 
 import { weatherFetchInfoAtom } from "../../../../atoms";
@@ -29,24 +29,24 @@ const StatusFeedback = () => {
         return <Typography variant="body2">{message}</Typography>;
     };
 
+    if (isLoading === "REFETCH" || isLoading === "REFRESH") {
+        return <CircularProgress size={20} />;
+    }
+
     if (!isError) return null;
 
     return (
         <Tooltip arrow disableInteractive title={renderTitle()}>
-            <span>
-                <IconButton
-                    size="small"
-                    disabled={errorType === "REFETCH_LIMIT_REACHED"}
-                    onClick={refetchData}
-                    loading={isLoading === "REFETCH"}
-                >
-                    <ErrorIcon
-                        color={
-                            isLoading || errorType === "REFETCH_LIMIT_REACHED" ? "inherit" : "error"
-                        }
-                    />
-                </IconButton>
-            </span>
+            <Box
+                sx={{
+                    height: "inherit",
+                    cursor: "pointer",
+                    "& svg": { height: "inherit", width: "inherit" },
+                }}
+                onClick={refetchData}
+            >
+                <ErrorIcon color={"error"} />
+            </Box>
         </Tooltip>
     );
 };

@@ -89,7 +89,7 @@ const DailyList = () => {
         }));
     }, [weatherData]);
 
-    if (isLoading || isError || dailyData === null) {
+    if (isLoading === "INITIAL" || isError || dailyData === null) {
         return <LoadingDailyList />;
     }
 

@@ -143,7 +143,7 @@ const useFetchWeatherData = () => {
             const [, dataDB] = await getWeatherDataFromDB({ cityId });
 
             if (dataDB) {
-                setWeatherFetchInfo({ data: dataDB, isLoading: false, error: false });
+                setWeatherFetchInfo({ data: dataDB, isLoading: "REFRESH", error: false });
             } else {
                 setWeatherFetchInfo({ data: null, isLoading: "INITIAL", error: false });
             }

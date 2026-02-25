@@ -7,7 +7,7 @@ export type FetchInfoErrorTypes =
     | "API_ERROR_WITH_DB_DATA"
     | "REFETCH_LIMIT_REACHED";
 
-export type FetchInfoLoadingTypes = "INITIAL" | "REFETCH";
+export type FetchInfoLoadingTypes = "INITIAL" | "REFETCH" | "REFRESH";
 
 export type FetchInfoError = {
     msg: string;
@@ -16,8 +16,7 @@ export type FetchInfoError = {
 };
 
 export type FetchInfoType<T> =
-    | { data: null; isLoading: false; error: false }
-    | { data: T; isLoading: false; error: false }
+    | { data: T | null; isLoading: false; error: false }
     | { data: T | null; isLoading: false; error: FetchInfoError }
     | { data: T | null; isLoading: FetchInfoLoadingTypes; error: FetchInfoError | false };
 

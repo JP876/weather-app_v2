@@ -34,7 +34,6 @@ const LocationInfo = () => {
         <Stack mr={4}>
             <Stack direction="row" alignItems="center" gap={2}>
                 <ClampedTextContainer variant="h4">{cityInfo?.city}</ClampedTextContainer>
-                <StatusFeedback />
             </Stack>
             <ClampedTextContainer variant="body2">
                 {`${cityInfo?.country}, ${cityInfo?.iso2}`}
@@ -45,10 +44,22 @@ const LocationInfo = () => {
 
 const LastTimeUpdated = () => {
     const dt = useAtomValue(lastTimeUpdatedAtom);
+    const { isLoading } = useAtomValue(weatherFetchInfoAtom);
 
     if (!dt) return null;
 
-    return <Typography variant="caption">{`Last update: ${format(dt, "HH:mm")}`}</Typography>;
+    return (
+        <Box sx={{ display: "grid", gap: 0.4, gridTemplateColumns: "1fr 2.8rem" }}>
+            <Typography variant="caption">Last update: </Typography>
+            <Box sx={{ justifySelf: "center", alignItems: "center", height: 20 }}>
+                {isLoading === "REFRESH" || isLoading === "REFETCH" ? (
+                    <StatusFeedback />
+                ) : (
+                    <Typography variant="body2">{format(dt, "HH:mm")}</Typography>
+                )}
+            </Box>
+        </Box>
+    );
 };
 
 const CurrentWeatherDetailsContainer = ({

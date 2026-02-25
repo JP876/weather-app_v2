@@ -103,9 +103,9 @@ const HourlyCardsContainer = () => {
             alignItems="center"
             sx={{ pb: 2.5 }}
         >
-            {isLoading || isError || weatherData === null ? (
+            {isLoading === "INITIAL" || isError || weatherData === null ? (
                 Array.from({ length: 12 }).map((_, index) => (
-                    <SkeletonCard key={index} isLoading={!!isLoading} error={isError} />
+                    <SkeletonCard key={index} isLoading={isLoading === "INITIAL"} error={isError} />
                 ))
             ) : (
                 <HourlyCardsGrid />

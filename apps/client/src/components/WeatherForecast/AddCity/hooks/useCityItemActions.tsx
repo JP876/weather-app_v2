@@ -4,6 +4,8 @@ import { useLocation } from "wouter";
 import type { CityType } from "../../../../types";
 import { favouriteCitiesAtom } from "../../../../atoms";
 import { db } from "../../../../utils/db";
+import { FAV_CITY_LIMIT } from "../../../../consts";
+import useSnackbar from "../../../../hooks/useSnackbar";
 
 const useCityItemActions = (cityInfo: CityType | null) => {
     const [favouriteCities, setFavouriteCities] = useAtom(favouriteCitiesAtom);
@@ -12,6 +14,7 @@ const useCityItemActions = (cityInfo: CityType | null) => {
     );
 
     const [, navigate] = useLocation();
+    const { openSnackbar } = useSnackbar();
 
     const deleteDataFromDB = async (cityId: number) => {
         try {
@@ -21,6 +24,17 @@ const useCityItemActions = (cityInfo: CityType | null) => {
         }
     };
 
+    const checkLimit = () => {
+        if (Array.isArray(favouriteCities) && favouriteCities.length + 1 > FAV_CITY_LIMIT) {
+            openSnackbar({
+                severity: "warning",
+                message: "You've hit the limit — remove one to add another.",
+            });
+            return false;
+        }
+        return true;
+    };
+
     const navigateToFavouriteCity = () => {
         if (!cityInfo) {
             console.warn("City info not found");
@@ -28,6 +42,7 @@ const useCityItemActions = (cityInfo: CityType | null) => {
         }
 
         if (!isFavourite) {
+            if (!checkLimit()) return;
             setFavouriteCities((prevValue) => [...(prevValue || []), cityInfo]);
         }
         setTimeout(() => navigate(`/${cityInfo.id}`, { transition: true }), 0);
@@ -37,6 +52,10 @@ const useCityItemActions = (cityInfo: CityType | null) => {
         if (!cityInfo) {
             console.warn("City info not found");
             return;
+        }
+
+        if (!isFavourite) {
+            if (!checkLimit()) return;
         }
 
         setFavouriteCities((prevValue) => {

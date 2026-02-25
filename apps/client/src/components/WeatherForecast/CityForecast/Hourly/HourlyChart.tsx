@@ -23,7 +23,7 @@ const HourlyChart = () => {
             });
     }, [weatherData]);
 
-    if (isLoading || isError || dataset === null) {
+    if (isLoading === "INITIAL" || isError || dataset === null) {
         return (
             <Box px={2}>
                 <Skeleton height={280} />

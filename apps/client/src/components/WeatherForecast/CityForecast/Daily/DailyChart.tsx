@@ -22,7 +22,7 @@ const DailyChart = () => {
         });
     }, [weatherData]);
 
-    if (isLoading || isError) {
+    if (isLoading === "INITIAL" || isError) {
         return (
             <Box px={2}>
                 <Skeleton height={280} />
