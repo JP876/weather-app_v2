@@ -1,14 +1,9 @@
 import { memo } from "react";
 import { Box, Skeleton, Stack, styled, Typography, type StackProps } from "@mui/material";
 import { useAtomValue } from "jotai";
-import { format } from "date-fns";
 
 import useCityInfo from "../hooks/useCityInfo";
-import {
-    currentWeatherDataAtom,
-    lastTimeUpdatedAtom,
-    weatherFetchInfoAtom,
-} from "../../../../atoms";
+import { currentWeatherDataAtom, weatherFetchInfoAtom } from "../../../../atoms";
 import WeatherIcon from "../../../ui/WeatherIcon";
 import ClampedTextContainer from "../../../ui/ClampedTextContainer";
 import StatusFeedback from "./StatusFeedback";
@@ -43,20 +38,11 @@ const LocationInfo = () => {
 };
 
 const LastTimeUpdated = () => {
-    const dt = useAtomValue(lastTimeUpdatedAtom);
-    const { isLoading } = useAtomValue(weatherFetchInfoAtom);
-
-    if (!dt) return null;
-
     return (
         <Box sx={{ display: "grid", gap: 0.4, gridTemplateColumns: "1fr 2.8rem" }}>
             <Typography variant="caption">Last update: </Typography>
             <Box sx={{ justifySelf: "center", alignItems: "center", height: 20 }}>
-                {isLoading === "REFRESH" || isLoading === "REFETCH" ? (
-                    <StatusFeedback />
-                ) : (
-                    <Typography variant="body2">{format(dt, "HH:mm")}</Typography>
-                )}
+                <StatusFeedback />
             </Box>
         </Box>
     );

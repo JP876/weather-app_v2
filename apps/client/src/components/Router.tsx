@@ -11,7 +11,7 @@ const RouterMain = () => {
         <Suspense fallback={<LoadingRoute />}>
             <Switch>
                 <Route path="/" component={AddCityRoute} />
-                <Route path="/:id" component={CityForecastRoute} />
+                <Route path="/:id">{(params) => <CityForecastRoute key={params.id} />}</Route>
             </Switch>
         </Suspense>
     );

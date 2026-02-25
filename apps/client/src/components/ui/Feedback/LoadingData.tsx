@@ -8,16 +8,12 @@ type LoadingDataPropsType = ErrorMessageProps & {
     error?: boolean;
 };
 
-const LoadingData = ({ isLoading, error, renderActions }: LoadingDataPropsType) => {
+const LoadingData = ({ isLoading, error, ...rest }: LoadingDataPropsType) => {
     const container = document.getElementById("forecast-routes-container");
 
     return (
         <FeedbackContainer isLoading={isLoading} error={!!error} top={container?.scrollTop}>
-            {error ? (
-                <ErrorMessage renderActions={renderActions} />
-            ) : (
-                <CircularProgress size={64} thickness={3} />
-            )}
+            {error ? <ErrorMessage {...rest} /> : <CircularProgress size={64} thickness={3} />}
         </FeedbackContainer>
     );
 };

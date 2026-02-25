@@ -4,7 +4,6 @@ import ReplayIcon from "@mui/icons-material/Replay";
 import { useAtomValue } from "jotai";
 
 import useCityInfo from "./hooks/useCityInfo";
-
 import { userSettingsAtom, weatherFetchInfoAtom } from "../../../atoms";
 import useFetchWeatherData from "./hooks/useFetchWeatherData";
 import LoadingData from "../../ui/Feedback/LoadingData";
@@ -31,6 +30,10 @@ const FetchLoadingData = memo(({ children }: { children: React.ReactNode }) => {
     const errorType = (() => (error ? error.type : null))();
 
     const renderActions = () => {
+        if (errorType === "NETWORK_ERROR") {
+            return null;
+        }
+
         return (
             <Stack direction="row" justifyContent="center">
                 <Button
@@ -60,6 +63,11 @@ const FetchLoadingData = memo(({ children }: { children: React.ReactNode }) => {
                 isLoading={isLoading === "INITIAL"}
                 error={errorType === "API_ERROR" || errorType === "NETWORK_ERROR"}
                 renderActions={renderActions}
+                message={
+                    errorType === "NETWORK_ERROR"
+                        ? "Looks like you're not connected. Try again once you're online."
+                        : ""
+                }
             />
             {children}
         </CityForecastContainer>
@@ -68,9 +76,7 @@ const FetchLoadingData = memo(({ children }: { children: React.ReactNode }) => {
 
 const CityForecastMain = () => {
     const userSettings = useAtomValue(userSettingsAtom);
-
     const unitsRef = useRef(userSettings.units);
-    const cityId = useRef<string | null>(null);
 
     const cityInfo = useCityInfo();
     const { handleFetch } = useFetchWeatherData();
@@ -84,23 +90,20 @@ const CityForecastMain = () => {
     }, []);
 
     useEffect(() => {
-        if (
-            cityInfo?.id &&
-            (cityInfo?.id.toString() !== cityId.current || userSettings?.units !== unitsRef.current)
-        ) {
+        if (cityInfo?.id || userSettings?.units !== unitsRef.current) {
             if (userSettings?.units !== unitsRef.current) {
                 clearWeatherDataTable();
             }
-
-            cityId.current = cityInfo.id.toString();
             unitsRef.current = userSettings?.units;
 
-            handleFetch({
-                id: cityInfo.id,
-                lat: cityInfo.lat,
-                lng: cityInfo.lng,
-                units: userSettings?.units || "metric",
-            });
+            if (cityInfo?.id) {
+                handleFetch({
+                    id: cityInfo.id,
+                    lat: cityInfo.lat,
+                    lng: cityInfo.lng,
+                    units: userSettings?.units || "metric",
+                });
+            }
         }
     }, [
         cityInfo?.id,
@@ -124,4 +127,4 @@ const CityForecastMain = () => {
     );
 };
 
-export default memo(CityForecastMain);
+export default CityForecastMain;
