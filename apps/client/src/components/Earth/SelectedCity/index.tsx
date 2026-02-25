@@ -30,10 +30,8 @@ const SelectedCityContainer = styled(GlassContainer)(({ theme }) => ({
 const SelectedCityMain = () => {
     const selectedCity = useAtomValue(selectedCityAtom);
 
-    if (!selectedCity) return null;
-
     return (
-        <SelectedCityContainer>
+        <SelectedCityContainer sx={{ display: selectedCity ? "block" : "none" }}>
             <SelectedCityDetails />
         </SelectedCityContainer>
     );

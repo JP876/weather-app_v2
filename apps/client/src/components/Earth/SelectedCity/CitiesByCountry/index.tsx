@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { memo, useEffect, useState } from "react";
 import { Stack } from "@mui/material";
 import { useSetAtom } from "jotai";
 import type { DexieError } from "dexie";
@@ -11,7 +11,7 @@ import type { CityType } from "../../../../types";
 import CitySearch from "./CitySearch";
 import withCatch from "../../../../utils/withCatch";
 
-const CitiesByCountry = ({ country }: { country: string }) => {
+const CitiesByCountry = ({ country }: { country?: string }) => {
     const setCitiesByCountry = useSetAtom(citiesByCountry);
 
     const [fetchCitiesInfo, setFetchCitiesInfo] = useState<FetchInfoType<CityType[]>>({
@@ -68,4 +68,4 @@ const CitiesByCountry = ({ country }: { country: string }) => {
     );
 };
 
-export default CitiesByCountry;
+export default memo(CitiesByCountry);

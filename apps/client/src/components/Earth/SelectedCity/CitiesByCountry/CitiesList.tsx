@@ -1,4 +1,4 @@
-import { memo, useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useAtomValue } from "jotai";
 import { AutoSizer, List, type ListRowProps } from "react-virtualized";
 import { Box, Typography } from "@mui/material";
@@ -10,7 +10,7 @@ export const LIST_ID = "cities_list_by_country";
 
 const CitiesList = () => {
     const cities = useAtomValue(citiesByCountry);
-    const [height, setHeight] = useState<number | null>(null);
+    const [height, setHeight] = useState(0);
 
     const listStyle = useMemo<React.CSSProperties>(() => {
         return {
@@ -42,13 +42,15 @@ const CitiesList = () => {
             }
         });
 
-        const main = document.getElementsByTagName("main");
-        observer.observe([...main][0], { childList: true, subtree: true });
+        if (Array.isArray(cities)) {
+            const main = document.getElementsByTagName("main");
+            observer.observe([...main][0], { childList: true, subtree: true });
+        }
 
         return () => {
             observer.disconnect();
         };
-    }, []);
+    }, [cities]);
 
     if (!Array.isArray(cities)) return null;
 
@@ -77,4 +79,4 @@ const CitiesList = () => {
     );
 };
 
-export default memo(CitiesList);
+export default CitiesList;

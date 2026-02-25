@@ -18,6 +18,7 @@ const Main = styled(AppContainer)(({ theme }) => ({
     "--footer-height": "3.6rem",
     "--content-height": `calc(100vh - var(--header-height) - var(--footer-height) - 2 * ${theme.spacing(GRID_GAP)})`,
 
+    scrollbarWidth: "thin",
     scrollbarColor: `${theme.palette.primary.light} transparent`,
     scrollBehavior: "smooth",
     scrollMargin: 0,

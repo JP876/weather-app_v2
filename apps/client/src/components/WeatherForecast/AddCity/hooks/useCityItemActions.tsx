@@ -30,7 +30,7 @@ const useCityItemActions = (cityInfo: CityType | null) => {
         if (!isFavourite) {
             setFavouriteCities((prevValue) => [...(prevValue || []), cityInfo]);
         }
-        setTimeout(() => navigate(`/${cityInfo.id}`), 0);
+        setTimeout(() => navigate(`/${cityInfo.id}`, { transition: true }), 0);
     };
 
     const saveFavouriteCity = () => {

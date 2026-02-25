@@ -1,11 +1,13 @@
+import { memo } from "react";
 import { IconButton, Stack, styled, type StackProps } from "@mui/material";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import LocationCityIcon from "@mui/icons-material/LocationCity";
-import { useAtom, useAtomValue } from "jotai";
+import { useAtomValue, useSetAtom } from "jotai";
 
 import { citiesByCountry, selectedCityAtom } from "../../../../atoms";
 import calcCoordToPos from "../../../../utils/calcCoordToPos";
 import ClampedTextContainer from "../../../ui/ClampedTextContainer";
+import type { CityType } from "../../../../types";
 
 const Container = (props: StackProps) => (
     <Stack direction="row" alignItems="center" justifyContent="space-between" {...props} />
@@ -39,33 +41,41 @@ const CityListItemContainer = styled(Container, {
     },
 }));
 
+const CityListItemContent = memo(
+    ({ isSelected, city }: { isSelected: boolean; city?: CityType }) => {
+        const setSelectedCity = useSetAtom(selectedCityAtom);
+
+        const handleOnClick = () => {
+            if (!city || isSelected) {
+                if (!city) console.error("City info not found");
+                return null;
+            }
+            const position = calcCoordToPos({ lat: +city.lat, lng: +city.lng });
+            setSelectedCity({ ...city, position });
+        };
+
+        return (
+            <CityListItemContainer onClick={handleOnClick} isSelected={isSelected}>
+                <Stack direction="row" alignItems="center" gap={0.8}>
+                    {city?.capital === "primary" ? <LocationCityIcon fontSize="small" /> : null}
+                    <ClampedTextContainer variant="body1">{city?.city || ""}</ClampedTextContainer>
+                </Stack>
+                <IconButton size="small" disabled={isSelected}>
+                    <VisibilityIcon fontSize="small" />
+                </IconButton>
+            </CityListItemContainer>
+        );
+    },
+);
+
 const CityListItem = ({ index }: { index: number }) => {
     const cities = useAtomValue(citiesByCountry);
-    const [selectedCity, setSelectedCity] = useAtom(selectedCityAtom);
+    const selectedCity = useAtomValue(selectedCityAtom);
 
-    const city = cities?.[index] || null;
+    const city = cities?.[index];
     const isSelected = selectedCity?.id === city?.id;
 
-    const handleOnClick = () => {
-        if (!city || isSelected) {
-            if (!city) console.error("City info not found");
-            return null;
-        }
-        const position = calcCoordToPos({ lat: +city.lat, lng: +city.lng });
-        setSelectedCity({ ...city, position });
-    };
-
-    return (
-        <CityListItemContainer onClick={handleOnClick} isSelected={isSelected}>
-            <Stack direction="row" alignItems="center" gap={0.8}>
-                {city?.capital === "primary" ? <LocationCityIcon fontSize="small" /> : null}
-                <ClampedTextContainer variant="body1">{city?.city || ""}</ClampedTextContainer>
-            </Stack>
-            <IconButton size="small" disabled={isSelected}>
-                <VisibilityIcon fontSize="small" />
-            </IconButton>
-        </CityListItemContainer>
-    );
+    return <CityListItemContent isSelected={isSelected} city={city} />;
 };
 
 export default CityListItem;
