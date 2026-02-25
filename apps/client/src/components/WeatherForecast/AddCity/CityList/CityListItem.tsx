@@ -20,11 +20,12 @@ const CityListItem = ({ index }: CityListItemType) => {
 
     const onClick = () => {
         switch (leftClick) {
-            case "add":
-                saveFavouriteCity();
-                break;
             case "navigate":
                 navigateToFavouriteCity();
+                break;
+            case "add":
+            default:
+                saveFavouriteCity();
         }
     };
 
@@ -36,6 +37,7 @@ const CityListItem = ({ index }: CityListItemType) => {
                 saveFavouriteCity();
                 break;
             case "navigate":
+            default:
                 navigateToFavouriteCity();
         }
     };
