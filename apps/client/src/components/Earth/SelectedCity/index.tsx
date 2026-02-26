@@ -1,5 +1,5 @@
 import { memo } from "react";
-import { styled } from "@mui/material";
+import { Slide, styled } from "@mui/material";
 import { useAtomValue } from "jotai";
 
 import { selectedCityAtom } from "../../../atoms";
@@ -31,9 +31,11 @@ const SelectedCityMain = () => {
     const selectedCity = useAtomValue(selectedCityAtom);
 
     return (
-        <SelectedCityContainer sx={{ display: selectedCity ? "block" : "none" }}>
-            <SelectedCityDetails />
-        </SelectedCityContainer>
+        <Slide direction="left" in={!!selectedCity} mountOnEnter unmountOnExit>
+            <SelectedCityContainer>
+                <SelectedCityDetails />
+            </SelectedCityContainer>
+        </Slide>
     );
 };
 

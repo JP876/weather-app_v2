@@ -25,10 +25,22 @@ const Main = styled(AppContainer)(({ theme }) => ({
 
     height: "100vh",
     width: "100vw",
+    overflow: "hidden",
     display: "grid",
     gridTemplateColumns: `repeat(${NUM_OF_COLUMNS}, 1fr)`,
     gridTemplateRows: `var(--header-height) var(--content-height) var(--footer-height)`,
     gap: theme.spacing(GRID_GAP),
+}));
+
+const EarthMainContainer = styled(Box)(({ theme }) => ({
+    position: "fixed",
+    width: "132vw",
+    height: "100vh",
+    overflow: "hidden",
+
+    [theme.breakpoints.down("md")]: {
+        width: "100vw",
+    },
 }));
 
 const App = () => {
@@ -63,26 +75,11 @@ const App = () => {
             <HeaderMain />
             <WeatherForecast />
 
-            <Box
-                sx={{
-                    overflow: "hidden",
-                    gridColumnStart: 1,
-                    gridColumnEnd: 11,
-                    position: "fixed",
-                }}
-            >
-                <Box
-                    sx={(theme) => ({
-                        width: "132vw",
-                        height: "100vh",
-                        [theme.breakpoints.down("md")]: { width: "100vw" },
-                    })}
-                >
-                    <Suspense fallback={null}>
-                        <EarthMain />
-                    </Suspense>
-                </Box>
-            </Box>
+            <EarthMainContainer>
+                <Suspense fallback={null}>
+                    <EarthMain />
+                </Suspense>
+            </EarthMainContainer>
 
             <Suspense fallback={null}>
                 <SelectedCityMain />

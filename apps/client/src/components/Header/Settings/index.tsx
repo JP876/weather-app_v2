@@ -1,5 +1,12 @@
-import { useEffect } from "react";
-import { DialogContent, DialogTitle, IconButton, Stack } from "@mui/material";
+import { forwardRef, useEffect } from "react";
+import {
+    DialogContent,
+    DialogTitle,
+    IconButton,
+    Slide,
+    Stack,
+    type SlideProps,
+} from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import { useAtom, useAtomValue, useSetAtom } from "jotai";
 
@@ -15,6 +22,10 @@ import SettingsNavigation from "./SettingsNavigation";
 type SettingsProps = {
     children: React.ReactNode;
 };
+
+const SlideTransition = forwardRef((props: SlideProps, ref) => {
+    return <Slide direction="down" ref={ref} {...props} />;
+});
 
 const SettingsDialog = ({ children }: SettingsProps) => {
     const [open, setOpen] = useAtom(openSettingsAtom);
@@ -41,7 +52,12 @@ const SettingsDialog = ({ children }: SettingsProps) => {
     }, [open]);
 
     return (
-        <GlassDialog open={open} onClose={onClose} minWidth="50rem">
+        <GlassDialog
+            open={open}
+            onClose={onClose}
+            minWidth="50rem"
+            slots={{ transition: SlideTransition }}
+        >
             <Stack direction="row" alignItems="center" justifyContent="space-between">
                 <DialogTitle>Settings</DialogTitle>
                 <IconButton size="small" onClick={onClose} sx={{ mr: 2 }}>

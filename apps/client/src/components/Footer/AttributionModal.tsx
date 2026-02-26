@@ -1,6 +1,14 @@
-import React, { useMemo } from "react";
-import type { DialogProps } from "@mui/material";
-import { DialogContent, DialogTitle, IconButton, Link, Stack, Typography } from "@mui/material";
+import { forwardRef, useMemo } from "react";
+import type { DialogProps, SlideProps } from "@mui/material";
+import {
+    DialogContent,
+    DialogTitle,
+    IconButton,
+    Link,
+    Slide,
+    Stack,
+    Typography,
+} from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 
 import { GlassDialog } from "../ui/styledComps";
@@ -35,6 +43,10 @@ const useAttributions = () => {
 
 type AttributionModalProps = {} & DialogProps;
 
+const SlideTransition = forwardRef((props: SlideProps, ref) => {
+    return <Slide direction="up" ref={ref} {...props} />;
+});
+
 const AttributionModal = ({ onClose, ...rest }: AttributionModalProps) => {
     const attributions = useAttributions();
 
@@ -45,7 +57,7 @@ const AttributionModal = ({ onClose, ...rest }: AttributionModalProps) => {
     };
 
     return (
-        <GlassDialog blur={2} onClose={onClose} {...rest}>
+        <GlassDialog blur={2} onClose={onClose} slots={{ transition: SlideTransition }} {...rest}>
             <Stack direction="row" alignItems="center" justifyContent="space-between">
                 <DialogTitle>Attributions</DialogTitle>
                 <IconButton size="small" onClick={onClick} sx={{ mr: 2 }}>

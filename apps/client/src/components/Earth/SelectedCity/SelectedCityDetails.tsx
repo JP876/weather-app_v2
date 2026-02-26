@@ -79,12 +79,12 @@ const SelectedCityDetails = () => {
 
     return (
         <Box
-            p={2}
             sx={{
                 height: "100%",
                 display: "grid",
                 gridTemplateRows: "repeat(10, 1fr)",
                 gap: 2,
+                p: 2,
             }}
         >
             <Stack
