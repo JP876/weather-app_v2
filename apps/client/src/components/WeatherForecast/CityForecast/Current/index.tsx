@@ -7,6 +7,7 @@ import { currentWeatherDataAtom, weatherFetchInfoAtom } from "../../../../atoms"
 import WeatherIcon from "../../../ui/WeatherIcon";
 import ClampedTextContainer from "../../../ui/ClampedTextContainer";
 import StatusFeedback from "./StatusFeedback";
+import getMinMax from "../../../../utils/getMinMax";
 
 type CurrentTemperatureProps = {
     temp?: string;
@@ -28,11 +29,22 @@ const LocationInfo = () => {
     return (
         <Stack mr={4}>
             <Stack direction="row" alignItems="center" gap={2}>
-                <ClampedTextContainer variant="h4">{cityInfo?.city}</ClampedTextContainer>
+                {cityInfo?.city ? (
+                    <ClampedTextContainer variant="h4">{cityInfo.city}</ClampedTextContainer>
+                ) : (
+                    <Skeleton height={42} width={getMinMax(128, 192)} />
+                )}
             </Stack>
-            <ClampedTextContainer variant="body2">
-                {`${cityInfo?.country}, ${cityInfo?.iso2}`}
-            </ClampedTextContainer>
+            {cityInfo?.country && cityInfo?.iso2 ? (
+                <ClampedTextContainer variant="body2">
+                    {`${cityInfo?.country}, ${cityInfo?.iso2}`}
+                </ClampedTextContainer>
+            ) : (
+                <Stack direction="row" gap={2}>
+                    <Skeleton height={18} width={getMinMax(76, 96)} />
+                    <Skeleton height={18} width={32} />
+                </Stack>
+            )}
         </Stack>
     );
 };

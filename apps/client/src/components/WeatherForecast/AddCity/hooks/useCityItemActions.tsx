@@ -9,9 +9,9 @@ import useSnackbar from "../../../../hooks/useSnackbar";
 
 const useCityItemActions = (cityInfo: CityType | null) => {
     const [favouriteCities, setFavouriteCities] = useAtom(favouriteCitiesAtom);
-    const isFavourite = (favouriteCities || []).some(
-        (city) => city.id.toString() === cityInfo?.id.toString(),
-    );
+    const isFavourite = (favouriteCities || []).some((city) => {
+        return city?.id ? city.id.toString() === cityInfo?.id.toString() : false;
+    });
 
     const [, navigate] = useLocation();
     const { openSnackbar } = useSnackbar();

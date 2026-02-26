@@ -1,13 +1,14 @@
-import { memo, useEffect } from "react";
+import { memo, useEffect, useRef } from "react";
 import { Box, Stack, Tab, Tabs } from "@mui/material";
 import ClearIcon from "@mui/icons-material/Clear";
-import { useAtomValue, useSetAtom } from "jotai";
+import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import { useLocation } from "wouter";
 
-import { favouriteCitiesAtom, weatherFetchInfoAtom } from "../../../atoms";
-import type { CityType } from "../../../types";
 import { db } from "../../../utils/db";
+import { citiesFetchInfoAtom, favouriteCitiesAtom, weatherFetchInfoAtom } from "../../../atoms";
 import ClampedTextContainer from "../../ui/ClampedTextContainer";
+import withCatch from "../../../utils/withCatch";
+import type { CityType } from "../../../types";
 
 const a11yProps = (index: number) => {
     return {
@@ -19,22 +20,34 @@ const a11yProps = (index: number) => {
 type TabLabelProps = {
     id: number | string;
     city: string;
+    index: number;
 };
 
-const TabLabel = memo(({ id, city }: TabLabelProps) => {
+const TabLabel = memo(({ id, city, index }: TabLabelProps) => {
     const setFavouriteCities = useSetAtom(favouriteCitiesAtom);
 
     const handleDeleteLocation = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
         event.stopPropagation();
-        let nextValue: CityType[] = [];
 
-        setFavouriteCities((prevState) => {
-            db.weatherData.delete(+id);
-            nextValue = (prevState || []).filter(
-                (location) => location.id.toString() !== id.toString(),
-            );
-            return nextValue;
-        });
+        if (!id) {
+            setFavouriteCities((prevValue) => (prevValue || []).filter((_, i) => i !== index));
+            return null;
+        }
+
+        (async () => {
+            await withCatch(db.weatherData.delete(+id));
+
+            setFavouriteCities((prevState) => {
+                const nextValue = (prevState || []).filter(
+                    (location) => location.id.toString() !== id.toString(),
+                );
+
+                const event = new CustomEvent<CityType[]>("update-path", { detail: nextValue });
+                window.document.dispatchEvent(event);
+
+                return nextValue;
+            });
+        })();
     };
 
     return (
@@ -69,16 +82,22 @@ const TabLabel = memo(({ id, city }: TabLabelProps) => {
 });
 
 const CitiesNavigation = () => {
-    const favouriteCities = useAtomValue(favouriteCitiesAtom);
+    const justMounted = useRef(true);
+
+    const { isLoading: isCitiesLoading } = useAtomValue(citiesFetchInfoAtom);
+    const { isLoading } = useAtomValue(weatherFetchInfoAtom);
+
+    const [favouriteCities, setFavouriteCities] = useAtom(favouriteCitiesAtom);
+
     const [path, navigate] = useLocation();
 
     const cId = path.split("/")?.[1];
     const isFavourite = (() => {
         if (!Array.isArray(favouriteCities)) return null;
-        return favouriteCities.some((city) => city.id.toString() === cId);
+        return favouriteCities.some((city) => {
+            return city?.id ? city?.id?.toString() === cId : false;
+        });
     })();
-
-    const { isLoading } = useAtomValue(weatherFetchInfoAtom);
 
     const value = (() => {
         if (
@@ -97,12 +116,42 @@ const CitiesNavigation = () => {
     };
 
     useEffect(() => {
-        if (Array.isArray(favouriteCities) && cId && isFavourite === false) {
-            const nextPath =
-                favouriteCities.length > 0 ? favouriteCities[favouriteCities.length - 1].id : "";
-            navigate(`/${nextPath}`, { replace: true });
+        const controller = new AbortController();
+
+        const updatePath = (event: CustomEventInit<CityType[]>) => {
+            if (Array.isArray(event.detail)) {
+                const nextPath =
+                    event.detail.length > 0 ? event.detail[event.detail.length - 1].id : "";
+                navigate(`/${nextPath}`, { replace: true });
+            }
+        };
+
+        document.addEventListener("update-path", updatePath, { signal: controller.signal });
+        return () => {
+            controller.abort();
+        };
+    }, [navigate]);
+
+    useEffect(() => {
+        if (
+            !isCitiesLoading &&
+            Array.isArray(favouriteCities) &&
+            cId &&
+            isFavourite === false &&
+            justMounted.current
+        ) {
+            (async () => {
+                justMounted.current = false;
+                const [error, city] = await withCatch(db.cities.where("id").equals(+cId).toArray());
+
+                if (!error && city[0]?.id) {
+                    setFavouriteCities((prevValue) => [...(prevValue || []), { ...city[0] }]);
+                } else {
+                    navigate("/", { replace: true });
+                }
+            })();
         }
-    }, [cId, favouriteCities, isFavourite, navigate]);
+    }, [cId, favouriteCities, isCitiesLoading, isFavourite, navigate, setFavouriteCities]);
 
     return (
         <Box id="cities-navigation-tabs-container" sx={{ borderBottom: 1, borderColor: "divider" }}>
@@ -115,14 +164,14 @@ const CitiesNavigation = () => {
                 variant="scrollable"
             >
                 <Tab label="Add city" value="/" {...a11yProps(0)} />
-                {(favouriteCities || []).map((el) => (
+                {(favouriteCities || []).map((el, index) => (
                     <Tab
                         key={el.id}
                         value={`/${el.id}`}
                         disableRipple
                         disabled={isLoading === "INITIAL"}
                         sx={{ alignItems: "center", p: 1 }}
-                        label={<TabLabel id={el.id} city={el.city} />}
+                        label={<TabLabel id={el.id} city={el.city} index={index} />}
                     />
                 ))}
             </Tabs>
