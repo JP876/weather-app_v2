@@ -1,14 +1,15 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { useAtomValue } from "jotai";
 import { AutoSizer, List, type ListRowProps } from "react-virtualized";
-import { Box, Typography } from "@mui/material";
+import { Box, Skeleton, Stack, Typography } from "@mui/material";
+import { useAtomValue } from "jotai";
 
 import CityListItem from "./CityListItem";
 import { citiesByCountry } from "../../../../atoms";
+import type { FetchInfoLoadingTypes } from "../../../../atoms/types";
 
 export const LIST_ID = "cities_list_by_country";
 
-const CitiesList = () => {
+const CitiesList = ({ isLoading }: { isLoading: FetchInfoLoadingTypes | boolean }) => {
     const cities = useAtomValue(citiesByCountry);
     const [height, setHeight] = useState(0);
 
@@ -51,6 +52,23 @@ const CitiesList = () => {
             observer.disconnect();
         };
     }, [cities]);
+
+    if (isLoading === "INITIAL") {
+        return (
+            <Stack
+                sx={{
+                    overflow: "hidden",
+                    maxHeight: "calc(var(--container-height) - 40px - 16px)",
+                }}
+            >
+                {Array.from({ length: 20 }).map((_, i) => (
+                    <Box key={i} sx={{ "&:not(:last-of-type)": { mt: -1.4 } }}>
+                        <Skeleton height={58} />
+                    </Box>
+                ))}
+            </Stack>
+        );
+    }
 
     if (!Array.isArray(cities)) return null;
 

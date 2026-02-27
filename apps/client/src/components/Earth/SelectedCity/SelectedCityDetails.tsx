@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { Box, Skeleton, Stack, Typography } from "@mui/material";
 import { useAtomValue } from "jotai";
 
@@ -52,21 +52,42 @@ const SelectedCityTitle = ({ iso2, country, city }: SelectedCityTitleProps) => {
                         src={`https://flagcdn.com/w40/${iso2.toLowerCase()}.png`}
                         alt={`${country} flag`}
                     />
-                ) : null}
-                <ClampedTextContainer variant="h5">{city || ""}</ClampedTextContainer>
+                ) : (
+                    <Skeleton height={32} width={24} />
+                )}
+                {city ? (
+                    <ClampedTextContainer variant="h5">{city}</ClampedTextContainer>
+                ) : (
+                    <Skeleton height={32} width={getMinMax(72, 96)} />
+                )}
             </Stack>
-            <ClampedTextContainer variant="body2">
-                {`${country || ""}, ${iso2 || ""}`}
-            </ClampedTextContainer>
+            {country && iso2 ? (
+                <ClampedTextContainer variant="body2">
+                    {`${country || ""}, ${iso2 || ""}`}
+                </ClampedTextContainer>
+            ) : (
+                <Stack direction="row" alignItems="center" gap={1}>
+                    <Skeleton height={20} width={getMinMax(72, 96)} />
+                    <Skeleton height={20} width={32} />
+                </Stack>
+            )}
         </Stack>
     );
 };
 
 const SelectedCityDetails = () => {
+    const container = useRef<HTMLDivElement | null>(null);
     const selectedCity = useAtomValue(selectedCityAtom);
 
     const { data, isLoading, handleFetch } = useFetchCurrentWeather();
     const units = useMeasurementUnits();
+
+    useEffect(() => {
+        if (container.current) {
+            const { height } = window.getComputedStyle(container.current);
+            container.current.style.setProperty("--container-height", height);
+        }
+    }, []);
 
     useEffect(() => {
         if (selectedCity?.lat) {
@@ -154,7 +175,11 @@ const SelectedCityDetails = () => {
                 />
             </Box>
 
-            <Box id="cities-by-country-container" sx={{ gridRowStart: 4, gridRowEnd: -1 }}>
+            <Box
+                id="cities-by-country-container"
+                ref={container}
+                sx={{ gridRowStart: 4, gridRowEnd: -1 }}
+            >
                 <CitiesByCountry country={selectedCity?.country} />
             </Box>
         </Box>

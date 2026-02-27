@@ -1,19 +1,55 @@
-import { useEffect, useRef, useState } from "react";
-import { Box, Stack, Typography } from "@mui/material";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { Box, Stack, styled, Typography } from "@mui/material";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import LocationCityIcon from "@mui/icons-material/LocationCity";
+import type { DexieError } from "dexie";
 
 import type { CityDescriptionOptions, CityItemType } from "../../../../../atoms/types";
 import type { CityType } from "../../../../../types";
 import { db } from "../../../../../utils/db";
 import ClampedTextContainer from "../../../../ui/ClampedTextContainer";
 import Clock from "../../../../ui/Clock";
+import withCatch from "../../../../../utils/withCatch";
+import { CityListItemSkeleton } from "../../../../WeatherForecast/AddCity/CityListSkeleton";
+import useSnackbar from "../../../../../hooks/useSnackbar";
+
+const CityContainer = styled(Stack)(({ theme }) => ({
+    height: "3.6rem",
+    paddingInline: theme.spacing(2),
+    border: `1px solid ${theme.palette.divider}`,
+
+    svg: {
+        width: "1rem",
+        height: "1rem",
+    },
+}));
 
 const PreviewCity = ({ value }: { value: CityItemType }) => {
     const justMounted = useRef(true);
     const [randomCity, setRandomCity] = useState<CityType | null>(null);
+
+    const { openSnackbar } = useSnackbar();
+
+    const fetchRandomCity = useCallback(async () => {
+        const [error, city] = await withCatch<CityType[], DexieError>(
+            db.cities.filter((city) => +city.population > 100_000).toArray(),
+        );
+
+        if (error) {
+            openSnackbar({
+                severity: "error",
+                message: "Something went wrong fetching a preview city.",
+            });
+            return [error, null];
+        }
+
+        const randomNum = Math.floor(Math.random() * (city.length + 1));
+        setRandomCity(city[randomNum]);
+
+        return [null, city[randomNum]];
+    }, [openSnackbar]);
 
     const getValue = (location: CityType | null, key: CityDescriptionOptions) => {
         if (!location) return "";
@@ -60,40 +96,33 @@ const PreviewCity = ({ value }: { value: CityItemType }) => {
 
     useEffect(() => {
         if (justMounted.current) {
-            (async () => {
-                try {
-                    const city = await db.cities
-                        .filter((city) => +city.population > 100_000)
-                        .toArray();
-                    const randomNum = Math.floor(Math.random() * (city.length + 1));
-                    setRandomCity(city[randomNum]);
-                } catch (err) {
-                    console.error(err);
-                }
-            })();
+            // eslint-disable-next-line react-hooks/set-state-in-effect
+            fetchRandomCity();
         }
         justMounted.current = false;
-    }, []);
+    }, [openSnackbar, fetchRandomCity]);
 
-    if (!randomCity) return null;
+    if (!randomCity) {
+        return (
+            <CityContainer>
+                <CityListItemSkeleton
+                    containerProps={{
+                        sx: {
+                            px: 2,
+                            "&:hover": {
+                                backgroundColor: "transparent",
+                                cursor: "default",
+                            },
+                        },
+                    }}
+                />
+            </CityContainer>
+        );
+    }
 
     return (
-        <Stack
-            direction="row"
-            alignItems="center"
-            justifyContent="space-between"
-            sx={(theme) => ({
-                height: "3.6rem",
-                paddingInline: theme.spacing(2),
-                border: `1px solid ${theme.palette.divider}`,
-
-                svg: {
-                    width: "1rem",
-                    height: "1rem",
-                },
-            })}
-        >
-            <Stack direction="row" alignItems="center" gap={2}>
+        <CityContainer direction="row" alignItems="center" justifyContent="space-between">
+            <Stack direction="row" alignItems="center" gap={3}>
                 {value.flag === "show" ? (
                     <Box
                         component="img"
@@ -139,7 +168,7 @@ const PreviewCity = ({ value }: { value: CityItemType }) => {
                 </Box>
                 <FavoriteBorderIcon style={{ width: "1.4rem", height: "1.4rem" }} />
             </Stack>
-        </Stack>
+        </CityContainer>
     );
 };
 

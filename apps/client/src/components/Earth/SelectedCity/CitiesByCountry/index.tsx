@@ -58,12 +58,12 @@ const CitiesByCountry = ({ country }: { country?: string }) => {
     }, [setCitiesByCountry]);
 
     return (
-        <Stack gap={2}>
+        <Stack gap={2} sx={{ overflow: "auto" }}>
             <CitySearch
                 cities={fetchCitiesInfo.data || []}
                 isLoading={fetchCitiesInfo.isLoading === "INITIAL"}
             />
-            <CitiesList />
+            <CitiesList isLoading={fetchCitiesInfo.isLoading} />
         </Stack>
     );
 };

@@ -51,7 +51,7 @@ const LocationInfo = () => {
 
 const LastTimeUpdated = () => {
     return (
-        <Box sx={{ display: "grid", gap: 0.4, gridTemplateColumns: "1fr 2.8rem" }}>
+        <Box sx={{ display: "grid", gap: 0.4, gridTemplateColumns: "minmax(5.6rem, 1fr) 3rem" }}>
             <Typography variant="caption">Last update: </Typography>
             <Box sx={{ justifySelf: "center", alignItems: "center", height: 20 }}>
                 <StatusFeedback />

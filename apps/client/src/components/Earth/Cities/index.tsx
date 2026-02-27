@@ -1,14 +1,19 @@
 import { useEffect, useState } from "react";
-import { useSetAtom } from "jotai";
+import { atom, useAtomValue, useSetAtom } from "jotai";
 
 import SinglePoint from "../SinglePoint";
 import type { CityType } from "../../../types";
 import { db } from "../../../utils/db";
-import { selectedCityAtom } from "../../../atoms";
+import { citiesFetchInfoAtom, selectedCityAtom } from "../../../atoms";
 import calcCoordToPos from "../../../utils/calcCoordToPos";
+import withCatch from "../../../utils/withCatch";
+
+const isLoadingCitiesAtom = atom((get) => get(citiesFetchInfoAtom).isLoading);
 
 const CitiesMain = () => {
     const [capitalCities, setCapitalCities] = useState<CityType[] | null>(null);
+
+    const isLoadingCities = useAtomValue(isLoadingCitiesAtom);
     const setSelectedCity = useSetAtom(selectedCityAtom);
 
     const handleOnClick = (city: CityType) => {
@@ -17,17 +22,17 @@ const CitiesMain = () => {
     };
 
     useEffect(() => {
-        (async () => {
-            try {
-                const cities = await db.cities
-                    .filter((city) => city.capital === "primary" && +city.population > 100_000)
-                    .toArray();
+        if (!isLoadingCities) {
+            (async () => {
+                const [, cities] = await withCatch(
+                    db.cities
+                        .filter((city) => city.capital === "primary" && +city.population > 100_000)
+                        .toArray(),
+                );
                 if (cities) setCapitalCities(cities);
-            } catch (error) {
-                console.error(error);
-            }
-        })();
-    }, []);
+            })();
+        }
+    }, [isLoadingCities]);
 
     if (!Array.isArray(capitalCities)) return null;
 
