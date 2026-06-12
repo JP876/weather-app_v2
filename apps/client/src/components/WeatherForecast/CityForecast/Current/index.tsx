@@ -36,7 +36,7 @@ const LocationInfo = () => {
                 )}
             </Stack>
             {cityInfo?.country && cityInfo?.iso2 ? (
-                <ClampedTextContainer variant="body2">
+                <ClampedTextContainer variant="caption">
                     {`${cityInfo?.country}, ${cityInfo?.iso2}`}
                 </ClampedTextContainer>
             ) : (
@@ -51,11 +51,9 @@ const LocationInfo = () => {
 
 const LastTimeUpdated = () => {
     return (
-        <Box sx={{ display: "grid", gap: 0.4, gridTemplateColumns: "minmax(5.6rem, 1fr) 3rem" }}>
+        <Box sx={{ display: "grid", gap: 0.8, gridTemplateColumns: "minmax(5.6rem, 1fr) 2.4rem" }}>
             <Typography variant="caption">Last update: </Typography>
-            <Box sx={{ justifySelf: "center", alignItems: "center", height: 20 }}>
-                <StatusFeedback />
-            </Box>
+            <StatusFeedback />
         </Box>
     );
 };

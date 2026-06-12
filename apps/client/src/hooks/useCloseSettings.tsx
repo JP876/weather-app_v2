@@ -18,10 +18,11 @@ const useCloseSettings = () => {
         const userSettings = store.get(userSettingsAtom);
         const generalSettings = store.get(generalSettingAtom);
 
-        delete userSettings.daily;
-        delete userSettings.hourly;
+        const userSettingsCopy = { ...userSettings };
+        delete userSettingsCopy.daily;
+        delete userSettingsCopy.hourly;
 
-        if (compareObjects(userSettings, generalSettings)) {
+        if (compareObjects(userSettingsCopy, generalSettings)) {
             setOpenSettings(false);
         } else {
             setOpenConfirm(true);

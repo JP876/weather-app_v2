@@ -1,5 +1,8 @@
 import { useAtomValue } from "jotai";
-import { Box, CircularProgress, Tooltip, Typography } from "@mui/material";
+import CircularProgress from "@mui/material/CircularProgress";
+import Stack from "@mui/material/Stack";
+import Tooltip from "@mui/material/Tooltip";
+import Typography from "@mui/material/Typography";
 import ErrorIcon from "@mui/icons-material/Error";
 import { format } from "date-fns";
 
@@ -39,12 +42,16 @@ const StatusFeedback = () => {
     };
 
     if (isLoading === "REFETCH" || isLoading === "REFRESH") {
-        return <CircularProgress size={20} />;
+        return (
+            <Stack direction="row" alignItems="center" justifyContent="center">
+                <CircularProgress size={16} />
+            </Stack>
+        );
     }
 
     if (!isError) {
         if (dt) {
-            return <Typography variant="body2">{format(dt, "HH:mm")}</Typography>;
+            return <Typography variant="caption">{format(dt, "HH:mm")}</Typography>;
         } else {
             return null;
         }
@@ -52,16 +59,19 @@ const StatusFeedback = () => {
 
     return (
         <Tooltip arrow disableInteractive title={renderTitle()}>
-            <Box
+            <Stack
+                direction="row"
+                alignItems="center"
+                justifyContent="center"
                 sx={{
                     height: "inherit",
                     cursor: "pointer",
-                    "& svg": { height: "inherit", width: "inherit" },
+                    "& svg": { height: "1rem", width: "1rem" },
                 }}
                 onClick={refetchData}
             >
                 <ErrorIcon color={"error"} />
-            </Box>
+            </Stack>
         </Tooltip>
     );
 };
