@@ -1,14 +1,11 @@
 import { forwardRef, useEffect } from "react";
-import {
-    DialogContent,
-    DialogTitle,
-    IconButton,
-    Slide,
-    Stack,
-    type SlideProps,
-} from "@mui/material";
+import DialogContent from "@mui/material/DialogContent";
+import DialogTitle from "@mui/material/DialogTitle";
+import IconButton from "@mui/material/IconButton";
+import Slide, { type SlideProps } from "@mui/material/Slide";
+import Stack from "@mui/material/Stack";
 import CloseIcon from "@mui/icons-material/Close";
-import { useAtom, useAtomValue, useSetAtom } from "jotai";
+import { useAtomValue, useSetAtom } from "jotai";
 
 import { GlassDialog } from "../../ui/styledComps";
 import {
@@ -18,6 +15,8 @@ import {
     userSettingsAtom,
 } from "../../../atoms";
 import SettingsNavigation from "./SettingsNavigation";
+import ConfirmDialog from "./ConfirmDialog";
+import useCloseSettings from "../../../hooks/useCloseSettings";
 
 type SettingsProps = {
     children: React.ReactNode;
@@ -28,14 +27,12 @@ const SlideTransition = forwardRef((props: SlideProps, ref) => {
 });
 
 const SettingsDialog = ({ children }: SettingsProps) => {
-    const [open, setOpen] = useAtom(openSettingsAtom);
+    const open = useAtomValue(openSettingsAtom);
 
     const userSettings = useAtomValue(userSettingsAtom);
     const setGeneralSettings = useSetAtom(generalSettingAtom);
 
-    const onClose = () => {
-        setOpen(false);
-    };
+    const [onClose] = useCloseSettings();
 
     useEffect(() => {
         if (open) {
@@ -73,9 +70,12 @@ const SettingsDialog = ({ children }: SettingsProps) => {
 
 const SettingsMain = () => {
     return (
-        <SettingsDialog>
-            <SettingsNavigation />
-        </SettingsDialog>
+        <>
+            <SettingsDialog>
+                <SettingsNavigation />
+            </SettingsDialog>
+            <ConfirmDialog />
+        </>
     );
 };
 

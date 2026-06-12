@@ -1,13 +1,11 @@
 import { memo, useCallback } from "react";
-import {
-    Box,
-    FormControlLabel,
-    styled,
-    Switch,
-    Tooltip,
-    Typography,
-    type SelectChangeEvent,
-} from "@mui/material";
+import Box from "@mui/material/Box";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import Switch from "@mui/material/Switch";
+import Tooltip from "@mui/material/Tooltip";
+import Typography from "@mui/material/Typography";
+import { type SelectChangeEvent } from "@mui/material/Select";
+import { styled } from "@mui/material/styles";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import LocationCityIcon from "@mui/icons-material/LocationCity";
 import { useSetAtom } from "jotai";
@@ -24,7 +22,7 @@ const cityInfoOptions: SelectItemType<CityDescriptionOptions>[] = [
     { label: "Country,ISO2", value: "countryiso2" },
     { label: "Coordinates", value: "coordinates" },
     { label: "Local time", value: "localtime" },
-    { label: "None", value: "none" },
+    { label: "None", value: "hide" },
 ];
 
 const CityListItemContainer = styled(Box)(({ theme }) => ({

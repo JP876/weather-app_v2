@@ -1,9 +1,10 @@
-import { memo, useLayoutEffect, useMemo, useRef } from "react";
+import { memo, useLayoutEffect, useMemo } from "react";
 import { format as formatDate } from "date-fns";
-import { Typography, type TypographyProps } from "@mui/material";
+import { type TypographyProps } from "@mui/material";
 import { useAtomValue } from "jotai";
 
 import { userSettingsAtom } from "../../../atoms";
+import ClampedTextContainer from "../ClampedTextContainer";
 
 type ClockProps = Omit<TypographyProps<"p">, "ref"> & {
     format?: string;
@@ -12,7 +13,7 @@ type ClockProps = Omit<TypographyProps<"p">, "ref"> & {
 };
 
 const Clock = ({ format, timezone, locale, ...rest }: ClockProps) => {
-    const timeEl = useRef<HTMLTimeElement | null>(null);
+    const clockId = useMemo(() => crypto.randomUUID(), []);
     const { dateFormat } = useAtomValue(userSettingsAtom);
 
     const timeFormatOptions = useMemo(() => {
@@ -27,12 +28,14 @@ const Clock = ({ format, timezone, locale, ...rest }: ClockProps) => {
         const controller = new AbortController();
 
         const getCurrentTime = () => {
+            const el = document.getElementById(clockId);
+
             try {
                 const time = new Date().toLocaleString(LOCALE, { timeZone: TIMEZONE });
                 const formated = formatDate(new Date(time), DATE_FORMAT);
 
-                if (timeEl.current) {
-                    timeEl.current.innerText = formated;
+                if (el) {
+                    el.innerText = formated;
                 }
             } catch (err: unknown) {
                 console.log(err);
@@ -46,15 +49,16 @@ const Clock = ({ format, timezone, locale, ...rest }: ClockProps) => {
             controller.abort();
         };
     }, [
+        clockId,
         dateFormat,
         format,
         locale,
-        timeFormatOptions.locale,
-        timeFormatOptions.timeZone,
+        timeFormatOptions?.locale,
+        timeFormatOptions?.timeZone,
         timezone,
     ]);
 
-    return <Typography {...rest} ref={timeEl} />;
+    return <ClampedTextContainer id={clockId} {...rest} />;
 };
 
 export default memo(Clock);

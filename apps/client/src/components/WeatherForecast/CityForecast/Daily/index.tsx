@@ -9,12 +9,12 @@ import { userSettingsAtom } from "../../../../atoms";
 
 const ListContainer = ({ children }: { children: React.ReactNode }) => {
     const settings = useAtomValue(userSettingsAtom);
-    return <Collapse in={settings.daily.list}>{children}</Collapse>;
+    return <Collapse in={!!settings?.daily?.list}>{children}</Collapse>;
 };
 
 const GraphContainer = ({ children }: { children: React.ReactNode }) => {
     const settings = useAtomValue(userSettingsAtom);
-    return <Collapse in={settings.daily.graph}>{children}</Collapse>;
+    return <Collapse in={!!settings?.daily?.graph}>{children}</Collapse>;
 };
 
 const DailyMain = () => {

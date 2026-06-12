@@ -103,4 +103,5 @@ export const selectedCityAtom = atom<(CityType & { position: Vector3 }) | null>(
 export const citiesByCountry = atom<CityType[] | null>(null);
 
 export const openSettingsAtom = atom(false);
+export const openConfirmSettingsAtom = atom(false);
 export const generalSettingAtom = atom<Types.GeneralSettingsType>(generalSettings);

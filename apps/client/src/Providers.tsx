@@ -4,6 +4,7 @@ import { Router, type AroundNavHandler } from "wouter";
 import { Provider } from "jotai";
 
 import { theme } from "./theme";
+import { store } from "./consts";
 
 const aroundNav: AroundNavHandler = (navigate, to, options) => {
     // Check if View Transitions API is supported
@@ -21,7 +22,7 @@ const aroundNav: AroundNavHandler = (navigate, to, options) => {
 
 const Providers = ({ children }: { children: React.ReactNode }) => {
     return (
-        <Provider>
+        <Provider store={store}>
             <Router aroundNav={aroundNav}>
                 <ThemeProvider theme={theme}>{children}</ThemeProvider>
             </Router>

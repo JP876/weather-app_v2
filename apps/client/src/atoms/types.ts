@@ -39,7 +39,7 @@ export type CityDescriptionOptions =
     | "country"
     | "coordinates"
     | "localtime"
-    | "none";
+    | "hide";
 
 export type CityItemType = {
     flag: "show" | "hide";
@@ -59,11 +59,11 @@ export type GeneralSettingsType = {
 };
 
 export type UserSettingsType = GeneralSettingsType & {
-    daily: {
+    daily?: {
         list: boolean;
         graph: boolean;
     };
-    hourly: {
+    hourly?: {
         cards: boolean;
         graph: boolean;
     };

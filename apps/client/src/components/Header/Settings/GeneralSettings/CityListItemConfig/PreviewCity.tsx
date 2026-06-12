@@ -88,7 +88,7 @@ const PreviewCity = ({ value }: { value: CityItemType }) => {
                         />
                     </Stack>
                 );
-            case "none":
+            case "hide":
             default:
                 return "";
         }

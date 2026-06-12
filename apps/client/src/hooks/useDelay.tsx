@@ -5,7 +5,7 @@ const useDelay = (ms?: number) => {
 
     const start = useCallback(async () => {
         setLoading(true);
-        await new Promise((resolve) => setTimeout(resolve, ms || 500));
+        await new Promise((resolve) => setTimeout(resolve, ms || 600));
         setLoading(false);
     }, [ms]);
 

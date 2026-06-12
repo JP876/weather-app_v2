@@ -1,14 +1,17 @@
 import { memo } from "react";
-import { Box, Stack, styled, Typography, type BoxProps } from "@mui/material";
+import { Box, Stack, styled, type BoxProps, type TypographyProps } from "@mui/material";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import ClearIcon from "@mui/icons-material/Clear";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import LocationCityIcon from "@mui/icons-material/LocationCity";
+import { useAtomValue } from "jotai";
 
 import type { CityType } from "../../../../types";
 import ClampedTextContainer from "../../../ui/ClampedTextContainer";
 import Clock from "../../../ui/Clock";
+import { userSettingsAtom } from "../../../../atoms";
+import type { CityItemType } from "../../../../atoms/types";
 
 type CityInfoProps = Pick<
     CityType,
@@ -29,33 +32,101 @@ const CityListItemButton = styled(Box)<BoxProps>(({ theme }) => ({
 }));
 
 const CityInfo = memo((props: CityInfoProps) => {
+    const cityInfoSettings = useAtomValue(userSettingsAtom)?.cityItem;
+
+    const getCityInfo = (
+        position: keyof CityItemType,
+        info: (typeof cityInfoSettings)[keyof CityItemType],
+    ) => {
+        const typographyProps: Pick<TypographyProps, "variant" | "sx"> = (() => {
+            switch (position) {
+                case "topLeft":
+                    return {
+                        variant: "subtitle1",
+                        sx: (theme) => ({
+                            marginBottom: theme.spacing(-0.5),
+                            fontWeight: theme.typography.fontWeightBold,
+                            fontSize: theme.typography.h6.fontSize,
+                        }),
+                    };
+                case "bottomLeft":
+                    return { variant: "caption" };
+                default:
+                    return { variant: "body2" };
+            }
+        })();
+
+        switch (info) {
+            case "city":
+                return (
+                    <ClampedTextContainer {...typographyProps}>{props.city}</ClampedTextContainer>
+                );
+            case "cityiso2":
+                return (
+                    <ClampedTextContainer
+                        {...typographyProps}
+                    >{`${props.city},${props.iso2}`}</ClampedTextContainer>
+                );
+            case "coordinates":
+                return (
+                    <Stack direction="row" alignItems="center" gap={1}>
+                        <LocationOnIcon />
+                        <ClampedTextContainer {...typographyProps}>
+                            {`${parseFloat(props.lat.toString()).toFixed(2)} - 
+                                    ${parseFloat(props.lng.toString()).toFixed(2)}`}
+                        </ClampedTextContainer>
+                    </Stack>
+                );
+            case "country":
+                return (
+                    <ClampedTextContainer {...typographyProps}>
+                        {props.country}
+                    </ClampedTextContainer>
+                );
+            case "countryiso2":
+                return (
+                    <ClampedTextContainer
+                        {...typographyProps}
+                    >{`${props.country},${props.iso2}`}</ClampedTextContainer>
+                );
+            case "localtime":
+                if (!props.timezone) return null;
+                return (
+                    <Stack direction="row" alignItems="center" gap={1}>
+                        <AccessTimeIcon />
+                        <Clock
+                            timezone={props.timezone}
+                            format="HH:mm dd/MMM/yy"
+                            variant={typographyProps.variant}
+                        />
+                    </Stack>
+                );
+            case "hide":
+            default:
+                return "";
+        }
+    };
+
     return (
         <>
             <Stack direction="row" alignItems="center" gap={2}>
-                <Box
-                    component="img"
-                    width={32}
-                    height={20}
-                    src={`https://flagcdn.com/w40/${props.iso2.toLowerCase()}.png`}
-                    alt={`${props.country} flag`}
-                />
+                {cityInfoSettings.flag === "show" || !cityInfoSettings.flag ? (
+                    <Box
+                        component="img"
+                        width={32}
+                        height={20}
+                        src={`https://flagcdn.com/w40/${props.iso2.toLowerCase()}.png`}
+                        alt={`${props.country} flag`}
+                    />
+                ) : null}
                 <Stack>
                     <Stack direction="row" gap={1} alignItems="center">
                         {props.capital === "primary" ? (
                             <LocationCityIcon fontSize="small" sx={{ mt: "2.4px" }} />
                         ) : null}
-                        <ClampedTextContainer
-                            variant="subtitle1"
-                            sx={(theme) => ({
-                                marginBottom: theme.spacing(-0.5),
-                                fontWeight: theme.typography.fontWeightBold,
-                                fontSize: theme.typography.h6.fontSize,
-                            })}
-                        >
-                            {props.city}
-                        </ClampedTextContainer>
+                        {getCityInfo("topLeft", cityInfoSettings.topLeft)}
                     </Stack>
-                    <Typography variant="caption">{props.country}</Typography>
+                    {getCityInfo("bottomLeft", cityInfoSettings.bottomLeft)}
                 </Stack>
             </Stack>
             <Stack direction="row" alignItems="center" justifyContent="space-between" gap={4}>
@@ -76,23 +147,8 @@ const CityInfo = memo((props: CityInfoProps) => {
                         },
                     })}
                 >
-                    <Stack direction="row" alignItems="center" gap={1}>
-                        <LocationOnIcon />
-                        <Typography variant="body2">
-                            {`${parseFloat(props.lat.toString()).toFixed(2)} - 
-                        ${parseFloat(props.lng.toString()).toFixed(2)}`}
-                        </Typography>
-                    </Stack>
-                    {props.timezone ? (
-                        <Stack direction="row" alignItems="center" gap={1}>
-                            <AccessTimeIcon />
-                            <Clock
-                                timezone={props.timezone}
-                                format="HH:mm dd/MMM/yy"
-                                variant="body2"
-                            />
-                        </Stack>
-                    ) : null}
+                    {getCityInfo("topRight", cityInfoSettings.topRight)}
+                    {getCityInfo("bottomRight", cityInfoSettings.bottomRight)}
                 </Box>
                 <CityListItemButton>
                     <FavoriteBorderIcon sx={{ opacity: +!props.isFavourite }} />

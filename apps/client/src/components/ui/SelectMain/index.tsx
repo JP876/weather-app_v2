@@ -1,13 +1,8 @@
 import { memo, useId } from "react";
-import {
-    FormControl,
-    InputLabel,
-    MenuItem,
-    Select,
-    type FormControlProps,
-    type MenuItemProps,
-    type SelectProps,
-} from "@mui/material";
+import InputLabel from "@mui/material/InputLabel";
+import FormControl, { type FormControlProps } from "@mui/material/FormControl";
+import MenuItem, { type MenuItemProps } from "@mui/material/MenuItem";
+import Select, { type SelectProps } from "@mui/material/Select";
 
 export type SelectItemType<TValue = string | number> = {
     value: TValue;

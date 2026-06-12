@@ -1,20 +1,14 @@
 import { memo } from "react";
 import { Button } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
-import { useSetAtom } from "jotai";
 
-import { openSettingsAtom } from "../../../atoms";
+import useCloseSettings from "../../../hooks/useCloseSettings";
 
 const CloseModalButton = () => {
-    const setOpen = useSetAtom(openSettingsAtom);
+    const [onClose] = useCloseSettings();
 
     return (
-        <Button
-            size="small"
-            variant="outlined"
-            startIcon={<CloseIcon />}
-            onClick={() => setOpen(false)}
-        >
+        <Button size="small" variant="outlined" startIcon={<CloseIcon />} onClick={onClose}>
             Close
         </Button>
     );
