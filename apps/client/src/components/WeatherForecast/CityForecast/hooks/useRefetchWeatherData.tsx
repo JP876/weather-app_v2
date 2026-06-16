@@ -14,7 +14,7 @@ const useRefetchWeatherData = () => {
 
     const { openSnackbar } = useSnackbar();
 
-    return useCallback(async () => {
+    const refetchWeatherData = useCallback(async () => {
         if (!cityInfo) {
             console.error("City info not found");
             return null;
@@ -29,6 +29,8 @@ const useRefetchWeatherData = () => {
             openSnackbar({ severity: "error", message: error.msg });
         }
     }, [cityInfo, handleRefetch, openSnackbar, userSettings?.units]);
+
+    return [refetchWeatherData] as const;
 };
 
 export default useRefetchWeatherData;

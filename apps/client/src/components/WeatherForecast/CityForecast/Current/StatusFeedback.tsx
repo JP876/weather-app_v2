@@ -13,7 +13,7 @@ const StatusFeedback = () => {
     const dt = useAtomValue(lastTimeUpdatedAtom);
     const { error, isLoading } = useAtomValue(weatherFetchInfoAtom);
 
-    const refetchData = useRefetchWeatherData();
+    const [refetchWeatherData] = useRefetchWeatherData();
 
     const errorType = error ? error.type : null;
     const isError =
@@ -68,7 +68,7 @@ const StatusFeedback = () => {
                     cursor: "pointer",
                     "& svg": { height: "1rem", width: "1rem" },
                 }}
-                onClick={refetchData}
+                onClick={refetchWeatherData}
             >
                 <ErrorIcon color={"error"} />
             </Stack>

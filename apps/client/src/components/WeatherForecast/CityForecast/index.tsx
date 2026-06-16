@@ -25,7 +25,7 @@ const CityForecastContainer = styled(Stack)<StackProps>(({ theme }) => ({
 
 const FetchLoadingData = memo(({ children }: { children: React.ReactNode }) => {
     const { isLoading, error } = useAtomValue(weatherFetchInfoAtom);
-    const refetchData = useRefetchWeatherData();
+    const [refetchWeatherData] = useRefetchWeatherData();
 
     const errorType = (() => (error ? error.type : null))();
 
@@ -41,7 +41,7 @@ const FetchLoadingData = memo(({ children }: { children: React.ReactNode }) => {
                     variant="outlined"
                     startIcon={<ReplayIcon />}
                     loading={isLoading === "REFETCH"}
-                    onClick={refetchData}
+                    onClick={refetchWeatherData}
                 >
                     Retry
                 </Button>
@@ -79,7 +79,9 @@ const CityForecastMain = () => {
     const unitsRef = useRef(userSettings.units);
 
     const cityInfo = useCityInfo();
+
     const { handleFetch } = useFetchWeatherData();
+    const [refetchWeatherData] = useRefetchWeatherData();
 
     const clearWeatherDataTable = useCallback(async () => {
         try {
@@ -113,6 +115,22 @@ const CityForecastMain = () => {
         clearWeatherDataTable,
         handleFetch,
     ]);
+
+    useEffect(() => {
+        const controller = new AbortController();
+        const handleVisibilityChange = () => {
+            if (document.visibilityState === "visible") {
+                refetchWeatherData();
+            }
+        };
+
+        window.addEventListener("focus", handleVisibilityChange, {
+            signal: controller.signal,
+        });
+        return () => {
+            controller.abort();
+        };
+    }, [refetchWeatherData]);
 
     return (
         <FetchLoadingData>
