@@ -1,7 +1,11 @@
 import { lazy, Suspense } from "react";
-import { IconButton, Stack, styled, Tooltip, Typography } from "@mui/material";
+import Box from "@mui/material/Box";
+import IconButton from "@mui/material/IconButton";
+import Stack from "@mui/material/Stack";
+import Tooltip from "@mui/material/Tooltip";
+import Typography from "@mui/material/Typography";
+import { styled } from "@mui/material/styles";
 import SettingsIcon from "@mui/icons-material/Settings";
-import PanoramaPhotosphereIcon from "@mui/icons-material/PanoramaPhotosphere";
 import { useLocation } from "wouter";
 import { useSetAtom } from "jotai";
 
@@ -21,7 +25,7 @@ const HeaderLogo = () => {
             onClick={() => navigate("/")}
             sx={() => ({ cursor: "pointer", gap: 1.4 })}
         >
-            <PanoramaPhotosphereIcon color="primary" />
+            <Box component="img" src="/earth.svg" sx={{ width: "1.8rem", height: "1.8rem" }} />
             <Typography variant="h5">WeatherSphere</Typography>
         </Stack>
     );

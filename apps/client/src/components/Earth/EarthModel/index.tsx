@@ -35,7 +35,7 @@ const EarthModelMain = () => {
         texture.colorSpace = SRGBColorSpace;
         texture.anisotropy = 8;
     });
-    const earthSpecularCloudsTexture = useTexture("./earth/specularClouds.jpg", (texture) => {
+    const earthSpecularCloudsTexture = useTexture("./earth/specularClouds.webp", (texture) => {
         texture.colorSpace = LinearSRGBColorSpace;
         texture.anisotropy = 8;
     });
