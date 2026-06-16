@@ -52,7 +52,15 @@ const fetchWeatherData = async (
 
     if (error) return [error, null];
 
-    const data = (await res.json()) as { results: WeatherDataType };
+    const [err, data] = await withCatch<{ results: WeatherDataType }>(res.json());
+
+    if (err) {
+        let type: WithFetchErrors["type"] = "API_ERROR";
+        if (err.name === "AbortError") {
+            type = "ABORT_ERROR";
+        }
+        return [{ type, error: err }, null];
+    }
     return [null, data.results];
 };
 

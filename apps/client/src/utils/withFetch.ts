@@ -4,7 +4,8 @@ type WithFetchOptions = {
 
 export type WithFetchErrors =
     | { type: "NETWORK_ERROR"; error: Error }
-    | { type: "API_ERROR"; error: Error };
+    | { type: "API_ERROR"; error: Error }
+    | { type: "ABORT_ERROR"; error: Error };
 
 async function withFetch(
     input: RequestInfo | URL,

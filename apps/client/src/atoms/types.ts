@@ -3,6 +3,7 @@ import type { AlertProps, SnackbarProps } from "@mui/material";
 export type FetchInfoErrorTypes =
     | "NETWORK_ERROR"
     | "API_ERROR"
+    | "ABORT_ERROR"
     | "INDEXED_DB_ERROR"
     | "API_ERROR_WITH_DB_DATA"
     | "REFETCH_LIMIT_REACHED";
