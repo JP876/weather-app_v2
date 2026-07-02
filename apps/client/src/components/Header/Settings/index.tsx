@@ -14,9 +14,9 @@ import {
     openSettingsAtom,
     userSettingsAtom,
 } from "../../../atoms";
-import SettingsNavigation from "./SettingsNavigation";
 import ConfirmDialog from "./ConfirmDialog";
 import useCloseSettings from "../../../hooks/useCloseSettings";
+import GeneralSettingsMain from "./GeneralSettings";
 
 type SettingsProps = {
     children: React.ReactNode;
@@ -52,7 +52,7 @@ const SettingsDialog = ({ children }: SettingsProps) => {
         <GlassDialog
             open={open}
             onClose={onClose}
-            minWidth="50rem"
+            minWidth="48rem"
             slots={{ transition: SlideTransition }}
         >
             <Stack direction="row" alignItems="center" justifyContent="space-between">
@@ -72,7 +72,7 @@ const SettingsMain = () => {
     return (
         <>
             <SettingsDialog>
-                <SettingsNavigation />
+                <GeneralSettingsMain />
             </SettingsDialog>
             <ConfirmDialog />
         </>

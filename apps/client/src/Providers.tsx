@@ -1,29 +1,30 @@
-import { flushSync } from "react-dom";
+// import { flushSync } from "react-dom";
 import { ThemeProvider } from "@mui/material";
-import { Router, type AroundNavHandler } from "wouter";
+import { Router } from "wouter";
 import { Provider } from "jotai";
 
 import { theme } from "./theme";
 import { store } from "./consts";
 
-const aroundNav: AroundNavHandler = (navigate, to, options) => {
-    // Check if View Transitions API is supported
-    if (!document.startViewTransition || !options?.transition) {
-        navigate(to, options);
-        return;
-    }
+// Bug on Firefox (blur flickering on city change)
+// const aroundNav: AroundNavHandler = (navigate, to, options) => {
+//     // Check if View Transitions API is supported
+//     if (!document.startViewTransition || !options?.transition) {
+//         navigate(to, options);
+//         return;
+//     }
 
-    document.startViewTransition(() => {
-        flushSync(() => {
-            navigate(to, options);
-        });
-    });
-};
+//     document.startViewTransition(() => {
+//         flushSync(() => {
+//             navigate(to, options);
+//         });
+//     });
+// };
 
 const Providers = ({ children }: { children: React.ReactNode }) => {
     return (
         <Provider store={store}>
-            <Router aroundNav={aroundNav}>
+            <Router>
                 <ThemeProvider theme={theme}>{children}</ThemeProvider>
             </Router>
         </Provider>

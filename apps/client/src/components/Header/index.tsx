@@ -4,7 +4,7 @@ import IconButton from "@mui/material/IconButton";
 import Stack from "@mui/material/Stack";
 import Tooltip from "@mui/material/Tooltip";
 import Typography from "@mui/material/Typography";
-import { styled } from "@mui/material/styles";
+import { styled, useColorScheme } from "@mui/material/styles";
 import SettingsIcon from "@mui/icons-material/Settings";
 import { useLocation } from "wouter";
 import { useSetAtom } from "jotai";
@@ -12,11 +12,13 @@ import { useSetAtom } from "jotai";
 import { GlassContainer } from "../ui/styledComps";
 import { openSettingsAtom } from "../../atoms";
 import Clock from "../ui/Clock";
+import ThemeMode from "./ThemeMode";
 
 const SettingsMain = lazy(() => import("./Settings"));
 
 const HeaderLogo = () => {
     const [, navigate] = useLocation();
+    const { mode } = useColorScheme();
 
     return (
         <Stack
@@ -25,7 +27,14 @@ const HeaderLogo = () => {
             onClick={() => navigate("/")}
             sx={() => ({ cursor: "pointer", gap: 1.4 })}
         >
-            <Box component="img" src="/earth.svg" sx={{ width: "1.8rem", height: "1.8rem" }} />
+            <Box
+                component="img"
+                src={mode === "dark" ? "/light-logo.svg" : "/dark-logo.svg"}
+                sx={{
+                    width: "1.8rem",
+                    height: "1.8rem",
+                }}
+            />
             <Typography variant="h5">WeatherSphere</Typography>
         </Stack>
     );
@@ -55,6 +64,7 @@ const HeaderMain = () => {
 
             <Stack direction="row" alignItems="center" gap={2}>
                 <Clock />
+                <ThemeMode />
                 <Tooltip arrow disableInteractive title="Settings">
                     <IconButton size="small" onClick={() => setOpen(true)}>
                         <SettingsIcon />

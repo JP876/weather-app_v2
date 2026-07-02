@@ -4,7 +4,7 @@ import Divider from "@mui/material/Divider";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import { type SelectChangeEvent } from "@mui/material/Select";
-import { styled, useColorScheme } from "@mui/material/styles";
+import { styled } from "@mui/material/styles";
 import { useAtom } from "jotai";
 
 import { generalSettingAtom } from "../../../../atoms";
@@ -14,7 +14,6 @@ import type {
     CityItemType,
     GeneralSettingsType,
     MouseClickActionType,
-    ThemeModeType,
     UnitsType,
 } from "../../../../atoms/types";
 import SaveButton from "./SaveButton";
@@ -31,12 +30,6 @@ const formatOptions: SelectItemType[] = [
 const addCityActions: SelectItemType<MouseClickActionType>[] = [
     { label: "Add/remove the city to/from navigation bar", value: "add" },
     { label: "Add the city and immediately open it", value: "navigate" },
-];
-
-const modeOptions: SelectItemType<ThemeModeType>[] = [
-    { label: "Light", value: "light" },
-    { label: "System", value: "system" },
-    { label: "Dark", value: "dark" },
 ];
 
 const unitOptions: SelectItemType<UnitsType>[] = [
@@ -60,23 +53,6 @@ const SettingsActions = memo(() => {
     );
 });
 
-const ThemeMode = memo(() => {
-    const { mode, setMode } = useColorScheme();
-
-    return (
-        <SectionContainer>
-            <Typography>Theme mode</Typography>
-            <SelectMain
-                items={modeOptions}
-                value={mode}
-                onChange={(event) => {
-                    setMode(event.target.value as ThemeModeType);
-                }}
-            />
-        </SectionContainer>
-    );
-});
-
 type GenearlAppSettingsProps = {
     units: string;
     dateFormat: string;
@@ -87,7 +63,6 @@ const GenearlAppSettings = memo(
     ({ units, dateFormat, updateSettings }: GenearlAppSettingsProps) => {
         return (
             <Stack gap={2}>
-                <ThemeMode />
                 <SectionContainer>
                     <Typography variant="body1">Units of measurement</Typography>
                     <SelectMain
@@ -168,7 +143,7 @@ const GeneralSettingsMain = () => {
     );
 
     return (
-        <Stack gap={2}>
+        <Stack gap={2} mx={2} my={1}>
             <GenearlAppSettings
                 updateSettings={updateSettings}
                 units={settings.units}
